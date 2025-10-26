@@ -1,12 +1,14 @@
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import Samplepage from "./module/Samplepage.jsx";
+import LandingPage from "./module/LandingPage.jsx";
+import SigninPage from "./module/SigninPage.jsx";
 
 function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Samplepage/>} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/signin" element={<SigninPage />} />
       </Routes>
     </div>
   );
