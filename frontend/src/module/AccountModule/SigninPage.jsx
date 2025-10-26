@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import Bird from "../../assets/LingoLogo Standing.png";
 
 function SigninPage() {
+  const navigate = useNavigate();
   return (
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
@@ -25,7 +27,9 @@ function SigninPage() {
           />
         </div>
 
-        <button className="w-50 mt-5 bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200">
+        <button 
+        onClick={() => navigate("/startpage1")}
+        className="w-50 mt-5 bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200">
           Sumunod
         </button>
       </div>
