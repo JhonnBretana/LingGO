@@ -3,12 +3,8 @@ import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../module/components/BackgroundLayout";
 import Logo from "../assets/LingGO Logo.png";
 
-function LandingPage() {
+function DefaultPage() {
   const navigate = useNavigate();
-
-  const handleStartClick = () => {
-    navigate("/signup");
-  };
 
   return (
     <BackgroundLayout>
@@ -29,7 +25,7 @@ function LandingPage() {
         <div>
           <button
             className="w-40 bg-white text-black text-lg font-bold py-2 px-4 rounded-2xl border-2 border-black mt-3  hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
-            onClick={handleStartClick}
+            onClick={() => navigate("/landing")}
           >
             MAGSIMULA
           </button>
@@ -39,4 +35,4 @@ function LandingPage() {
   );
 }
 
-export default LandingPage;
+export default DefaultPage;

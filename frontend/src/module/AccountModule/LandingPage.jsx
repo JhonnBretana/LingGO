@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import Logo from "../../assets/LingGO Logo.png";
 
-function SigninPage() {
+function LandingPage() {
   const navigate = useNavigate();
 
   return (
@@ -21,9 +21,9 @@ function SigninPage() {
             MAGSIMULA
           </button>
           <button
-          onClick={() => navigate("/signin")}
-          className="w-70 bg-white text-black text-sm font-bold py-3 px-4 rounded-2xl border-2 border-black mt-3 hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200">
-
+            onClick={() => navigate("/signin")}
+            className="w-70 bg-white text-black text-sm font-bold py-3 px-4 rounded-2xl border-2 border-black mt-3 hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
+          >
             MAG SIGNIN SA ACCOUNT KO
           </button>
         </div>
@@ -32,4 +32,4 @@ function SigninPage() {
   );
 }
 
-export default SigninPage;
+export default LandingPage;
