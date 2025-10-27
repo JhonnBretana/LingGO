@@ -7,8 +7,7 @@ function StartPage1() {
   return (
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
-        <div className="mb-1"></div>
-        <svg
+        {/* <svg
           viewBox="0 0 400 400"
           width="500"
           height="400"
@@ -36,17 +35,27 @@ function StartPage1() {
               Kaibigan, Kumusta ka?
             </textPath>
           </text>
-        </svg>
+        </svg> */}
+        <div>
+          <p
+            className="text-2xl text-white text-shadow-md font-extrabold"
+            style={{
+              WebkitTextStroke: "0.5px black",
+            }}
+          >
+            Kaibigan, Kamusta Ka?
+          </p>
+        </div>
         <div>
           <img className="h-50 w-50" src={Logo} alt="LingGO Logo" />
         </div>
         <div
           className="relative flex justify-center items-center"
-          style={{ height: "160px", width: "280px" }}
+          style={{ height: "150px", width: "270px" }}
         >
-          <img className="h-60 w-100" src={TextBubble} alt="Text Bubble" />
+          <img className="h-55 w-100" src={TextBubble} alt="Text Bubble" />
           <div
-            className="absolute inset-0 flex items-center justify-center px-8 pt-6 text-black font-bold text-xl"
+            className="absolute inset-0 flex items-center justify-center px-10 pt-7 text-black font-bold text-xl"
             style={{
               pointerEvents: "none", // ensures image is clickable if needed
               textAlign: "center",
