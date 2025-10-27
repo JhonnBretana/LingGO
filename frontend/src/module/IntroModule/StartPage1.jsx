@@ -1,33 +1,42 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import Logo from "../../assets/LingGO Logo.png";
 import TextBubble from "../../assets/Text Bubble.png";
 
-function WelcomePage() {
-  const navigate = useNavigate();
-
+function StartPage1() {
   return (
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
-        <div className="mb-1">
-          <p
-            className="text-5xl text-white text-shadow-md font-extrabold mb-3"
-            style={{
-              WebkitTextStroke: "1px black",
-            }}
+        <div className="mb-1"></div>
+        <svg
+          viewBox="0 0 400 400"
+          width="500"
+          height="400"
+          className="absolute top-25 "
+          style={{ pointerEvents: "none" }}
+        >
+          <defs>
+            <path
+              id="curve"
+              d="M 75, 200 A 120, 120 0 0, 1 325, 200"
+              fill="none"
+            />
+            <filter id="textShadow">
+              <feDropShadow dx="5" dy="5" stdDeviation="5" floodOpacity="0.5" />
+            </filter>
+          </defs>
+          <text
+            fontSize="30"
+            fontWeight="bold"
+            fill="white"
+            filter="url(#textShadow)"
+            style={{ WebkitTextStroke: "0.7px black" }}
           >
-            JUAN
-          </p>
-          <p
-            className="text-2xl text-white text-shadow-md font-extrabold"
-            style={{
-              WebkitTextStroke: "0.7px black",
-            }}
-          >
-            Maligayang Pagbabalik!
-          </p>
-        </div>
+            <textPath href="#curve" startOffset="50%" textAnchor="middle">
+              Kaibigan, Kumusta ka?
+            </textPath>
+          </text>
+        </svg>
         <div>
           <img className="h-50 w-50" src={Logo} alt="LingGO Logo" />
         </div>
@@ -35,7 +44,7 @@ function WelcomePage() {
           className="relative flex justify-center items-center"
           style={{ height: "160px", width: "280px" }}
         >
-          <img className="h-45 w-80" src={TextBubble} alt="Text Bubble" />
+          <img className="h-60 w-100" src={TextBubble} alt="Text Bubble" />
           <div
             className="absolute inset-0 flex items-center justify-center px-8 pt-6 text-black font-bold text-xl"
             style={{
@@ -44,7 +53,7 @@ function WelcomePage() {
               lineHeight: "1.2",
             }}
           >
-            Sagutan muna ang ilang detalye para makapagpatuloy.
+            Bago tayo magsimula may ilang bagay lamang akong nais malaman.{" "}
           </div>
         </div>
         <div className="mt-5 pt-5">
@@ -60,4 +69,4 @@ function WelcomePage() {
   );
 }
 
-export default WelcomePage;
+export default StartPage1;

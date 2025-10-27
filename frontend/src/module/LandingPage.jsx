@@ -7,7 +7,7 @@ function LandingPage() {
   const navigate = useNavigate();
 
   const handleStartClick = () => {
-    navigate("/signin");
+    navigate("/signup");
   };
 
   return (
