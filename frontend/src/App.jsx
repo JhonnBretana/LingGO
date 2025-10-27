@@ -1,12 +1,13 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import LandingPage from "./module/LandingPage.jsx";
+import DefaultPage from "./module/DefaultPage.jsx";
+import LandingPage from "./module/AccountModule/LandingPage.jsx";
 
 // Account Module
-import SignUpPage from "./module/AccountModule/SignUpPage.jsx";
+// import SignUpPage from "./module/AccountModule/SignUpPage.jsx";
 import WelcomePage from "./module/AccountModule/WelcomePage.jsx";
 
-import SigninDetails from "./module/AccountModule/SigninDetails.jsx";
+import SigninDetails from "./module/AccountModule/SigninPage.jsx";
 import CebuanoKnowledge from "./module/AccountModule/Lawak.jsx";
 import LanguagePreference from "./module/AccountModule/LanguagePreference.jsx";
 import CebuanoMotivation from "./module/AccountModule/CebuanoMotivation.jsx";
