@@ -13,6 +13,7 @@ import StartPage1 from "./module/IntroModule/StartPage1.jsx";
 import AgeDetail from "./module/IntroModule/AgeDetail.jsx";
 import NameDetail from "./module/IntroModule/NameDetail.jsx";
 import GradeSectionDetail from "./module/IntroModule/GradeSectionDetail.jsx";
+import SelectLanguage from "./module/IntroModule/SelectLanguage.jsx";
 
 
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/agedetail" element={<AgeDetail />} />
         <Route path="/namedetail" element={<NameDetail />} />
         <Route path="/gradesectiondetail" element={<GradeSectionDetail />} />
+        <Route path="/selectlanguage" element={<SelectLanguage />} />
         
       </Routes>
     </div>
