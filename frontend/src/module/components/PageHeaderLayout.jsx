@@ -9,7 +9,7 @@ function PageHeaderLayout({}) {
       <div className="flex items-center gap-4 h-10">
         <div>
           {/* fixed: use w-auto and object-contain to preserve aspect ratio */}
-          <img src={Logo} alt="" className="h-20 w-auto object-contain" />
+          <img src={Logo} alt="" className="h-25 w-auto object-contain" />
         </div>
 
         <div>
@@ -26,7 +26,7 @@ function PageHeaderLayout({}) {
       </div>
 
       <div>
-        <img src={Star} alt="" className="h-25 w-auto object-contain" />
+        <img src={Star} alt="" className="h-15 w-auto object-contain" />
       </div>
     </div>
   );
