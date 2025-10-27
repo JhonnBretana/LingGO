@@ -7,6 +7,7 @@ import Logo from "../../assets/LingGO Logo.png";
 function SelectLanguage() {
   return (
     <BackgroundLayout>
+      
       <div className="flex flex-col items-center text-center m-3 p-3">
         <div className="mb-3">
           <img src={Logo} alt="LingGO Logo" className="h-40" />

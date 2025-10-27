@@ -3,7 +3,7 @@ import FlagBackground from "../../assets/LingGO Background.png";
 
 function BackgroundLayout({ children }) {
   return (
-    <div className="relative flex flex-col items-center justify-center h-screen">
+    <div className="relative flex flex-col w-full min-h-screen">
       {/* Background Image */}
       <img
         src={FlagBackground}
@@ -14,7 +14,7 @@ function BackgroundLayout({ children }) {
       {/* Color Overlay */}
       <div className="absolute inset-0 bg-[#ff5757] opacity-60 z-10"></div>
       {/* Page Content */}
-      <div className="relative z-20 w-full h-full flex flex-col items-center justify-center">
+      <div className="relative z-20 w-full flex flex-col">
         {children}
       </div>
     </div>

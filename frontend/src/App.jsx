@@ -15,6 +15,9 @@ import NameDetail from "./module/IntroModule/NameDetail.jsx";
 import GradeSectionDetail from "./module/IntroModule/GradeSectionDetail.jsx";
 import SelectLanguage from "./module/IntroModule/SelectLanguage.jsx";
 
+//GamePlay Module
+import Voice_SlowGame from "./module/GamePlayLvl1Module/Voice_SlowGame.jsx";
+
 
 
 
@@ -36,6 +39,9 @@ function App() {
         <Route path="/namedetail" element={<NameDetail />} />
         <Route path="/gradesectiondetail" element={<GradeSectionDetail />} />
         <Route path="/selectlanguage" element={<SelectLanguage />} />
+
+        {/*gameplay module*/}
+        <Route path="/voice_slowgame" element={<Voice_SlowGame />} />
         
       </Routes>
     </div>
