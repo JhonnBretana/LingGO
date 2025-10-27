@@ -1,15 +1,69 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import LogoStanding from "../../assets/LingoLogo Standing.png";
 import { gradeCategories } from "../../constant/grade_category";
 import { sectionCategories } from "../../constant/section_category";
+import { db } from "../../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
-function SigninDetails() {
-  const [name, setName] = useState("");
+const gradeToNumber = {
+  "Unang Baitang": "1",
+  "Ikalawang Baitang": "2",
+  "Ikatlong Baitang": "3",
+  "Ikaapat na Baitang": "4",
+  "Ika-limang Baitang": "5",
+  "Ika-anim na Baitang": "6",
+  "Ikapitong Baitang": "7",
+  "Ika-walong Baitang": "8",
+  "Ika-siyam na Baitang": "9",
+  "Ika-sampung Baitang": "10",
+};
+
+function SignUpDetails() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [section, setSection] = useState("");
   const [grade, setGrade] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const navigate = useNavigate();
 
-  const isFormComplete = name.trim() !== "" && section !== "" && grade !== "";
+  const isFormComplete =
+    firstName.trim() !== "" &&
+    lastName.trim() !== "" &&
+    section !== "" &&
+    grade !== "";
+
+  const handleSignUp = async () => {
+    if (!isFormComplete) return;
+    setLoading(true);
+
+    const username = firstName.trim();
+    const gradeNum = gradeToNumber[grade] || "";
+    const password = `${lastName.trim()}${gradeNum}${section}`;
+
+    try {
+      await addDoc(collection(db, "users"), {
+        "Unang Pangalan": firstName.trim(),
+        Apelyido: lastName.trim(),
+        Pangkat: section,
+        Baitang: grade,
+        Username: username,
+        Password: password,
+      });
+      setShowModal(true);
+      setFirstName("");
+      setLastName("");
+      setSection("");
+      setGrade("");
+    } catch (error) {
+      setErrorMsg("Error registering user: " + error.message);
+      setShowModal(true);
+    }
+    setLoading(false);
+  };
 
   return (
     <BackgroundLayout>
@@ -18,20 +72,36 @@ function SigninDetails() {
           <img className="h-60 w-60" src={LogoStanding} alt="LingGO Logo" />
         </div>
         <div className="flex flex-col gap-4 w-72 mx-auto">
-          {/* Name Input */}
+          {/* First Name Input */}
           <div className="flex flex-col items-center">
             <input
               type="text"
               placeholder="(TYPE)"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value.toUpperCase())}
               className="w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none"
             />
             <span
               className="text-white font-extrabold text-lg text-shadow-md"
               style={{ WebkitTextStroke: "0.5px black" }}
             >
-              PANGALAN
+              UNANG PANGALAN
+            </span>
+          </div>
+          {/* Last Name Input */}
+          <div className="flex flex-col items-center">
+            <input
+              type="text"
+              placeholder="(TYPE)"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value.toUpperCase())}
+              className="w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none"
+            />
+            <span
+              className="text-white font-extrabold text-lg text-shadow-md"
+              style={{ WebkitTextStroke: "0.5px black" }}
+            >
+              APELYIDO
             </span>
           </div>
           {/* Pangkat Dropdown */}
@@ -78,18 +148,45 @@ function SigninDetails() {
           </div>
         </div>
         <button
-          disabled={!isFormComplete}
-          className={`border px-4 py-3 w-50 sm:w-60 bg-white rounded-lg font-bold text-lg mt-8 transition duration-300 ${
-            isFormComplete
-              ? "hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
+          disabled={!isFormComplete || loading}
+          onClick={handleSignUp}
+          className={`w-40 bg-white text-black text-lg font-bold py-2 px-4 rounded-2xl border-2 border-black mt-5 transition-colors duration-200 ${
+            isFormComplete && !loading
+              ? "hover:bg-[#f2d919] active:bg-[#f2d919]"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
           }`}
         >
-          Magpatuloy
+          {loading ? "Loading..." : "MAGPATULOY"}
         </button>
       </div>
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-2xl p-8 shadow-2xl text-center">
+            <h2
+              className={`text-2xl font-bold mb-4 ${
+                errorMsg ? "text-red-600" : "text-green-600"
+              }`}
+            >
+              {errorMsg ? "May kaunting problema kaibigan" : "Magaling!"}
+            </h2>
+            <p className="mb-6 text-black">
+              {errorMsg ? errorMsg : "Mayroon ka ng account kaibigan."}
+            </p>
+            <button
+              onClick={() => {
+                setShowModal(false);
+                if (!errorMsg) navigate("/signin");
+              }}
+              className="bg-[#f2d919] text-black font-bold py-2 px-6 rounded-xl border-2 border-black hover:bg-yellow-400"
+            >
+              Salamat!
+            </button>
+          </div>
+        </div>
+      )}
     </BackgroundLayout>
   );
 }
 
-export default SigninDetails;
+export default SignUpDetails;
