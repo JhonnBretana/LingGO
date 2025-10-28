@@ -28,6 +28,7 @@ import DragAndDrop4ChoicesWithVoice from "./module/components/questions/DragAndD
 import SpeechMicWithVoice from "./module/components/questions/SpeechMicWithVoice.jsx";
 import Select6ChoicesWithVoiceAndSlow from "./module/components/questions/Select6ChoicesWithVoiceAndSlow.jsx";
 import MatchingWordsWithWords from "./module/components/questions/MatchingWordsWithWords.jsx";
+import MatchingWordsWithImage from "./module/components/questions/MatchingWordsWithImage.jsx";
 
 function App() {
   return (
@@ -66,6 +67,10 @@ function App() {
         <Route
           path="/matching-words-with-words"
           element={<MatchingWordsWithWords />}
+        />
+        <Route
+          path="/matching-words-with-image"
+          element={<MatchingWordsWithImage />}
         />
       </Routes>
     </div>
