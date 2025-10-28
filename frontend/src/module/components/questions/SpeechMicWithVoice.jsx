@@ -3,10 +3,12 @@ import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Mic, Volume2 } from "lucide-react";
 import Microphone from "../../../assets/Microphone.png";
+import PageHeaderLayout from "../../components/PageHeaderLayout";
 
 function SpeechMicWithVoice() {
   return (
     <BackgroundLayout>
+      <PageHeaderLayout />
       <div className="flex flex-col items-center justify-center min-h-screen gap-5">
         <div className="relative w-80 mb-4">
           <img src={QuestionsBar} alt="Questions Bar" className="w-80" />

@@ -3,10 +3,12 @@ import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Mic, Volume2 } from "lucide-react";
 import ChickenLitte from "../../../assets/Chickenlittle.png";
+import PageHeaderLayout from "../../components/PageHeaderLayout";
 
 function QuestionWith3Choices() {
   return (
     <BackgroundLayout>
+      <PageHeaderLayout />
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="relative w-80 mb-4">
           <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
