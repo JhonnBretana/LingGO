@@ -29,6 +29,7 @@ import SpeechMicWithVoice from "./module/components/questions/SpeechMicWithVoice
 import Select6ChoicesWithVoiceAndSlow from "./module/components/questions/Select6ChoicesWithVoiceAndSlow.jsx";
 import MatchingWordsWithWords from "./module/components/questions/MatchingWordsWithWords.jsx";
 import MatchingWordsWithImage from "./module/components/questions/MatchingWordsWithImage.jsx";
+import QuestionWith3Choices from "./module/components/questions/QuestionWith3Choices.jsx";
 
 function App() {
   return (
@@ -71,6 +72,10 @@ function App() {
         <Route
           path="/matching-words-with-image"
           element={<MatchingWordsWithImage />}
+        />
+        <Route
+          path="/question-with-3-choices"
+          element={<QuestionWith3Choices />}
         />
       </Routes>
     </div>
