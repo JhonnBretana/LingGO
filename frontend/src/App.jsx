@@ -30,6 +30,7 @@ import Select6ChoicesWithVoiceAndSlow from "./module/components/questions/Select
 import MatchingWordsWithWords from "./module/components/questions/MatchingWordsWithWords.jsx";
 import MatchingWordsWithImage from "./module/components/questions/MatchingWordsWithImage.jsx";
 import QuestionWith3Choices from "./module/components/questions/QuestionWith3Choices.jsx";
+import QuestionWith4Choices from "./module/components/questions/QuestionWith4Choices.jsx";
 
 function App() {
   return (
@@ -76,6 +77,10 @@ function App() {
         <Route
           path="/question-with-3-choices"
           element={<QuestionWith3Choices />}
+        />
+        <Route
+          path="/question-with-4-choices"
+          element={<QuestionWith4Choices />}
         />
       </Routes>
     </div>
