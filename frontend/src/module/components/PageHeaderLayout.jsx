@@ -1,11 +1,10 @@
-// ...existing code...
 import React from "react";
 import Logo from "../../assets/LingGO Logo.png";
 import Star from "../../assets/star.png";
 
 function PageHeaderLayout({}) {
   return (
-    <div className="flex justify-center gap-15 items-center h-10 py-10 px-1 mt-2">
+    <div className="flex justify-between gap-15 items-center h-10 py-10 px-1 mt-2">
       <div className="flex items-center gap-4 h-10">
         <div>
           {/* fixed: use w-auto and object-contain to preserve aspect ratio */}

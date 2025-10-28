@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import PageHeaderLayout from "../components/PageHeaderLayout";
 import Speaker from "../../assets/speaker.png";
@@ -7,7 +8,9 @@ import { SOUND_DATA } from "../../constant/sound_data";
 
 function Voice_SlowGame() {
   const [selectedSound, setSelectedSound] = useState(null);
+  const [userInput, setUserInput] = useState("");
   const audioRef = useRef(null);
+  const navigate = useNavigate();
 
   const handlePlaySound = (sound) => {
     setSelectedSound(sound.id);
@@ -44,6 +47,8 @@ function Voice_SlowGame() {
           <input
             type="text"
             placeholder="(TYPE)"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
             className="w-full bg-white text-black text-center font-bold py-2 rounded-full border-3 border-black text-lg focus:outline-none"
           />
         </div>
