@@ -31,6 +31,10 @@ import MatchingWordsWithWords from "./module/components/questions/MatchingWordsW
 import MatchingWordsWithImage from "./module/components/questions/MatchingWordsWithImage.jsx";
 import QuestionWith3Choices from "./module/components/questions/QuestionWith3Choices.jsx";
 import QuestionWith4Choices from "./module/components/questions/QuestionWith4Choices.jsx";
+//GamePlay Module
+import Voice_SlowGame from "./module/GamePlayLvl1Module/Voice_SlowGame.jsx";
+import Choice_Voice from "./module/GamePlayLvl1Module/Choice_Voice.jsx";
+import Voice_Character from "./module/GamePlayLvl1Module/Voice_Character.jsx";
 
 function App() {
   return (
@@ -82,6 +86,10 @@ function App() {
           path="/question-with-4-choices"
           element={<QuestionWith4Choices />}
         />
+        {/*gameplay module*/}
+        <Route path="/voice_slowgame" element={<Voice_SlowGame />} />
+        <Route path="/choice_voice" element={<Choice_Voice />} />
+        <Route path="/voice_character" element={<Voice_Character />} />
       </Routes>
     </div>
   );

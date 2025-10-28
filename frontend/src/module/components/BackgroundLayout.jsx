@@ -14,9 +14,7 @@ function BackgroundLayout({ children }) {
       {/* Color Overlay */}
       <div className="absolute inset-0 bg-[#ff5757] opacity-60 z-10"></div>
       {/* Page Content */}
-      <div className="relative z-20 w-full h-full flex flex-col items-center justify-center">
-        {children}
-      </div>
+      <div className="relative z-20 w-full flex flex-col">{children}</div>
     </div>
   );
 }
