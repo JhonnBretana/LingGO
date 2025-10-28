@@ -17,11 +17,11 @@ function Voice_Character() {
         </div>
 
         <div>
-            <img src={Char} alt="" />
+          <img src={Char} alt="" />
         </div>
 
-        <VoiceCharacterGrid 
-          selectedVoice={selectedVoice} 
+        <VoiceCharacterGrid
+          selectedVoice={selectedVoice}
           onSelectVoice={setSelectedVoice}
         />
       </div>

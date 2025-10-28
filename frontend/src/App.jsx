@@ -31,6 +31,10 @@ import MatchingWordsWithWords from "./module/components/questions/MatchingWordsW
 import MatchingWordsWithImage from "./module/components/questions/MatchingWordsWithImage.jsx";
 import QuestionWith3Choices from "./module/components/questions/QuestionWith3Choices.jsx";
 import QuestionWith4Choices from "./module/components/questions/QuestionWith4Choices.jsx";
+import TypeWithVoiceAndSlow from "./module/components/questions/TypeWithVoiceAndSlow.jsx";
+import SixChoicesWithVoice from "./module/components/questions/SixChoicesWithVoice.jsx";
+import FourChoicesWithCharacterAndVoice from "./module/components/questions/FourChoicesWithCharacterAndVoice.jsx";
+
 //GamePlay Module
 import Voice_SlowGame from "./module/GamePlayLvl1Module/Voice_SlowGame.jsx";
 import Choice_Voice from "./module/GamePlayLvl1Module/Choice_Voice.jsx";
@@ -86,6 +90,19 @@ function App() {
           path="/question-with-4-choices"
           element={<QuestionWith4Choices />}
         />
+        <Route
+          path="/type-with-voice-and-slow"
+          element={<TypeWithVoiceAndSlow />}
+        />
+        <Route
+          path="/six-choices-with-voice"
+          element={<SixChoicesWithVoice />}
+        />
+        <Route
+          path="/four-choices-with-character-and-voice"
+          element={<FourChoicesWithCharacterAndVoice />}
+        />
+
         {/*gameplay module*/}
         <Route path="/voice_slowgame" element={<Voice_SlowGame />} />
         <Route path="/choice_voice" element={<Choice_Voice />} />
