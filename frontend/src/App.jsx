@@ -25,6 +25,7 @@ import SelectLanguage from "./module/IntroModule/SelectLanguage.jsx";
 
 // Questions
 import DragAndDrop4ChoicesWithVoice from "./module/components/questions/DragAndDrop4ChoicesWithVoice.jsx";
+import SpeechMicWithVoice from "./module/components/questions/SpeechMicWithVoice.jsx";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           path="/drag-and-drop-4-choices-with-voice"
           element={<DragAndDrop4ChoicesWithVoice />}
         />
+        <Route path="/speech-mic-with-voice" element={<SpeechMicWithVoice />} />
       </Routes>
     </div>
   );
