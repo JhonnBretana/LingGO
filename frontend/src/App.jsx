@@ -27,6 +27,7 @@ import SelectLanguage from "./module/IntroModule/SelectLanguage.jsx";
 import DragAndDrop4ChoicesWithVoice from "./module/components/questions/DragAndDrop4ChoicesWithVoice.jsx";
 import SpeechMicWithVoice from "./module/components/questions/SpeechMicWithVoice.jsx";
 import Select6ChoicesWithVoiceAndSlow from "./module/components/questions/Select6ChoicesWithVoiceAndSlow.jsx";
+import MatchingWordsWithWords from "./module/components/questions/MatchingWordsWithWords.jsx";
 
 function App() {
   return (
@@ -61,6 +62,10 @@ function App() {
         <Route
           path="/select-6-choices-with-voice-and-slow"
           element={<Select6ChoicesWithVoiceAndSlow />}
+        />
+        <Route
+          path="/matching-words-with-words"
+          element={<MatchingWordsWithWords />}
         />
       </Routes>
     </div>
