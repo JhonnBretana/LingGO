@@ -23,6 +23,9 @@ import NameDetail from "./module/IntroModule/NameDetail.jsx";
 import GradeSectionDetail from "./module/IntroModule/GradeSectionDetail.jsx";
 import SelectLanguage from "./module/IntroModule/SelectLanguage.jsx";
 
+// Questions
+import DragAndDrop4ChoicesWithVoice from "./module/components/questions/DragAndDrop4ChoicesWithVoice.jsx";
+
 function App() {
   return (
     <div>
@@ -46,6 +49,12 @@ function App() {
         <Route path="/namedetail" element={<NameDetail />} />
         <Route path="/gradesectiondetail" element={<GradeSectionDetail />} />
         <Route path="/selectlanguage" element={<SelectLanguage />} />
+
+        {/*questions*/}
+        <Route
+          path="/drag-and-drop-4-choices-with-voice"
+          element={<DragAndDrop4ChoicesWithVoice />}
+        />
       </Routes>
     </div>
   );
