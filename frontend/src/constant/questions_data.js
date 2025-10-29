@@ -108,13 +108,14 @@ const questions = [
     voice: null,
   },
   {
+    // Select 6 Choices With Voice And Slow Sample Question
     id: 8,
     type: "Select6ChoicesWithVoiceAndSlow",
-    question: "Select the correct animal.",
-    choices: ["Dog", "Cat", "Cow", "Pig", "Horse", "Sheep"],
-    correctAnswer: "Dog",
+    question: "Pindutin and maririning mo.",
+    choices: ["Tuo", "Sud-an", "Balay", "Utan", "Uwel", "Wala"],
+    correctAnswer: "Balay",
     image: null,
-    voice: "/assets/audio/dog.mp3",
+    voice: "/assets/Voice/Words/bahay.mp3",
   },
   {
     id: 9,
