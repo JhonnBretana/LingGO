@@ -40,6 +40,9 @@ import Voice_SlowGame from "./module/GamePlayLvl1Module/Voice_SlowGame.jsx";
 import Choice_Voice from "./module/GamePlayLvl1Module/Choice_Voice.jsx";
 import Voice_Character from "./module/GamePlayLvl1Module/Voice_Character.jsx";
 
+//Levels
+import Level1 from "./module/Level1Questions.jsx";
+
 function App() {
   return (
     <div>
@@ -107,6 +110,9 @@ function App() {
         <Route path="/voice_slowgame" element={<Voice_SlowGame />} />
         <Route path="/choice_voice" element={<Choice_Voice />} />
         <Route path="/voice_character" element={<Voice_Character />} />
+
+        {/*levels*/}
+        <Route path="/level1" element={<Level1 />} />
       </Routes>
     </div>
   );
