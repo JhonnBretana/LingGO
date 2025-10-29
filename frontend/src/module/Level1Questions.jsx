@@ -44,6 +44,8 @@ function Level1Questions() {
         return <TypeWithVoiceAndSlow question={question} />;
       case "SixChoicesWithVoice":
         return <SixChoicesWithVoice question={question} />;
+      case "FourChoicesWithCharacterAndVoice":
+        return <FourChoicesWithCharacterAndVoice question={question} />;
       // Add cases for other types here
       default:
         return <div>Unknown question type</div>;

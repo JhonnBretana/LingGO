@@ -33,12 +33,17 @@ const questions = [
   },
   {
     id: 3,
-    type: "QuestionWith3Choices",
-    question: "Which is a fruit?",
-    choices: ["Carrot", "Apple", "Potato"],
-    correctAnswer: "Apple",
+    type: "FourChoicesWithCharacterAndVoice",
+    question: null,
+    choices: [
+      { value: "Napulo", voice: "/assets/Voice/Number/sampo.mp3" },
+      { value: "Usa", voice: "/assets/Voice/Number/isa.mp3" },
+      { value: "Unom", voice: "/assets/Voice/Number/anim.mp3" },
+      { value: "Tulo", voice: "/assets/Voice/Number/tatlo.mp3" },
+    ],
+    correctAnswer: "Tulo",
     image: null,
-    voice: "/assets/audio/apple.mp3",
+    voice: null,
   },
   {
     id: 4,
