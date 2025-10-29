@@ -57,6 +57,7 @@ const questions = [
     voice: null,
   },
   {
+    //Matching Words With Image Sample Question
     id: 5,
     type: "MatchingWordsWithImage",
     question: null,
@@ -78,13 +79,18 @@ const questions = [
     voice: null,
   },
   {
+    // Question With 3 Choices Sample Question
     id: 6,
-    type: "QuestionWith4Choices",
-    question: "Which is a vegetable?",
-    choices: ["Banana", "Carrot", "Apple", "Mango"],
-    correctAnswer: "Carrot",
+    type: "QuestionWith3Choices",
+    question: "Alin sa mga sumusunod ang Kanan?",
+    choices: [
+      { image: "/assets/ImageChoices/Bata.png", value: "Tuo" },
+      { image: "/assets/ImageChoices/Bigas.png", value: "Bugas" },
+      { image: "/assets/ImageChoices/Kaliwa.png", value: "Wala" },
+    ],
+    correctAnswer: "Tuo",
     image: null,
-    voice: "/assets/audio/carrot.mp3",
+    voice: null,
   },
   {
     id: 7,
