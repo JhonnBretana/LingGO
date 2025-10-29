@@ -47,6 +47,7 @@ const questions = [
     voice: null,
   },
   {
+    //Speech Mic With Voice Sample Question
     id: 4,
     type: "SpeechMicWithVoice",
     question: null,
@@ -57,12 +58,24 @@ const questions = [
   },
   {
     id: 5,
-    type: "DragAndDrop4ChoicesWithVoice",
-    question: "Drag the correct answer.",
-    choices: ["Red", "Blue", "Green", "Yellow"],
-    correctAnswer: "Blue",
+    type: "MatchingWordsWithImage",
+    question: null,
+    choices: [
+      { word: "Sud-an", image: "/assets/ImageChoices/Gulay.png" },
+      { word: "Bugas", image: "/assets/ImageChoices/Kanin.png" },
+      { word: "Kan on", image: "/assets/ImageChoices/Ulam.png" },
+      { word: "Uwel", image: "/assets/ImageChoices/Bigas.png" },
+      { word: "Utan", image: "/assets/ImageChoices/Mantika.png" },
+    ],
+    correctAnswer: [
+      { word: "Utan", image: "/assets/ImageChoices/Gulay.png" },
+      { word: "Kan on", image: "/assets/ImageChoices/Kanin.png" },
+      { word: "Sud-an", image: "/assets/ImageChoices/Ulam.png" },
+      { word: "Bugas", image: "/assets/ImageChoices/Bigas.png" },
+      { word: "Uwel", image: "/assets/ImageChoices/Mantika.png" },
+    ],
     image: null,
-    voice: "/assets/audio/blue.mp3",
+    voice: null,
   },
   {
     id: 6,

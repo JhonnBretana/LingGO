@@ -48,6 +48,8 @@ function Level1Questions() {
         return <FourChoicesWithCharacterAndVoice question={question} />;
       case "SpeechMicWithVoice":
         return <SpeechMicWithVoice question={question} />;
+      case "MatchingWordsWithImage":
+        return <MatchingWordsWithImage question={question} />;
       // Add cases for other types here
       default:
         return <div>Unknown question type</div>;
