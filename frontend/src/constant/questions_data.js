@@ -1,28 +1,35 @@
+import { KanbanIcon } from "lucide-react";
+
 const questions = [
   {
+    // Type With Voice and Slow Sample Question (Sundan niyo nalang for other questions)
     id: 1,
     type: "TypeWithVoiceAndSlow",
     question: null,
     image: null,
     choices: null,
     correctAnswer: "Dalawa",
-    voice: "public/assets/Voice/Number/dalawa.mp3",
+    voice: "/assets/Voice/Number/dalawa.mp3",
   },
   {
+    // Six Choices With Voice Sample Question
     id: 2,
     type: "SixChoicesWithVoice",
-    question: "What is the capital of Cebu?",
+    question: "Kanin",
     choices: [
-      "Cebu City",
-      "Mandaue",
-      "Lapu-Lapu",
-      "Talisay",
-      "Carcar",
-      "Danao",
+      { image: "/assets/ImageChoices/Gulay.png", value: "Utan" },
+      { image: "/assets/ImageChoices/Kanin.png", value: "Kan on" },
+      { image: "/assets/ImageChoices/Mantika.png", value: "Uwel" },
+      { image: "/assets/ImageChoices/Bata.png", value: "Tuo" },
+      { image: "/assets/ImageChoices/Bahay.png", value: "Balay" },
+      { image: "/assets/ImageChoices/Pera.png", value: "Kwarta" },
     ],
-    correctAnswer: "Cebu City",
+    correctAnswer: {
+      image: "/assets/ImageChoices/Kanin.png",
+      value: "Kan on",
+    },
     image: null,
-    voice: "/assets/audio/cebu_city.mp3",
+    voice: "/assets/Voice/Words/kanin.mp3",
   },
   {
     id: 3,

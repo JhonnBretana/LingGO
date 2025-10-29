@@ -3,7 +3,18 @@ import BackgroundLayout from "../module/components/BackgroundLayout.jsx";
 import QuestionsBar from "../assets/clickbar.png";
 import PageHeaderLayout from "../module/components/PageHeaderLayout";
 import questions from "../constant/questions_data.js";
+
+// question components
+import DragAndDrop4ChoicesWithVoice from "./components/questions/DragAndDrop4ChoicesWithVoice.jsx";
+import SpeechMicWithVoice from "./components/questions/SpeechMicWithVoice.jsx";
+import Select6ChoicesWithVoiceAndSlow from "./components/questions/Select6ChoicesWithVoiceAndSlow.jsx";
+import MatchingWordsWithWords from "./components/questions/MatchingWordsWithWords.jsx";
+import MatchingWordsWithImage from "./components/questions/MatchingWordsWithImage.jsx";
+import QuestionWith3Choices from "./components/questions/QuestionWith3Choices.jsx";
+import QuestionWith4Choices from "./components/questions/QuestionWith4Choices.jsx";
 import TypeWithVoiceAndSlow from "./components/questions/TypeWithVoiceAndSlow.jsx";
+import SixChoicesWithVoice from "./components/questions/SixChoicesWithVoice.jsx";
+import FourChoicesWithCharacterAndVoice from "./components/questions/FourChoicesWithCharacterAndVoice.jsx";
 
 function groupIntoRows(arr, itemsPerRow = 2) {
   const rows = [];
@@ -25,12 +36,14 @@ function Level1Questions() {
   const paginatedQuestions = questions.slice(startIdx, endIdx);
   const questionRows = groupIntoRows(paginatedQuestions, 2);
 
-  // Helper to render the correct question component
+  // Ito yung mga questions component renderer
   function renderQuestionComponent(question) {
     if (!question) return null;
     switch (question.type) {
       case "TypeWithVoiceAndSlow":
         return <TypeWithVoiceAndSlow question={question} />;
+      case "SixChoicesWithVoice":
+        return <SixChoicesWithVoice question={question} />;
       // Add cases for other types here
       default:
         return <div>Unknown question type</div>;

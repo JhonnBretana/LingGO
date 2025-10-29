@@ -86,7 +86,7 @@ function TypeWithVoiceAndSlow({ question }) {
             Submit
           </button>
         </form>
-        {feedback && <div className="text-lg font-bold mt-2">{feedback}</div>}
+        {feedback && <div className="text-lg font-bold my-2">{feedback}</div>}
         {/* Hidden audio element for playback */}
         {question?.voice && (
           <audio
