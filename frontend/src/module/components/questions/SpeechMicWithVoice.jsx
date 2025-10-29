@@ -1,11 +1,68 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
-import { Mic, Volume2 } from "lucide-react";
+import { Volume2 } from "lucide-react";
 import Microphone from "../../../assets/Microphone.png";
 import PageHeaderLayout from "../../components/PageHeaderLayout";
 
-function SpeechMicWithVoice() {
+function SpeechMicWithVoice({ question }) {
+  const [isRecording, setIsRecording] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const [showSubmit, setShowSubmit] = useState(false);
+  const recognitionRef = useRef(null);
+
+  const handleMicClick = () => {
+    if (
+      !("webkitSpeechRecognition" in window || "SpeechRecognition" in window)
+    ) {
+      alert("Speech recognition not supported in this browser.");
+      return;
+    }
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    // If already recording, stop
+    if (isRecording && recognitionRef.current) {
+      recognitionRef.current.stop();
+      return;
+    }
+
+    // Start recording
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setIsRecording(true);
+      setTranscript("");
+      setShowSubmit(false);
+    };
+    recognition.onresult = (event) => {
+      const result = event.results[0][0].transcript;
+      setTranscript(result);
+      setShowSubmit(true);
+    };
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+    recognition.onerror = () => {
+      setIsRecording(false);
+      setShowSubmit(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // You can handle the transcript here (send to backend, etc.)
+    setShowSubmit(false);
+    setTranscript("");
+    // alert("Submitted: " + transcript);
+  };
+
   return (
     <BackgroundLayout>
       <PageHeaderLayout />
@@ -13,22 +70,49 @@ function SpeechMicWithVoice() {
         <div className="relative w-80 mb-4">
           <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xl font-semibold">Pakinggan at Bigkasin</span>
+            <span className="text-xl font-semibold">
+              {question?.question || "Pakinggan at Bigkasin"}
+            </span>
           </div>
         </div>
-        <div className="flex items-center gap-4 my-4">
+        {/* <div className="flex items-center gap-4 my-4">
           <Volume2 className="text-white" size={60} />
-          <p className="text-4xl font-semibold text-white">PERA</p>
-        </div>
-        {/* <div>
-          <Mic className="text-white" size={120} />
+          <p className="text-4xl font-semibold text-white">
+            {question?.correctAnswer || ""}
+          </p>
         </div> */}
         <div>
-          <img className="my-5" src={Microphone} alt="Microphone" />
+          <img
+            className={`my-5 cursor-pointer ${
+              isRecording ? "animate-pulse" : ""
+            }`}
+            src={Microphone}
+            alt="Microphone"
+            onClick={handleMicClick}
+            style={{ filter: isRecording ? "grayscale(0%)" : "grayscale(40%)" }}
+          />
           <p className="text-lg font-medium text-white">
-            I-tap at simulang magsalita
+            {isRecording
+              ? "Nagre-record... Magsalita na!"
+              : "I-tap at simulang magsalita"}
           </p>
         </div>
+        {transcript && (
+          <div className="text-white text-lg font-bold mt-2 text-center">
+            <span>Sinabi mo: </span>
+            <span className="bg-yellow-200 text-black px-2 rounded">
+              {transcript}
+            </span>
+          </div>
+        )}
+        {showSubmit && (
+          <button
+            className="w-50 mt-5 px-4 py-2 bg-[#f2d919] border-3 border-black rounded-xl font-bold"
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+        )}
       </div>
     </BackgroundLayout>
   );

@@ -32,6 +32,7 @@ const questions = [
     voice: "/assets/Voice/Words/kanin.mp3",
   },
   {
+    // Four Choices With Character And Voice Sample Question
     id: 3,
     type: "FourChoicesWithCharacterAndVoice",
     question: null,
@@ -47,15 +48,12 @@ const questions = [
   },
   {
     id: 4,
-    type: "MatchingWordsWithImage",
-    question: "Match the word to the image.",
-    choices: [
-      { word: "Dog", image: "/assets/images/dog.png" },
-      { word: "Cat", image: "/assets/images/cat.png" },
-    ],
-    correctAnswer: "Dog",
-    image: "/assets/images/dog.png",
-    voice: "/assets/audio/dog.mp3",
+    type: "SpeechMicWithVoice",
+    question: null,
+    choices: null,
+    correctAnswer: null,
+    image: null,
+    voice: null,
   },
   {
     id: 5,

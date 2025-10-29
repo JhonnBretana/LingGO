@@ -46,12 +46,13 @@ function Level1Questions() {
         return <SixChoicesWithVoice question={question} />;
       case "FourChoicesWithCharacterAndVoice":
         return <FourChoicesWithCharacterAndVoice question={question} />;
+      case "SpeechMicWithVoice":
+        return <SpeechMicWithVoice question={question} />;
       // Add cases for other types here
       default:
         return <div>Unknown question type</div>;
     }
   }
-
   if (selectedQuestion) {
     return (
       <BackgroundLayout>
