@@ -3,6 +3,7 @@ import BackgroundLayout from "../module/components/BackgroundLayout.jsx";
 import QuestionsBar from "../assets/clickbar.png";
 import PageHeaderLayout from "../module/components/PageHeaderLayout";
 import questions from "../constant/questions_data.js";
+import TypeWithVoiceAndSlow from "./components/questions/TypeWithVoiceAndSlow.jsx";
 
 function groupIntoRows(arr, itemsPerRow = 2) {
   const rows = [];
@@ -16,12 +17,41 @@ const QUESTIONS_PER_PAGE = 10;
 
 function Level1Questions() {
   const [page, setPage] = useState(1);
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
   const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
 
   const startIdx = (page - 1) * QUESTIONS_PER_PAGE;
   const endIdx = startIdx + QUESTIONS_PER_PAGE;
   const paginatedQuestions = questions.slice(startIdx, endIdx);
   const questionRows = groupIntoRows(paginatedQuestions, 2);
+
+  // Helper to render the correct question component
+  function renderQuestionComponent(question) {
+    if (!question) return null;
+    switch (question.type) {
+      case "TypeWithVoiceAndSlow":
+        return <TypeWithVoiceAndSlow question={question} />;
+      // Add cases for other types here
+      default:
+        return <div>Unknown question type</div>;
+    }
+  }
+
+  if (selectedQuestion) {
+    return (
+      <BackgroundLayout>
+        {renderQuestionComponent(selectedQuestion)}
+        <div className="flex justify-center mt-4">
+          <button
+            className="mb-2 px-4 py-2 bg-white font-medium rounded-xl border-black border-2"
+            onClick={() => setSelectedQuestion(null)}
+          >
+            Back to Questions
+          </button>
+        </div>
+      </BackgroundLayout>
+    );
+  }
 
   return (
     <BackgroundLayout>
@@ -37,15 +67,16 @@ function Level1Questions() {
           {questionRows.map((row, rowIdx) => (
             <div
               key={rowIdx}
-              className="flex flex-row gap-3 items-center justify-center mt-2"
+              className="flex flex-row gap-3 items-center justify-center mt-3"
             >
               {row.map((q) => (
-                <div
+                <button
                   key={q.id}
-                  className="w-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-xl border-2"
+                  className="w-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-xl border-2 hover:bg-orange-200"
+                  onClick={() => setSelectedQuestion(q)}
                 >
                   Question {q.id}
-                </div>
+                </button>
               ))}
             </div>
           ))}

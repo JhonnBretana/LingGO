@@ -2,11 +2,11 @@ const questions = [
   {
     id: 1,
     type: "TypeWithVoiceAndSlow",
-    question: "Type the word you hear.",
+    question: null,
     image: null,
     choices: null,
-    correctAnswer: "Mango",
-    voice: "/assets/audio/mango.mp3",
+    correctAnswer: "Dalawa",
+    voice: "public/assets/Voice/Number/dalawa.mp3",
   },
   {
     id: 2,
