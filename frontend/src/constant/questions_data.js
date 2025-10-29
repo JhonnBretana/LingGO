@@ -118,16 +118,26 @@ const questions = [
     voice: "/assets/Voice/Words/bahay.mp3",
   },
   {
+    // Matching Words With Words Sample Question
     id: 9,
     type: "MatchingWordsWithWords",
     question: "Match the words.",
     choices: [
-      { word1: "Sun", word2: "Adlaw" },
-      { word1: "Moon", word2: "Buwan" },
+      { word1: "Tatlo", word2: "Siyam" },
+      { word1: "Siyam", word2: "Tulo" },
+      { word1: "Pito", word2: "Apat" },
+      { word1: "Anim", word2: "Pito" },
+      { word1: "Apat", word2: "Unom" },
     ],
-    correctAnswer: "Sun-Adlaw",
+    correctAnswer: [
+      { word1: "Tatlo", word2: "Tulo" },
+      { word1: "Siyam", word2: "Siyam" },
+      { word1: "Pito", word2: "Pito" },
+      { word1: "Anim", word2: "Unom" },
+      { word1: "Apat", word2: "Upat" },
+    ],
     image: null,
-    voice: "/assets/audio/sun.mp3",
+    voice: null,
   },
   {
     id: 10,
