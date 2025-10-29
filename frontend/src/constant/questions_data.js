@@ -93,13 +93,19 @@ const questions = [
     voice: null,
   },
   {
+    // Question with 4 Choices Sample Question
     id: 7,
-    type: "SpeechMicWithVoice",
-    question: "Say the word you hear.",
-    choices: null,
-    correctAnswer: "Hello",
+    type: "QuestionWith4Choices",
+    question: "Alin sa mga ito ang Duha?",
+    choices: [
+      { image: "/assets/ImageChoices/Two.png" },
+      { image: "/assets/ImageChoices/Four.png" },
+      { image: "/assets/ImageChoices/Eighth.png" },
+      { image: "/assets/ImageChoices/Four.png" },
+    ],
+    correctAnswer: { image: "/assets/ImageChoices/Two.png" },
     image: null,
-    voice: "/assets/audio/hello.mp3",
+    voice: null,
   },
   {
     id: 8,

@@ -52,6 +52,8 @@ function Level1Questions() {
         return <MatchingWordsWithImage question={question} />;
       case "QuestionWith3Choices":
         return <QuestionWith3Choices question={question} />;
+      case "QuestionWith4Choices":
+        return <QuestionWith4Choices question={question} />;
       // Add cases for other types here
       default:
         return <div>Unknown question type</div>;
