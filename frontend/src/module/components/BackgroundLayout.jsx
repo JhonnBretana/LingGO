@@ -3,7 +3,7 @@ import FlagBackground from "../../assets/LingGO Background.png";
 
 function BackgroundLayout({ children }) {
   return (
-    <div className="relative flex flex-col items-center justify-center">
+    <div className="relative flex flex-col items-center justify-center min-h-screen">
       {/* Background Image */}
       <img
         src={FlagBackground}
