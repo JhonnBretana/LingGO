@@ -57,8 +57,18 @@ const questions = [
     voice: null,
   },
   {
-    //Matching Words With Image Sample Question
+    //Drag And Drop 4 Choices With Voice Sample Question
     id: 5,
+    type: "DragAndDrop4ChoicesWithVoice",
+    question: "Bugas",
+    choices: ["Bigas", "Ulam", "Gulay", "Kanin"],
+    correctAnswer: "Kwarta",
+    image: null,
+    voice: "/assets/Voice/Words/bigas.mp3",
+  },
+  {
+    //Matching Words With Image Sample Question
+    id: 6,
     type: "MatchingWordsWithImage",
     question: null,
     choices: [
@@ -80,7 +90,7 @@ const questions = [
   },
   {
     // Question With 3 Choices Sample Question
-    id: 6,
+    id: 7,
     type: "QuestionWith3Choices",
     question: "Alin sa mga sumusunod ang Kanan?",
     choices: [
@@ -94,7 +104,7 @@ const questions = [
   },
   {
     // Question with 4 Choices Sample Question
-    id: 7,
+    id: 8,
     type: "QuestionWith4Choices",
     question: "Alin sa mga ito ang Duha?",
     choices: [
@@ -109,7 +119,7 @@ const questions = [
   },
   {
     // Select 6 Choices With Voice And Slow Sample Question
-    id: 8,
+    id: 9,
     type: "Select6ChoicesWithVoiceAndSlow",
     question: "Pindutin and maririning mo.",
     choices: ["Tuo", "Sud-an", "Balay", "Utan", "Uwel", "Wala"],
@@ -119,7 +129,7 @@ const questions = [
   },
   {
     // Matching Words With Words Sample Question
-    id: 9,
+    id: 10,
     type: "MatchingWordsWithWords",
     question: "Match the words.",
     choices: [
@@ -140,7 +150,7 @@ const questions = [
     voice: null,
   },
   {
-    id: 10,
+    id: 11,
     type: "FourChoicesWithCharacterAndVoice",
     question: "Who is Chicken Little?",
     choices: [
@@ -156,7 +166,7 @@ const questions = [
   // ...repeat similar structure for questions 11-30
 ];
 
-for (let i = 11; i <= 30; i++) {
+for (let i = 12; i <= 30; i++) {
   questions.push({
     id: i,
     type: "QuestionWith3Choices",

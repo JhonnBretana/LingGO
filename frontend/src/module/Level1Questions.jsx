@@ -58,6 +58,8 @@ function Level1Questions() {
         return <Select6ChoicesWithVoiceAndSlow question={question} />;
       case "MatchingWordsWithWords":
         return <MatchingWordsWithWords question={question} />;
+      case "DragAndDrop4ChoicesWithVoice":
+        return <DragAndDrop4ChoicesWithVoice question={question} />;
       // Add cases for other types here
       default:
         return <div>Unknown question type</div>;
