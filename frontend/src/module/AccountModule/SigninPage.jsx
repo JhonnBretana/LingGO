@@ -12,20 +12,21 @@ function SigninPage() {
   const [showModal, setShowModal] = useState(false);
 
   const handleSignin = async () => {
-    // Fetch all users
     const querySnapshot = await getDocs(collection(db, "users"));
-    let found = false;
+    let foundUser = null;
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       if (
         data.Username === username.trim() &&
         data.Password === password.trim()
       ) {
-        found = true;
+        foundUser = data;
       }
     });
 
-    if (found) {
+    if (foundUser) {
+      // Save user info to localStorage
+      localStorage.setItem("linggoUser", JSON.stringify(foundUser));
       navigate("/startpage1");
     } else {
       setShowModal(true);
@@ -69,7 +70,7 @@ function SigninPage() {
       </div>
       {/* Modal for incorrect credentials */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-40">
           <div className="bg-white rounded-2xl p-8 shadow-2xl text-center">
             <h2 className="text-2xl font-bold mb-4 text-red-600">
               Mali ang detalye!
