@@ -50,9 +50,9 @@ const questions = [
     //Speech Mic With Voice Sample Question
     id: 4,
     type: "SpeechMicWithVoice",
-    question: null,
+    question: "Pera",
     choices: null,
-    correctAnswer: null,
+    correctAnswer: "Kwarta",
     image: null,
     voice: null,
   },

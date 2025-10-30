@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
-import { Volume2 } from "lucide-react";
 import Microphone from "../../../assets/Microphone.png";
 import PageHeaderLayout from "../../components/PageHeaderLayout";
 
@@ -9,6 +8,7 @@ function SpeechMicWithVoice({ question }) {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [showSubmit, setShowSubmit] = useState(false);
+  const [feedback, setFeedback] = useState("");
   const recognitionRef = useRef(null);
 
   const handleMicClick = () => {
@@ -37,6 +37,7 @@ function SpeechMicWithVoice({ question }) {
       setIsRecording(true);
       setTranscript("");
       setShowSubmit(false);
+      setFeedback("");
     };
     recognition.onresult = (event) => {
       const result = event.results[0][0].transcript;
@@ -57,10 +58,19 @@ function SpeechMicWithVoice({ question }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // You can handle the transcript here (send to backend, etc.)
+    const userSpoken = (transcript || "").trim().toLowerCase();
+    const correct =
+      typeof question?.correctAnswer === "string"
+        ? question.correctAnswer
+        : question?.correctAnswer?.value || "";
+    const correctNormalized = (correct || "").trim().toLowerCase();
+
+    if (userSpoken && userSpoken === correctNormalized) {
+      setFeedback("Correct!");
+    } else {
+      setFeedback("Try again.");
+    }
     setShowSubmit(false);
-    setTranscript("");
-    // alert("Submitted: " + transcript);
   };
 
   return (
@@ -71,16 +81,15 @@ function SpeechMicWithVoice({ question }) {
           <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-xl font-semibold">
-              {question?.question || "Pakinggan at Bigkasin"}
+              {"Pakinggan at Bigkasin"}
             </span>
           </div>
         </div>
-        {/* <div className="flex items-center gap-4 my-4">
-          <Volume2 className="text-white" size={60} />
+        <div className="flex items-center gap-4 my-4">
           <p className="text-4xl font-semibold text-white">
-            {question?.correctAnswer || ""}
+            {question?.question}
           </p>
-        </div> */}
+        </div>
         <div>
           <img
             className={`my-5 cursor-pointer ${
@@ -112,6 +121,9 @@ function SpeechMicWithVoice({ question }) {
           >
             Submit
           </button>
+        )}
+        {feedback && (
+          <div className="text-lg font-bold mt-2 text-center">{feedback}</div>
         )}
       </div>
     </BackgroundLayout>
