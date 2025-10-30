@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import ClickBar from "../../assets/clickbar.png";
 import Logo from "../../assets/LingGO Logo.png";
-import PageHeaderLayout from "../components/PageHeaderLayout";
 
 function LanguagePreference() {
   const navigate = useNavigate();
@@ -19,18 +18,17 @@ function LanguagePreference() {
 
   return (
     <BackgroundLayout>
-      <PageHeaderLayout />
-      {/* Logo - top-right on desktop only */}
-      <div className="hidden md:block absolute right-4 md:w-24 md:h-24 lg:top-6 lg:right-6 lg:w-28 lg:h-28 xl:top-8 xl:right-8 xl:w-32 xl:h-32 z-20">
+      {/* Logo - top-right on desktop only (lg+ now, instead of md+) */}
+      <div className="hidden lg:block absolute right-4 lg:top-6 lg:right-6 lg:w-28 lg:h-28 xl:top-8 xl:right-8 xl:w-32 xl:h-32 z-20">
         <img src={Logo} alt="LingGO Logo" className="w-full h-full" />
       </div>
 
       <div className="flex flex-col items-center justify-center px-4 min-h-screen">
-        {/* Logo - centered on mobile only */}
+        {/* Logo - centered on mobile and tablet (up to lg-), with mobile and tablet sizes set to 30 */}
         <img
           src={Logo}
           alt="LingGO Logo"
-          className="w-16 h-16 sm:w-20 sm:h-20 mb-3 sm:mb-4 md:hidden"
+          className="w-30 h-30 sm:w-30 sm:h-30 md:w-30 md:h-30 lg:hidden mb-3 sm:mb-4"
         />
 
         {/* Title */}

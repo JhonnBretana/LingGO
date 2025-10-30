@@ -43,33 +43,38 @@ function TypeWithVoiceAndSlow({ question }) {
   return (
     <BackgroundLayout>
       <PageHeaderLayout />
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <div className="relative w-80 mb-4">
-          <img src={QuestionsBar} alt="Questions Bar" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xl font-semibold">
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-6 sm:py-8 gap-3 sm:gap-4">
+        {/* Question Bar */}
+        <div className="relative w-full max-w-xs sm:max-w-sm mb-2 sm:mb-4">
+          <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
+          <div className="absolute inset-0 flex items-center justify-center px-4">
+            <span className="text-sm xs:text-base sm:text-lg md:text-xl font-semibold text-center leading-tight">
               {question?.question || "I-Type and iyong narinig"}
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-4 my-4">
+
+        {/* Audio Control Buttons */}
+        <div className="flex items-center justify-center gap-3 sm:gap-4 my-2 sm:my-4">
           <button
-            className="bg-orange-300 p-2 rounded-xl"
+            className="bg-orange-300 p-3 sm:p-4 rounded-xl shadow-lg active:scale-95 transition-transform"
             onClick={handlePlay}
             disabled={!question?.voice}
           >
-            <Volume2 className="text-black" size={80} />
+            <Volume2 className="text-black" size={56} />
           </button>
           <button
-            className="bg-orange-300 p-2 rounded-xl"
+            className="bg-orange-300 p-3 sm:p-4 rounded-xl shadow-lg active:scale-95 transition-transform"
             onClick={handlePlaySlow}
             disabled={!question?.voice}
           >
-            <Turtle className="text-black" size={80} />
+            <Turtle className="text-black" size={56} />
           </button>
         </div>
+
+        {/* Input Form */}
         <form
-          className="w-100 flex flex-col items-center my-4"
+          className="w-full max-w-xs sm:max-w-sm flex flex-col items-center my-2 sm:my-4 px-4"
           onSubmit={handleSubmit}
         >
           <input
@@ -77,16 +82,23 @@ function TypeWithVoiceAndSlow({ question }) {
             placeholder="(TYPE)"
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
-            className="w-50 bg-white text-black text-center font-bold mb-5 py-2 rounded-full border-3 border-black text-lg focus:outline-none"
+            className="w-full bg-white text-black text-center font-bold mb-4 sm:mb-5 py-2 sm:py-3 px-4 rounded-full border-3 border-black text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
           <button
             type="submit"
-            className="w-50 mt-5 px-4 py-2 bg-[#f2d919] border-3 border-black rounded-xl font-bold"
+            className="w-full mt-3 sm:mt-5 px-6 py-2 sm:py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-base sm:text-lg shadow-lg active:scale-95 transition-transform"
           >
             Submit
           </button>
         </form>
-        {feedback && <div className="text-lg font-bold my-2">{feedback}</div>}
+
+        {/* Feedback */}
+        {feedback && (
+          <div className="text-base sm:text-lg font-bold my-2 text-center px-4">
+            {feedback}
+          </div>
+        )}
+
         {/* Hidden audio element for playback */}
         {question?.voice && (
           <audio

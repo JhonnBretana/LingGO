@@ -76,25 +76,29 @@ function SpeechMicWithVoice({ question }) {
   return (
     <BackgroundLayout>
       <PageHeaderLayout />
-      <div className="flex flex-col items-center justify-center min-h-screen gap-5">
-        <div className="relative w-80 mb-4">
-          <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
+      <div className="flex flex-col items-center justify-center min-h-screen gap-3 sm:gap-5 px-4 py-6">
+        {/* Question Bar - Smaller on 320px only */}
+        <div className="relative w-full max-w-[280px] xs:w-80 mb-4">
+          <img src={QuestionsBar} alt="Questions Bar" className="w-full xs:w-80" />
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-xl font-semibold">
               {"Pakinggan at Bigkasin"}
             </span>
           </div>
         </div>
+
+        {/* Question Text */}
         <div className="flex items-center gap-4 my-4">
           <p className="text-4xl font-semibold text-white">
             {question?.question}
           </p>
         </div>
+
+        {/* Microphone */}
         <div>
           <img
-            className={`my-5 cursor-pointer ${
-              isRecording ? "animate-pulse" : ""
-            }`}
+            className={`my-5 cursor-pointer ${isRecording ? "animate-pulse" : ""
+              }`}
             src={Microphone}
             alt="Microphone"
             onClick={handleMicClick}
@@ -106,6 +110,8 @@ function SpeechMicWithVoice({ question }) {
               : "I-tap at simulang magsalita"}
           </p>
         </div>
+
+        {/* Transcript Display */}
         {transcript && (
           <div className="text-white text-lg font-bold mt-2 text-center">
             <span>Sinabi mo: </span>
@@ -114,6 +120,8 @@ function SpeechMicWithVoice({ question }) {
             </span>
           </div>
         )}
+
+        {/* Submit Button */}
         {showSubmit && (
           <button
             className="w-50 mt-5 px-4 py-2 bg-[#f2d919] border-3 border-black rounded-xl font-bold"
@@ -122,6 +130,8 @@ function SpeechMicWithVoice({ question }) {
             Submit
           </button>
         )}
+
+        {/* Feedback */}
         {feedback && (
           <div className="text-lg font-bold mt-2 text-center">{feedback}</div>
         )}

@@ -8,10 +8,11 @@ import LandingPage from "./module/AccountModule/LandingPage.jsx";
 import WelcomePage from "./module/AccountModule/WelcomePage.jsx";
 
 import SigninDetails from "./module/AccountModule/SigninPage.jsx";
-import CebuanoKnowledge from "./module/AccountModule/Lawak.jsx";
+import CebuanoKnowledge from "./module/AccountModule/CebuanoKnowledge.jsx";
 import LanguagePreference from "./module/AccountModule/LanguagePreference.jsx";
 import CebuanoMotivation from "./module/AccountModule/CebuanoMotivation.jsx";
 import ReadyPage from "./module/AccountModule/ReadyPage.jsx";
+import PageHeaderLayout from "./module/components/PageHeaderLayout.jsx";
 
 import SignUpDetails from "./module/AccountModule/SignUpDetails.jsx";
 import SigninPage from "./module/AccountModule/SigninPage.jsx";
@@ -66,6 +67,7 @@ function App() {
         <Route path="/namedetail" element={<NameDetail />} />
         <Route path="/gradesectiondetail" element={<GradeSectionDetail />} />
         <Route path="/selectlanguage" element={<SelectLanguage />} />
+        <Route path="/pageHeaderLayout" element={<PageHeaderLayout />} />
 
         {/*questions*/}
         <Route

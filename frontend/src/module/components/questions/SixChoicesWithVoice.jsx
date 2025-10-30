@@ -73,8 +73,8 @@ function SixChoicesWithVoice({ question }) {
                   type="button"
                   key={idx}
                   className={`w-40 h-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${selected === choice.value
-                      ? "border-4 border-yellow-400"
-                      : ""
+                    ? "border-4 border-yellow-400"
+                    : ""
                     }`}
                   onClick={() => setSelected(choice.value)}
                 >
@@ -93,8 +93,8 @@ function SixChoicesWithVoice({ question }) {
                   type="button"
                   key={idx}
                   className={`w-40 h-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${selected === choice.value
-                      ? "border-4 border-yellow-400"
-                      : ""
+                    ? "border-4 border-yellow-400"
+                    : ""
                     }`}
                   onClick={() => setSelected(choice.value)}
                 >

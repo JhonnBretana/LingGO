@@ -12,30 +12,50 @@ function PageHeaderLayout() {
     }
   }, []);
 
+  const getGradeNumber = (baitang) => {
+    if (!baitang) return "";
+
+    const gradeMap = {
+      "Ikapitong Baitang": "7",
+      "Ika-walong Baitang": "8",
+      "Ika-siyam na Baitang": "9",
+      "Ika-sampung Baitang": "10"
+    };
+
+    return gradeMap[baitang] || "";
+  };
+
+  const gradeDisplay = user
+    ? `${getGradeNumber(user.Baitang)}-${user.Pangkat}`
+    : "Pangkat at Baitang";
+
   return (
-    <div className="flex justify-between gap-15 items-center h-10 py-10 px-1 mt-2">
-      <div className="flex items-center gap-4 h-10">
-        <div>
-          <img src={Logo} alt="" className="h-25 w-auto object-contain" />
+    <div className="flex justify-between items-center px-3 py-4 sm:px-4 sm:py-5 md:px-6 md:py-6">
+      <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+        <div className="flex-shrink-0">
+          <img
+            src={Logo}
+            alt="LingGO Logo"
+            className="h-12 w-auto object-contain sm:h-14 md:h-16 lg:h-20"
+          />
         </div>
 
-        <div>
-          <div className="font-bold w-40">
-            <span>{user ? user.Pangkat : "Pangkat"} </span>
-            <span>At </span>
-            <span>{user ? user.Baitang : "Baitang"}</span>
+        <div className="flex flex-col">
+          <div className="font-bold text-black text-sm sm:text-base md:text-lg lg:text-xl whitespace-nowrap">
+            {gradeDisplay}
           </div>
-
-          <div className="font-bold">
-            <span>
-              {user ? user["Unang Pangalana"] || user.Username : "Name"}
-            </span>
+          <div className="font-bold text-white text-lg sm:text-xl md:text-2xl lg:text-3xl whitespace-nowrap drop-shadow-md" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+            {user ? user["Unang Pangalana"] || user.Username : "Juan Dela Cruz"}
           </div>
         </div>
       </div>
 
-      <div>
-        <img src={Star} alt="" className="h-15 w-auto object-contain" />
+      <div className="flex flex-col items-center flex-shrink-0">
+        <img
+          src={Star}
+          alt="Star"
+          className="h-12 w-auto object-contain sm:h-14 md:h-16 lg:h-20"
+        />
       </div>
     </div>
   );
