@@ -30,7 +30,7 @@ function SixChoicesWithVoice({ question }) {
     if (
       selected &&
       selected.trim().toLowerCase() ===
-        (question.correctAnswer?.value || "").trim().toLowerCase()
+      (question.correctAnswer?.value || "").trim().toLowerCase()
     ) {
       setFeedback("Correct!");
     } else {
@@ -72,11 +72,10 @@ function SixChoicesWithVoice({ question }) {
                 <button
                   type="button"
                   key={idx}
-                  className={`w-40 h-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${
-                    selected === choice.value
+                  className={`w-40 h-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${selected === choice.value
                       ? "border-4 border-yellow-400"
                       : ""
-                  }`}
+                    }`}
                   onClick={() => setSelected(choice.value)}
                 >
                   <img
@@ -93,11 +92,10 @@ function SixChoicesWithVoice({ question }) {
                 <button
                   type="button"
                   key={idx}
-                  className={`w-40 h-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${
-                    selected === choice.value
+                  className={`w-40 h-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${selected === choice.value
                       ? "border-4 border-yellow-400"
                       : ""
-                  }`}
+                    }`}
                   onClick={() => setSelected(choice.value)}
                 >
                   <img
