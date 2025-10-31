@@ -3,11 +3,14 @@ import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Volume2, Turtle } from "lucide-react";
 import PageHeaderLayout from "../../components/PageHeaderLayout";
+import CorrectAnswerModal from "../../components/CorrectOverlay";
+import WrongAnswerModal from "../../components/WrongOverlay";
 
 function Select6ChoicesWithVoiceAndSlow({ question }) {
   const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
-  const [feedback, setFeedback] = useState("");
+  const [showCorrectModal, setShowCorrectModal] = useState(false);
+  const [showWrongModal, setShowWrongModal] = useState(false);
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -27,14 +30,16 @@ function Select6ChoicesWithVoiceAndSlow({ question }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!selected) return;
+
     if (
       selected &&
       selected.trim().toLowerCase() ===
       (question.correctAnswer || "").trim().toLowerCase()
     ) {
-      setFeedback("Correct!");
+      setShowCorrectModal(true);
     } else {
-      setFeedback("Try again.");
+      setShowWrongModal(true);
     }
   };
 
@@ -91,11 +96,6 @@ function Select6ChoicesWithVoiceAndSlow({ question }) {
             Submit
           </button>
         </form>
-        {feedback && (
-          <div className="text-base sm:text-lg font-bold my-3 sm:my-5 text-white">
-            {feedback}
-          </div>
-        )}
         {question?.voice && (
           <audio
             ref={audioRef}
@@ -104,6 +104,17 @@ function Select6ChoicesWithVoiceAndSlow({ question }) {
           />
         )}
       </div>
+
+      <CorrectAnswerModal
+        isOpen={showCorrectModal}
+        onClose={() => setShowCorrectModal(false)}
+      />
+
+      <WrongAnswerModal
+        isOpen={showWrongModal}
+        correctAnswer={question.correctAnswer}
+        onClose={() => setShowWrongModal(false)}
+      />
     </BackgroundLayout>
   );
 }

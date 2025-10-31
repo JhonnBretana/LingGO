@@ -3,12 +3,15 @@ import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import Microphone from "../../../assets/Microphone.png";
 import PageHeaderLayout from "../../components/PageHeaderLayout";
+import CorrectAnswerModal from "../../components/CorrectOverlay";
+import WrongAnswerModal from "../../components/WrongOverlay";
 
 function SpeechMicWithVoice({ question }) {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [showSubmit, setShowSubmit] = useState(false);
-  const [feedback, setFeedback] = useState("");
+  const [showCorrect, setShowCorrect] = useState(false);
+  const [showWrong, setShowWrong] = useState(false);
   const recognitionRef = useRef(null);
 
   const handleMicClick = () => {
@@ -18,16 +21,15 @@ function SpeechMicWithVoice({ question }) {
       alert("Speech recognition not supported in this browser.");
       return;
     }
+
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    // If already recording, stop
     if (isRecording && recognitionRef.current) {
       recognitionRef.current.stop();
       return;
     }
 
-    // Start recording
     const recognition = new SpeechRecognition();
     recognition.lang = "en-US";
     recognition.interimResults = false;
@@ -37,20 +39,16 @@ function SpeechMicWithVoice({ question }) {
       setIsRecording(true);
       setTranscript("");
       setShowSubmit(false);
-      setFeedback("");
     };
+
     recognition.onresult = (event) => {
       const result = event.results[0][0].transcript;
       setTranscript(result);
       setShowSubmit(true);
     };
-    recognition.onend = () => {
-      setIsRecording(false);
-    };
-    recognition.onerror = () => {
-      setIsRecording(false);
-      setShowSubmit(false);
-    };
+
+    recognition.onend = () => setIsRecording(false);
+    recognition.onerror = () => setIsRecording(false);
 
     recognitionRef.current = recognition;
     recognition.start();
@@ -58,6 +56,7 @@ function SpeechMicWithVoice({ question }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const userSpoken = (transcript || "").trim().toLowerCase();
     const correct =
       typeof question?.correctAnswer === "string"
@@ -66,18 +65,25 @@ function SpeechMicWithVoice({ question }) {
     const correctNormalized = (correct || "").trim().toLowerCase();
 
     if (userSpoken && userSpoken === correctNormalized) {
-      setFeedback("Correct!");
+      setShowCorrect(true);
     } else {
-      setFeedback("Try again.");
+      setShowWrong(true);
     }
+
     setShowSubmit(false);
+  };
+
+  const handleCloseModals = () => {
+    setShowCorrect(false);
+    setShowWrong(false);
+    setTranscript("");
   };
 
   return (
     <BackgroundLayout>
       <PageHeaderLayout />
       <div className="flex flex-col items-center justify-center min-h-screen gap-3 sm:gap-5 px-4 py-6">
-        {/* Question Bar - Smaller on 320px only */}
+        {/* Question Bar */}
         <div className="relative w-full max-w-[280px] xs:w-80 mb-4">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full xs:w-80" />
           <div className="absolute inset-0 flex items-center justify-center">
@@ -97,8 +103,7 @@ function SpeechMicWithVoice({ question }) {
         {/* Microphone */}
         <div>
           <img
-            className={`my-5 cursor-pointer ${isRecording ? "animate-pulse" : ""
-              }`}
+            className={`my-5 cursor-pointer ${isRecording ? "animate-pulse" : ""}`}
             src={Microphone}
             alt="Microphone"
             onClick={handleMicClick}
@@ -130,12 +135,15 @@ function SpeechMicWithVoice({ question }) {
             Submit
           </button>
         )}
-
-        {/* Feedback */}
-        {feedback && (
-          <div className="text-lg font-bold mt-2 text-center">{feedback}</div>
-        )}
       </div>
+
+      {/* ✅ Correct / Wrong Modals */}
+      <CorrectAnswerModal isOpen={showCorrect} onClose={handleCloseModals} />
+      <WrongAnswerModal
+        isOpen={showWrong}
+        onClose={handleCloseModals}
+        correctAnswer={question.correctAnswer}
+      />
     </BackgroundLayout>
   );
 }

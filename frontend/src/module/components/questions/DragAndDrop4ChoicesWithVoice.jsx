@@ -3,11 +3,14 @@ import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Volume2 } from "lucide-react";
 import PageHeaderLayout from "../../components/PageHeaderLayout";
+import CorrectAnswerModal from "../../components/CorrectOverlay";
+import WrongAnswerModal from "../../components/WrongOverlay";
 
 function DragAndDrop4ChoicesWithVoice({ question }) {
   const [droppedValue, setDroppedValue] = useState(null);
-  const [feedback, setFeedback] = useState("");
   const [draggedItem, setDraggedItem] = useState(null);
+  const [showCorrect, setShowCorrect] = useState(false);
+  const [showWrong, setShowWrong] = useState(false);
   const audioRef = useRef(null);
 
   const handleDragStart = (e, value) => {
@@ -24,13 +27,14 @@ function DragAndDrop4ChoicesWithVoice({ question }) {
     const value = e.dataTransfer.getData("text/plain");
     setDroppedValue(value);
     setDraggedItem(null);
-    if (
-      value.trim().toLowerCase() ===
-      (question.correctAnswer || "").trim().toLowerCase()
-    ) {
-      setFeedback("Correct!");
+
+    const correctAnswer = (question.correctAnswer || "").trim().toLowerCase();
+    const droppedAnswer = value.trim().toLowerCase();
+
+    if (droppedAnswer === correctAnswer) {
+      setShowCorrect(true);
     } else {
-      setFeedback("Try again.");
+      setShowWrong(true);
     }
   };
 
@@ -45,6 +49,12 @@ function DragAndDrop4ChoicesWithVoice({ question }) {
     }
   };
 
+  const handleCloseModals = () => {
+    setShowCorrect(false);
+    setShowWrong(false);
+    setDroppedValue(null);
+  };
+
   return (
     <BackgroundLayout>
       <PageHeaderLayout />
@@ -57,6 +67,7 @@ function DragAndDrop4ChoicesWithVoice({ question }) {
             </span>
           </div>
         </div>
+
         <div className="flex items-center gap-2 sm:gap-4 my-3">
           <button
             type="button"
@@ -70,6 +81,7 @@ function DragAndDrop4ChoicesWithVoice({ question }) {
             {question?.question}
           </p>
         </div>
+
         <div className="flex items-center gap-4 my-4">
           <div
             className="w-60 pb-2 pt-2 text-center min-h-[50px] flex items-center justify-center rounded-lg bg-white/90 shadow-md transition-all duration-300"
@@ -87,6 +99,7 @@ function DragAndDrop4ChoicesWithVoice({ question }) {
             )}
           </div>
         </div>
+
         <div className="w-full max-w-[280px] sm:max-w-xs flex flex-col gap-3 sm:gap-5 items-center justify-center mt-3">
           {question.choices.map((choice, idx) => (
             <div
@@ -101,6 +114,7 @@ function DragAndDrop4ChoicesWithVoice({ question }) {
             </div>
           ))}
         </div>
+
         {question.voice && (
           <audio
             ref={audioRef}
@@ -108,12 +122,14 @@ function DragAndDrop4ChoicesWithVoice({ question }) {
             style={{ display: "none" }}
           />
         )}
-        {feedback && (
-          <div className="text-base sm:text-lg font-bold mt-4 text-center text-white">
-            {feedback}
-          </div>
-        )}
       </div>
+
+      <CorrectAnswerModal isOpen={showCorrect} onClose={handleCloseModals} />
+      <WrongAnswerModal
+        isOpen={showWrong}
+        onClose={handleCloseModals}
+        correctAnswer={question.correctAnswer}
+      />
     </BackgroundLayout>
   );
 }

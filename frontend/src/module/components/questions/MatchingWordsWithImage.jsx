@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import PageHeaderLayout from "../../components/PageHeaderLayout";
+import CorrectAnswerModal from "../../components/CorrectOverlay";
+import WrongAnswerModal from "../../components/WrongOverlay";
 
 function MatchingWordsWithImage({ question }) {
   const [selectedWord, setSelectedWord] = useState(null);
-  const [matches, setMatches] = useState([]); // [{ word, image }]
-  const [feedback, setFeedback] = useState("");
+  const [matches, setMatches] = useState([]);
+  const [showCorrectModal, setShowCorrectModal] = useState(false);
+  const [showWrongModal, setShowWrongModal] = useState(false);
 
-  // Get unmatched words and images
   const unmatchedWords = question.choices
     .map((c) => c.word)
     .filter((w) => !matches.find((m) => m.word === w));
@@ -28,11 +30,28 @@ function MatchingWordsWithImage({ question }) {
   };
 
   const handleSubmit = () => {
-    // Check if matches are correct
     const correct = question.correctAnswer.every((ans) =>
       matches.find((m) => m.word === ans.word && m.image === ans.image)
     );
-    setFeedback(correct ? "Correct!" : "Try again.");
+
+    if (correct) {
+      setShowCorrectModal(true);
+    } else {
+      setShowWrongModal(true);
+    }
+  };
+
+  const handleReset = () => {
+    setMatches([]);
+    setSelectedWord(null);
+    setShowCorrectModal(false);
+    setShowWrongModal(false);
+  };
+
+  const getCorrectAnswerText = () => {
+    return question.correctAnswer
+      .map((ans) => ans.word)
+      .join(", ");
   };
 
   return (
@@ -48,21 +67,18 @@ function MatchingWordsWithImage({ question }) {
           </div>
         </div>
         <div className="flex flex-row gap-8">
-          {/* Words column */}
           <div className="flex flex-col gap-5 items-center justify-center mt-4">
             {unmatchedWords.map((word) => (
               <button
                 key={word}
-                className={`w-40 h-20 flex items-center justify-center text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-xl border-2 ${
-                  selectedWord === word ? "border-yellow-400" : ""
-                }`}
+                className={`w-40 h-20 flex items-center justify-center text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-xl border-2 ${selectedWord === word ? "border-yellow-400" : ""
+                  }`}
                 onClick={() => handleWordClick(word)}
               >
                 {word}
               </button>
             ))}
           </div>
-          {/* Images column */}
           <div className="flex flex-col gap-5 items-center justify-center mt-4">
             {unmatchedImages.map((img) => (
               <button
@@ -75,7 +91,6 @@ function MatchingWordsWithImage({ question }) {
             ))}
           </div>
         </div>
-        {/* Show matches */}
         <div className="mt-6">
           <h3 className="text-lg font-bold text-black mb-2">Your Matches:</h3>
           <ul>
@@ -87,17 +102,36 @@ function MatchingWordsWithImage({ question }) {
             ))}
           </ul>
         </div>
-        {/* Submit button */}
-        {matches.length === question.choices.length && (
-          <button
-            className="mt-5 px-4 py-2 bg-[#f2d919] border-3 border-black rounded-xl font-bold"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
-        )}
-        {feedback && <div className="text-lg font-bold mt-2">{feedback}</div>}
+        <div className="flex gap-3 mt-5">
+          {matches.length > 0 && (
+            <button
+              className="px-6 py-2 bg-gray-400 border-2 border-gray-600 rounded-xl font-bold"
+              onClick={handleReset}
+            >
+              Reset
+            </button>
+          )}
+          {matches.length === question.choices.length && (
+            <button
+              className="px-4 py-2 bg-[#f2d919] border-3 border-black rounded-xl font-bold"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+          )}
+        </div>
       </div>
+
+      <CorrectAnswerModal
+        isOpen={showCorrectModal}
+        onClose={() => setShowCorrectModal(false)}
+      />
+
+      <WrongAnswerModal
+        isOpen={showWrongModal}
+        correctAnswer={getCorrectAnswerText()}
+        onClose={() => setShowWrongModal(false)}
+      />
     </BackgroundLayout>
   );
 }

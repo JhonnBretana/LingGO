@@ -111,8 +111,8 @@ function MatchingWordsWithWords({ question }) {
                 <button
                   key={choice.word1}
                   className={`w-32 sm:w-36 min-h-[50px] flex items-center justify-center text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${color
-                      ? `${color.bg} ${color.border}`
-                      : "bg-white border-gray-300"
+                    ? `${color.bg} ${color.border}`
+                    : "bg-white border-gray-300"
                     }`}
                   onClick={() => handleClick(choice.word1, "left")}
                 >
@@ -129,8 +129,8 @@ function MatchingWordsWithWords({ question }) {
                 <button
                   key={choice.word2}
                   className={`w-32 sm:w-36 min-h-[50px] text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${color
-                      ? `${color.bg} ${color.border}`
-                      : "bg-white border-gray-300"
+                    ? `${color.bg} ${color.border}`
+                    : "bg-white border-gray-300"
                     }`}
                   onClick={() => handleClick(choice.word2, "right")}
                 >
