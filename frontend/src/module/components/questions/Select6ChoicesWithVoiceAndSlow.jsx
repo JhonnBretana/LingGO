@@ -30,7 +30,7 @@ function Select6ChoicesWithVoiceAndSlow({ question }) {
     if (
       selected &&
       selected.trim().toLowerCase() ===
-        (question.correctAnswer || "").trim().toLowerCase()
+      (question.correctAnswer || "").trim().toLowerCase()
     ) {
       setFeedback("Correct!");
     } else {
@@ -41,25 +41,25 @@ function Select6ChoicesWithVoiceAndSlow({ question }) {
   return (
     <BackgroundLayout>
       <PageHeaderLayout />
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <div className="relative w-80 my-5">
-          <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xl font-semibold">
+      <div className="flex flex-col items-center justify-center min-h-screen px-4">
+        <div className="relative w-full max-w-[280px] sm:max-w-xs my-3 sm:my-5">
+          <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
+          <div className="absolute inset-0 flex items-center justify-center px-2">
+            <span className="text-base sm:text-xl font-semibold text-center">
               {question?.question || "Pindutin and Maririnig mo"}
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-4 my-4">
+        <div className="flex items-center gap-3 sm:gap-4 my-3 sm:my-4">
           <button
-            className="bg-orange-300 p-2 rounded-xl"
+            className="bg-orange-300 p-2 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all duration-200"
             onClick={handlePlay}
             disabled={!question?.voice}
           >
             <Volume2 className="text-black" size={54} />
           </button>
           <button
-            className="bg-orange-300 p-2 rounded-xl"
+            className="bg-orange-300 p-2 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all duration-200"
             onClick={handlePlaySlow}
             disabled={!question?.voice}
           >
@@ -67,16 +67,17 @@ function Select6ChoicesWithVoiceAndSlow({ question }) {
           </button>
         </div>
         <form
-          className="w-100 flex flex-col gap-5 items-center justify-center mt-4"
+          className="w-full max-w-[280px] sm:max-w-xs flex flex-col gap-3 sm:gap-5 items-center justify-center mt-3 sm:mt-4"
           onSubmit={handleSubmit}
         >
           {question.choices.map((choice, idx) => (
             <button
               key={idx}
               type="button"
-              className={`w-50 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-xl border-2 ${
-                selected === choice ? "border-yellow-400" : ""
-              }`}
+              className={`w-full text-center bg-gradient-to-r from-white to-gray-50 text-black text-base sm:text-lg font-bold py-3 px-4 rounded-xl border-2 shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 ${selected === choice
+                ? "border-yellow-400 bg-yellow-50 shadow-lg scale-105"
+                : "border-gray-200"
+                }`}
               onClick={() => setSelected(choice)}
             >
               {choice}
@@ -84,14 +85,17 @@ function Select6ChoicesWithVoiceAndSlow({ question }) {
           ))}
           <button
             type="submit"
-            className="w-50 my-5 px-4 py-2 bg-[#f2d919] border-2 border-black rounded-xl font-bold"
+            className="w-full my-3 sm:my-5 px-4 py-3 bg-[#f2d919] border-2 border-black rounded-xl font-bold shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!selected}
           >
             Submit
           </button>
         </form>
-        {feedback && <div className="text-lg font-bold my-5">{feedback}</div>}
-        {/* Hidden audio element for playback */}
+        {feedback && (
+          <div className="text-base sm:text-lg font-bold my-3 sm:my-5 text-white">
+            {feedback}
+          </div>
+        )}
         {question?.voice && (
           <audio
             ref={audioRef}

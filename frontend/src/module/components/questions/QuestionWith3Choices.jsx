@@ -12,7 +12,7 @@ function QuestionWith3Choices({ question }) {
     if (
       selected &&
       selected.trim().toLowerCase() ===
-        (question.correctAnswer || "").trim().toLowerCase()
+      (question.correctAnswer || "").trim().toLowerCase()
     ) {
       setFeedback("Correct!");
     } else {
@@ -38,9 +38,8 @@ function QuestionWith3Choices({ question }) {
             <button
               key={idx}
               type="button"
-              className={`w-60 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${
-                selected === choice.value ? "border-yellow-400" : ""
-              }`}
+              className={`w-60 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${selected === choice.value ? "border-yellow-400" : ""
+                }`}
               onClick={() => setSelected(choice.value)}
             >
               <img

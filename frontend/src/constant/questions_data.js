@@ -88,7 +88,7 @@ const questions = [
     type: "DragAndDrop4ChoicesWithVoice",
     question: "Bugas",
     choices: ["Bigas", "Ulam", "Gulay", "Kanin"],
-    correctAnswer: "Kwarta",
+    correctAnswer: "Bigas",
     image: null,
     voice: "/assets/Voice/CebuanoWords/bugas.mp3",
   },
