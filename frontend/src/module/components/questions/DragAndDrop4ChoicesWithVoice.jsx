@@ -1,8 +1,6 @@
 import React, { useState, useRef } from "react";
-import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Volume2 } from "lucide-react";
-import PageHeaderLayout from "../../components/PageHeaderLayout";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
@@ -56,8 +54,7 @@ function DragAndDrop4ChoicesWithVoice({ question }) {
   };
 
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
+    <>
       <div className="flex flex-col items-center justify-center min-h-screen px-4">
         <div className="relative w-full max-w-[280px] sm:max-w-xs mb-3">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
@@ -130,7 +127,7 @@ function DragAndDrop4ChoicesWithVoice({ question }) {
         onClose={handleCloseModals}
         correctAnswer={question.correctAnswer}
       />
-    </BackgroundLayout>
+    </>
   );
 }
 

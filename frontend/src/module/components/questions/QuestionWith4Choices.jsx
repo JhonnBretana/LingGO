@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
-import PageHeaderLayout from "../../components/PageHeaderLayout";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
@@ -14,7 +12,6 @@ function QuestionWith4Choices({ question }) {
     e.preventDefault();
     if (!selected) return;
 
-    // Compare the selected value with the correct answer
     const correctAnswer = typeof question.correctAnswer === "string"
       ? question.correctAnswer
       : question.correctAnswer?.value || question.correctAnswer?.image;
@@ -26,18 +23,15 @@ function QuestionWith4Choices({ question }) {
     }
   };
 
-  // Normalize choices to ensure they have both value and image
   const normalizedChoices = question.choices.map((choice) =>
     typeof choice === "string" || !choice.value
       ? { value: choice.image || choice, image: choice.image || choice }
       : { value: choice.value, image: choice.image }
   );
 
-  // Split choices into two columns of 2
   const leftChoices = normalizedChoices.slice(0, 2);
   const rightChoices = normalizedChoices.slice(2, 4);
 
-  // Get the correct answer value/label for display
   const getCorrectAnswerText = () => {
     if (typeof question.correctAnswer === "string") {
       return question.correctAnswer;
@@ -46,8 +40,7 @@ function QuestionWith4Choices({ question }) {
   };
 
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
+    <>
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="relative w-full max-w-80 mb-5">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full h-auto" />
@@ -116,7 +109,7 @@ function QuestionWith4Choices({ question }) {
         correctAnswer={getCorrectAnswerText()}
         onClose={() => setShowWrongModal(false)}
       />
-    </BackgroundLayout>
+    </>
   );
 }
 

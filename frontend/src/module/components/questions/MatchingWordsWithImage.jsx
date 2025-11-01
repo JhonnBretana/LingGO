@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
-import PageHeaderLayout from "../../components/PageHeaderLayout";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
@@ -55,8 +53,7 @@ function MatchingWordsWithImage({ question }) {
   };
 
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
+    <>
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="relative w-80 mb-4">
           <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
@@ -132,7 +129,7 @@ function MatchingWordsWithImage({ question }) {
         correctAnswer={getCorrectAnswerText()}
         onClose={() => setShowWrongModal(false)}
       />
-    </BackgroundLayout>
+    </>
   );
 }
 

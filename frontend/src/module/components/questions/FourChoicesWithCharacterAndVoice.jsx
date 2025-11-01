@@ -1,7 +1,4 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import BackgroundLayout from "../BackgroundLayout";
-import PageHeaderLayout from "../PageHeaderLayout";
 import Char from "../../../assets/char.png";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Volume2 } from "lucide-react";
@@ -36,7 +33,7 @@ function FourChoicesWithCharacterAndVoice({ question }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!selected) return; // Extra safety check
+    if (!selected) return;
 
     const selectedVal = (selected || "").trim().toLowerCase();
     const correct =
@@ -46,7 +43,7 @@ function FourChoicesWithCharacterAndVoice({ question }) {
 
     if (selectedVal && selectedVal === correct.trim().toLowerCase()) {
       setShowCorrectModal(true);
-    } else if (selectedVal) { // Only show wrong modal if there's a selection
+    } else if (selectedVal) {
       setShowWrongModal(true);
     }
   };
@@ -58,9 +55,7 @@ function FourChoicesWithCharacterAndVoice({ question }) {
   );
 
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
-
+    <>
       <div className="flex flex-col items-center justify-center min-h-screen gap-5">
         <div className="relative w-80">
           <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
@@ -135,7 +130,7 @@ function FourChoicesWithCharacterAndVoice({ question }) {
         correctAnswer={question.correctAnswer}
         onClose={() => setShowWrongModal(false)}
       />
-    </BackgroundLayout>
+    </>
   );
 }
 

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
-import PageHeaderLayout from "../../components/PageHeaderLayout";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
@@ -26,8 +24,7 @@ function QuestionWith3Choices({ question }) {
   };
 
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
+    <>
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="relative w-full max-w-80 mb-5">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full h-auto" />
@@ -76,7 +73,7 @@ function QuestionWith3Choices({ question }) {
         correctAnswer={question.correctAnswer}
         onClose={() => setShowWrongModal(false)}
       />
-    </BackgroundLayout>
+    </>
   );
 }
 

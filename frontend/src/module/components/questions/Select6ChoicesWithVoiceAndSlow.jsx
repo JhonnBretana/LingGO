@@ -1,8 +1,6 @@
 import React, { useRef, useState } from "react";
-import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Volume2, Turtle } from "lucide-react";
-import PageHeaderLayout from "../../components/PageHeaderLayout";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
@@ -44,8 +42,7 @@ function Select6ChoicesWithVoiceAndSlow({ question }) {
   };
 
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
+    <>
       <div className="flex flex-col items-center justify-center min-h-screen px-4">
         <div className="relative w-full max-w-[280px] sm:max-w-xs my-3 sm:my-5">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
@@ -115,7 +112,7 @@ function Select6ChoicesWithVoiceAndSlow({ question }) {
         correctAnswer={question.correctAnswer}
         onClose={() => setShowWrongModal(false)}
       />
-    </BackgroundLayout>
+    </>
   );
 }
 

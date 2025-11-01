@@ -1,8 +1,6 @@
 import React, { useRef, useState } from "react";
-import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Volume2, Turtle } from "lucide-react";
-import PageHeaderLayout from "../../components/PageHeaderLayout";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
@@ -43,22 +41,12 @@ function SixChoicesWithVoice({ question }) {
     }
   };
 
-  // Split choices into two columns of 3
   const leftChoices = question.choices.slice(0, 3);
   const rightChoices = question.choices.slice(3, 6);
 
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
+    <>
       <div className="flex flex-col items-center mt-5 justify-center min-h-screen gap-4">
-        {/* <div className="relative w-80 mb-4">
-          <img src={QuestionsBar} alt="Questions Bar" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xl font-semibold">
-              {question?.question || "Select the correct answer"}
-            </span>
-          </div>
-        </div> */}
         <div className="flex items-center gap-4 my-1">
           <button className="" onClick={handlePlay} disabled={!question?.voice}>
             <Volume2 className="text-white" size={60} />
@@ -121,7 +109,6 @@ function SixChoicesWithVoice({ question }) {
             Submit
           </button>
         </form>
-        {/* Hidden audio element for playback */}
         {question?.voice && (
           <audio
             ref={audioRef}
@@ -141,7 +128,7 @@ function SixChoicesWithVoice({ question }) {
         correctAnswer={question.correctAnswer?.value}
         onClose={() => setShowWrongModal(false)}
       />
-    </BackgroundLayout>
+    </>
   );
 }
 

@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
-import PageHeaderLayout from "../../components/PageHeaderLayout";
 
 function MatchingWordsWithWords({ question }) {
-  const [matches, setMatches] = useState([]); // [{ left, right, color }]
+  const [matches, setMatches] = useState([]);
   const [feedback, setFeedback] = useState("");
 
-  // Custom color palette from the image
   const colors = [
     { bg: "bg-orange-400", border: "border-orange-600" },
     { bg: "bg-yellow-300", border: "border-yellow-500" },
@@ -23,37 +20,30 @@ function MatchingWordsWithWords({ question }) {
   };
 
   const handleClick = (word, side) => {
-    // Check if word is already matched
     const existingMatch = matches.find((m) => m[side] === word);
 
     if (existingMatch) {
-      // Cancel/remove this word from the match
       if (existingMatch.left && existingMatch.right) {
-        // If both sides are matched, remove only this side
         const updatedMatches = matches.map((m) =>
           m === existingMatch ? { ...m, [side]: null } : m
-        ).filter((m) => m.left || m.right); // Remove if both sides are null
+        ).filter((m) => m.left || m.right);
         setMatches(updatedMatches);
       } else {
-        // If only one side is matched, remove the entire match
         setMatches(matches.filter((m) => m !== existingMatch));
       }
       return;
     }
 
-    // Find incomplete match (only has one side)
     const incompleteMatch = matches.find(
       (m) => (side === "left" && !m.left) || (side === "right" && !m.right)
     );
 
     if (incompleteMatch) {
-      // Complete the match
       const updatedMatches = matches.map((m) =>
         m === incompleteMatch ? { ...m, [side]: word } : m
       );
       setMatches(updatedMatches);
     } else {
-      // Start a new match with next available color
       const usedColors = matches.length;
       const nextColor = colors[usedColors % colors.length];
       setMatches([
@@ -68,7 +58,6 @@ function MatchingWordsWithWords({ question }) {
   };
 
   const handleSubmit = () => {
-    // Check if all matches are complete and correct
     const allComplete = matches.every((m) => m.left && m.right);
     if (!allComplete) {
       setFeedback("Please complete all matches.");
@@ -91,8 +80,7 @@ function MatchingWordsWithWords({ question }) {
   };
 
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
+    <>
       <div className="flex flex-col items-center justify-center min-h-screen px-4">
         <div className="relative w-full max-w-[280px] sm:max-w-xs my-3 sm:my-5">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
@@ -103,7 +91,6 @@ function MatchingWordsWithWords({ question }) {
           </div>
         </div>
         <div className="flex flex-row gap-3 sm:gap-5 my-3 sm:my-5">
-          {/* Left words column */}
           <div className="flex flex-col gap-3 items-center justify-center">
             {question.choices.map((choice) => {
               const color = getWordColor(choice.word1, "left");
@@ -121,7 +108,6 @@ function MatchingWordsWithWords({ question }) {
               );
             })}
           </div>
-          {/* Right words column */}
           <div className="flex flex-col gap-3 items-center justify-center">
             {question.choices.map((choice) => {
               const color = getWordColor(choice.word2, "right");
@@ -140,7 +126,6 @@ function MatchingWordsWithWords({ question }) {
             })}
           </div>
         </div>
-        {/* Action buttons */}
         <div className="flex gap-3 mt-3 sm:mt-5">
           <button
             className="px-6 py-2 bg-gray-400 border-2 border-gray-600 rounded-xl font-bold shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 text-black"
@@ -164,7 +149,7 @@ function MatchingWordsWithWords({ question }) {
           </div>
         )}
       </div>
-    </BackgroundLayout>
+    </>
   );
 }
 

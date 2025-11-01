@@ -1,10 +1,8 @@
 import React, { useRef, useState } from "react";
-import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Volume2, Turtle } from "lucide-react";
-import PageHeaderLayout from "../../components/PageHeaderLayout";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
-import WrongAnswerModal from "../../components/WrongOverlay"; // Import the wrong modal
+import WrongAnswerModal from "../../components/WrongOverlay";
 
 function TypeWithVoiceAndSlow({ question }) {
   const audioRef = useRef(null);
@@ -50,8 +48,7 @@ function TypeWithVoiceAndSlow({ question }) {
   };
 
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
+    <>
       <div className="flex flex-col items-center justify-center min-h-screen px-4 py-6 sm:py-8 gap-3 sm:gap-4">
         {/* Question Bar */}
         <div className="relative w-full max-w-xs sm:max-w-sm mb-2 sm:mb-4">
@@ -120,7 +117,7 @@ function TypeWithVoiceAndSlow({ question }) {
         onClose={handleCloseModals}
         correctAnswer={question.correctAnswer}
       />
-    </BackgroundLayout>
+    </>
   );
 }
 
