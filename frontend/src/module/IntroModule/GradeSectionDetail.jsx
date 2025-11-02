@@ -75,7 +75,7 @@ function GradeSectionDetail() {
         </div>
 
         <button
-          onClick={() => navigate("/agedetail")}
+          onClick={() => navigate("/language-preference")}
           disabled={!isFormComplete}
           className={`border px-4 py-3 w-50 sm:w-60 rounded-lg font-bold text-lg mt-8 transition duration-300 ${
             isFormComplete

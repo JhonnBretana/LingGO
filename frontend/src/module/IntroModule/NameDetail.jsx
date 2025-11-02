@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import Bird from "../../assets/LingoLogo Standing.png";
 function NameDetail() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
@@ -14,7 +14,7 @@ function NameDetail() {
               WebkitTextStroke: "0.5px black",
             }}
           >
-           Anong pangalan mo, kaibigan?
+            Anong pangalan mo, kaibigan?
           </p>
         </div>
         <div>
