@@ -36,6 +36,8 @@ import TypeWithVoiceAndSlow from "./module/components/questions/TypeWithVoiceAnd
 import SixChoicesWithVoice from "./module/components/questions/SixChoicesWithVoice.jsx";
 import FourChoicesWithCharacterAndVoice from "./module/components/questions/FourChoicesWithCharacterAndVoice.jsx";
 
+import CorrectOverlay from "./module/components/CorrectOverlay.jsx";
+
 //GamePlay Module
 import Voice_SlowGame from "./module/GamePlayLvl1Module/Voice_SlowGame.jsx";
 import Choice_Voice from "./module/GamePlayLvl1Module/Choice_Voice.jsx";
@@ -113,9 +115,13 @@ function App() {
         <Route path="/choice_voice" element={<Choice_Voice />} />
         <Route path="/voice_character" element={<Voice_Character />} />
 
+        <Route path="/correct_overlay" element={<CorrectOverlay />} />
+
         {/*levels*/}
         <Route path="/level1" element={<Level1 />} />
       </Routes>
+
+
     </div>
   );
 }

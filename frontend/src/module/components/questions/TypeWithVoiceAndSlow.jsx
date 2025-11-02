@@ -1,14 +1,14 @@
 import React, { useRef, useState } from "react";
-
-import BackgroundLayout from "../BackgroundLayout";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Volume2, Turtle } from "lucide-react";
-import PageHeaderLayout from "../../components/PageHeaderLayout";
+import CorrectAnswerModal from "../../components/CorrectOverlay";
+import WrongAnswerModal from "../../components/WrongOverlay";
 
 function TypeWithVoiceAndSlow({ question }) {
   const audioRef = useRef(null);
   const [answer, setAnswer] = useState("");
-  const [feedback, setFeedback] = useState("");
+  const [showCorrect, setShowCorrect] = useState(false);
+  const [showWrong, setShowWrong] = useState(false);
 
   // Play normal speed
   const handlePlay = () => {
@@ -28,33 +28,39 @@ function TypeWithVoiceAndSlow({ question }) {
     }
   };
 
+  // Submit answer
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (
-      answer.trim().toLowerCase() ===
-      (question.correctAnswer || "").trim().toLowerCase()
-    ) {
-      setFeedback("Correct!");
+    const correct = (question.correctAnswer || "").trim().toLowerCase();
+    const userAnswer = answer.trim().toLowerCase();
+
+    if (userAnswer === correct) {
+      setShowCorrect(true);
     } else {
-      setFeedback("Try again.");
+      setShowWrong(true);
     }
   };
 
+  const handleCloseModals = () => {
+    setShowCorrect(false);
+    setShowWrong(false);
+    setAnswer(""); // reset input
+  };
+
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
+    <>
       <div className="flex flex-col items-center justify-center min-h-screen px-4 py-6 sm:py-8 gap-3 sm:gap-4">
         {/* Question Bar */}
         <div className="relative w-full max-w-xs sm:max-w-sm mb-2 sm:mb-4">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
           <div className="absolute inset-0 flex items-center justify-center px-4">
             <span className="text-sm xs:text-base sm:text-lg md:text-xl font-semibold text-center leading-tight">
-              {question?.question || "I-Type and iyong narinig"}
+              {question?.question || "I-Type ang iyong narinig"}
             </span>
           </div>
         </div>
 
-        {/* Audio Control Buttons */}
+        {/* Audio Buttons */}
         <div className="flex items-center justify-center gap-3 sm:gap-4 my-2 sm:my-4">
           <button
             className="bg-orange-300 p-3 sm:p-4 rounded-xl shadow-lg active:scale-95 transition-transform"
@@ -92,14 +98,7 @@ function TypeWithVoiceAndSlow({ question }) {
           </button>
         </form>
 
-        {/* Feedback */}
-        {feedback && (
-          <div className="text-base sm:text-lg font-bold my-2 text-center px-4">
-            {feedback}
-          </div>
-        )}
-
-        {/* Hidden audio element for playback */}
+        {/* Hidden audio */}
         {question?.voice && (
           <audio
             ref={audioRef}
@@ -108,7 +107,17 @@ function TypeWithVoiceAndSlow({ question }) {
           />
         )}
       </div>
-    </BackgroundLayout>
+
+      {/* Correct Modal */}
+      <CorrectAnswerModal isOpen={showCorrect} onClose={handleCloseModals} />
+
+      {/* Wrong Modal */}
+      <WrongAnswerModal
+        isOpen={showWrong}
+        onClose={handleCloseModals}
+        correctAnswer={question.correctAnswer}
+      />
+    </>
   );
 }
 

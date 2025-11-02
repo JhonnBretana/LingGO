@@ -4,7 +4,6 @@ import QuestionsBar from "../assets/clickbar.png";
 import PageHeaderLayout from "../module/components/PageHeaderLayout";
 import questions from "../constant/questions_data.js";
 
-// question components
 import DragAndDrop4ChoicesWithVoice from "./components/questions/DragAndDrop4ChoicesWithVoice.jsx";
 import SpeechMicWithVoice from "./components/questions/SpeechMicWithVoice.jsx";
 import Select6ChoicesWithVoiceAndSlow from "./components/questions/Select6ChoicesWithVoiceAndSlow.jsx";
@@ -36,7 +35,6 @@ function Level1Questions() {
   const paginatedQuestions = questions.slice(startIdx, endIdx);
   const questionRows = groupIntoRows(paginatedQuestions, 2);
 
-  // Ito yung mga questions component renderer
   function renderQuestionComponent(question) {
     if (!question) return null;
     switch (question.type) {
@@ -60,75 +58,90 @@ function Level1Questions() {
         return <MatchingWordsWithWords question={question} />;
       case "DragAndDrop4ChoicesWithVoice":
         return <DragAndDrop4ChoicesWithVoice question={question} />;
-      // Add cases for other types here
       default:
         return <div>Unknown question type</div>;
     }
-  }
-  if (selectedQuestion) {
-    return (
-      <BackgroundLayout>
-        {renderQuestionComponent(selectedQuestion)}
-        <div className="flex justify-center mt-4">
-          <button
-            className="mb-2 px-4 py-2 bg-white font-medium rounded-xl border-black border-2"
-            onClick={() => setSelectedQuestion(null)}
-          >
-            Back to Questions
-          </button>
-        </div>
-      </BackgroundLayout>
-    );
   }
 
   return (
     <BackgroundLayout>
       <PageHeaderLayout />
-      <div className="flex flex-col items-center mt-5 min-h-screen">
-        <div className="relative w-80 my-5">
-          <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xl font-bold">LEVEL 1 - Questions</span>
+
+      {selectedQuestion && (
+        <div className="flex justify-start w-full px-6 mt-4">
+          <button
+            onClick={() => setSelectedQuestion(null)}
+            className="flex items-center justify-center px-3 py-2 rounded-lg bg-[#FFD43B] hover:bg-[#FFB84D] shadow-md transition-all duration-200 border border-black"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={3}
+              stroke="black"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
+
+      {selectedQuestion ? (
+        <div className="mt-4">{renderQuestionComponent(selectedQuestion)}</div>
+      ) : (
+        <div className="flex flex-col items-center mt-5 min-h-screen">
+          <div className="relative w-80 my-5">
+            <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-xl font-bold">LEVEL 1 - Questions</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col mb-5 gap-1">
+            {questionRows.map((row, rowIdx) => (
+              <div
+                key={rowIdx}
+                className="flex flex-row gap-3 items-center justify-center mt-3"
+              >
+                {row.map((q) => (
+                  <button
+                    key={q.id}
+                    className="w-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-xl border-2 hover:bg-orange-200"
+                    onClick={() => setSelectedQuestion(q)}
+                  >
+                    Question {q.id}
+                  </button>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-4 mt-4">
+            <button
+              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
+              Prev
+            </button>
+            <span className="text-lg font-bold">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+              onClick={() => setPage(page + 1)}
+              disabled={page === totalPages}
+            >
+              Next
+            </button>
           </div>
         </div>
-        <div className="flex flex-col mb-5 gap-1">
-          {questionRows.map((row, rowIdx) => (
-            <div
-              key={rowIdx}
-              className="flex flex-row gap-3 items-center justify-center mt-3"
-            >
-              {row.map((q) => (
-                <button
-                  key={q.id}
-                  className="w-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-xl border-2 hover:bg-orange-200"
-                  onClick={() => setSelectedQuestion(q)}
-                >
-                  Question {q.id}
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
-        <div className="flex gap-4 mt-4">
-          <button
-            className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-            onClick={() => setPage(page - 1)}
-            disabled={page === 1}
-          >
-            Prev
-          </button>
-          <span className="text-lg font-bold">
-            Page {page} of {totalPages}
-          </span>
-          <button
-            className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-            onClick={() => setPage(page + 1)}
-            disabled={page === totalPages}
-          >
-            Next
-          </button>
-        </div>
-      </div>
+      )}
     </BackgroundLayout>
   );
 }
