@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import Logo from "../../assets/LingGO Logo.png";
 import Star from "../../assets/star.png";
@@ -71,6 +71,18 @@ function PageHeaderLayout() {
     return <div className="px-3 py-4">Loading...</div>;
   }
 
+  async function clearLevel1Questions() {
+    const userId = localStorage.getItem("linggoUserId");
+    if (!userId) return;
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, { Level1Questions: {} });
+  }
+
+  const handleClearRecords = async () => {
+    await clearLevel1Questions();
+    window.location.reload(); // Or refetch user data if you prefer
+  };
+
   return (
     <div className="flex justify-between items-center px-3 py-4 sm:px-4 sm:py-5 md:px-6 md:py-6">
       <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
@@ -129,7 +141,13 @@ function PageHeaderLayout() {
                 {gradeDisplay}
               </div>
               <button
-                className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                className="my-1 px-4 py-2 bg-orange-400 text-white rounded hover:bg-red-600"
+                onClick={handleClearRecords}
+              >
+                Clear Records
+              </button>
+              <button
+                className="my-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                 onClick={handleLogout}
               >
                 Logout
