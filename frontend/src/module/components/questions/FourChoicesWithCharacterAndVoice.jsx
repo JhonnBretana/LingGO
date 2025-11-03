@@ -1,11 +1,10 @@
 import React, { useState, useRef } from "react";
-import Char from "../../../assets/char.png";
 import QuestionsBar from "../../../assets/clickbar.png";
 import { Volume2 } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function FourChoicesWithCharacterAndVoice({ question }) {
+function FourChoicesWithCharacterAndVoice({ question, onCorrectAnswer }) {
   const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
@@ -48,6 +47,24 @@ function FourChoicesWithCharacterAndVoice({ question }) {
     }
   };
 
+  const handleCloseCorrectModal = () => {
+    setShowCorrectModal(false);
+    setSelected(null);
+
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
+  };
+
+  const handleCloseWrongModal = () => {
+    setShowWrongModal(false);
+    setSelected(null);
+
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
+  };
+
   const normalizedChoices = (question?.choices || []).map((c) =>
     typeof c === "string"
       ? { value: c, voice: null, image: null }
@@ -56,7 +73,7 @@ function FourChoicesWithCharacterAndVoice({ question }) {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-screen gap-5">
+      <div className="flex flex-col items-center justify-center min-h-screen gap-5 px-4">
         <div className="relative w-80">
           <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
           <div className="absolute inset-0 flex items-center justify-center">
@@ -66,19 +83,21 @@ function FourChoicesWithCharacterAndVoice({ question }) {
           </div>
         </div>
 
-        <div>
-          <img
-            src={question?.image || Char}
-            alt="character"
-            className="w-60 h-60 object-contain"
-          />
+        <div className="w-full max-w-sm h-64 flex items-center justify-center">
+          {question?.image && (
+            <img
+              src={question.image}
+              alt="character"
+              className="w-full h-full object-contain"
+            />
+          )}
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="w-100 flex flex-col gap-4 items-center"
+          className="w-full max-w-md flex flex-col gap-4 items-center"
         >
-          <div className="grid grid-cols-2 gap-4 mb-5">
+          <div className="grid grid-cols-2 gap-4 w-full mb-5">
             {normalizedChoices.map((choice, idx) => {
               const isSelected = selected === choice.value;
               return (
@@ -110,7 +129,7 @@ function FourChoicesWithCharacterAndVoice({ question }) {
 
           <button
             type="submit"
-            className="w-50 my-5 px-4 py-2 bg-[#f2d919] border-3 border-black rounded-xl font-bold"
+            className="w-full max-w-xs my-5 px-4 py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-lg"
             disabled={!selected}
           >
             Submit
@@ -122,13 +141,13 @@ function FourChoicesWithCharacterAndVoice({ question }) {
 
       <CorrectAnswerModal
         isOpen={showCorrectModal}
-        onClose={() => setShowCorrectModal(false)}
+        onClose={handleCloseCorrectModal}
       />
 
       <WrongAnswerModal
         isOpen={showWrongModal}
         correctAnswer={question.correctAnswer}
-        onClose={() => setShowWrongModal(false)}
+        onClose={handleCloseWrongModal}
       />
     </>
   );

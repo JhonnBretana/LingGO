@@ -17,6 +17,9 @@ import PageHeaderLayout from "./module/components/PageHeaderLayout.jsx";
 import SignUpDetails from "./module/AccountModule/SignUpDetails.jsx";
 import SigninPage from "./module/AccountModule/SigninPage.jsx";
 
+import ChooseLevel from "./module/AccountModule/ChooseLevel.jsx";
+import LevelOne from "./module/AccountModule/LevelOne.jsx";
+
 // Intro Module
 import StartPage1 from "./module/IntroModule/StartPage1.jsx";
 import AgeDetail from "./module/IntroModule/AgeDetail.jsx";
@@ -62,6 +65,8 @@ function App() {
 
         <Route path="/signup-details" element={<SignUpDetails />} />
         <Route path="/signin" element={<SigninPage />} />
+        <Route path="/choose-level" element={<ChooseLevel />} />
+        <Route path="/level-one" element={<LevelOne />} />
 
         {/*intro module*/}
         <Route path="/startpage1" element={<StartPage1 />} />

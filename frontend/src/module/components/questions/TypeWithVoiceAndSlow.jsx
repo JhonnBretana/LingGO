@@ -4,13 +4,12 @@ import { Volume2, Turtle } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function TypeWithVoiceAndSlow({ question }) {
+function TypeWithVoiceAndSlow({ question, onCorrectAnswer }) {
   const audioRef = useRef(null);
   const [answer, setAnswer] = useState("");
   const [showCorrect, setShowCorrect] = useState(false);
   const [showWrong, setShowWrong] = useState(false);
 
-  // Play normal speed
   const handlePlay = () => {
     if (audioRef.current) {
       audioRef.current.playbackRate = 1;
@@ -19,7 +18,6 @@ function TypeWithVoiceAndSlow({ question }) {
     }
   };
 
-  // Play slow speed
   const handlePlaySlow = () => {
     if (audioRef.current) {
       audioRef.current.playbackRate = 0.4;
@@ -28,7 +26,6 @@ function TypeWithVoiceAndSlow({ question }) {
     }
   };
 
-  // Submit answer
   const handleSubmit = (e) => {
     e.preventDefault();
     const correct = (question.correctAnswer || "").trim().toLowerCase();
@@ -41,17 +38,28 @@ function TypeWithVoiceAndSlow({ question }) {
     }
   };
 
-  const handleCloseModals = () => {
+  const handleCloseCorrectModal = () => {
     setShowCorrect(false);
+    setAnswer("");
+
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
+  };
+
+  const handleCloseWrongModal = () => {
     setShowWrong(false);
-    setAnswer(""); // reset input
+    setAnswer("");
+
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
   };
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-6 sm:py-8 gap-3 sm:gap-4">
-        {/* Question Bar */}
-        <div className="relative w-full max-w-xs sm:max-w-sm mb-2 sm:mb-4">
+      <div className="flex flex-col items-center justify-start px-4 pt-2 gap-4 overflow-hidden h-full">
+        <div className="relative w-full max-w-xs sm:max-w-sm">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
           <div className="absolute inset-0 flex items-center justify-center px-4">
             <span className="text-sm xs:text-base sm:text-lg md:text-xl font-semibold text-center leading-tight">
@@ -60,8 +68,7 @@ function TypeWithVoiceAndSlow({ question }) {
           </div>
         </div>
 
-        {/* Audio Buttons */}
-        <div className="flex items-center justify-center gap-3 sm:gap-4 my-2 sm:my-4">
+        <div className="flex items-center justify-center gap-3 sm:gap-4">
           <button
             className="bg-orange-300 p-3 sm:p-4 rounded-xl shadow-lg active:scale-95 transition-transform"
             onClick={handlePlay}
@@ -78,27 +85,25 @@ function TypeWithVoiceAndSlow({ question }) {
           </button>
         </div>
 
-        {/* Input Form */}
         <form
-          className="w-full max-w-xs sm:max-w-sm flex flex-col items-center my-2 sm:my-4 px-4"
+          className="w-full max-w-xs sm:max-w-sm flex flex-col items-center px-4"
           onSubmit={handleSubmit}
         >
           <input
             type="text"
             placeholder="(TYPE)"
             value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            className="w-full bg-white text-black text-center font-bold mb-4 sm:mb-5 py-2 sm:py-3 px-4 rounded-full border-3 border-black text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+            onChange={(e) => setAnswer(e.target.value.toUpperCase())}
+            className="w-full bg-white text-black text-center font-bold mb-4 py-2 sm:py-3 px-4 rounded-full border-3 border-black text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
           <button
             type="submit"
-            className="w-full mt-3 sm:mt-5 px-6 py-2 sm:py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-base sm:text-lg shadow-lg active:scale-95 transition-transform"
+            className="w-full px-6 py-2 sm:py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-base sm:text-lg shadow-lg active:scale-95 transition-transform"
           >
             Submit
           </button>
         </form>
 
-        {/* Hidden audio */}
         {question?.voice && (
           <audio
             ref={audioRef}
@@ -108,13 +113,11 @@ function TypeWithVoiceAndSlow({ question }) {
         )}
       </div>
 
-      {/* Correct Modal */}
-      <CorrectAnswerModal isOpen={showCorrect} onClose={handleCloseModals} />
+      <CorrectAnswerModal isOpen={showCorrect} onClose={handleCloseCorrectModal} />
 
-      {/* Wrong Modal */}
       <WrongAnswerModal
         isOpen={showWrong}
-        onClose={handleCloseModals}
+        onClose={handleCloseWrongModal}
         correctAnswer={question.correctAnswer}
       />
     </>
