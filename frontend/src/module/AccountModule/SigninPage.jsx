@@ -14,6 +14,8 @@ function SigninPage() {
   const handleSignin = async () => {
     const querySnapshot = await getDocs(collection(db, "users"));
     let foundUser = null;
+    let userId = null;
+
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       if (
@@ -21,12 +23,14 @@ function SigninPage() {
         data.Password === password.trim()
       ) {
         foundUser = data;
+        userId = doc.id; // Get the document ID
       }
     });
 
     if (foundUser) {
-      // Save user info to localStorage
-      localStorage.setItem("linggoUser", JSON.stringify(foundUser));
+      // Only store the user ID, not all data
+      localStorage.setItem("linggoUserId", userId);
+      // Don't store password!
       navigate("/startpage1");
     } else {
       setShowModal(true);

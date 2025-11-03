@@ -3,7 +3,7 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function QuestionWith3Choices({ question }) {
+function QuestionWith3Choices({ question, onCorrectAnswer }) {
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
@@ -23,39 +23,82 @@ function QuestionWith3Choices({ question }) {
     }
   };
 
+  const handleCloseCorrectModal = () => {
+    setShowCorrectModal(false);
+    setSelected(null);
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
+  };
+
+  const handleCloseWrongModal = () => {
+    setShowWrongModal(false);
+    setSelected(null);
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
+  };
+
+  const topChoices = question.choices.slice(0, 2);
+  const bottomChoice = question.choices[2];
+
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <div className="relative w-full max-w-80 mb-5">
+      <div className="flex flex-col items-center justify-start h-screen overflow-hidden px-4 pt-4">
+        <div className="relative w-full max-w-80 mb-3">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full h-auto" />
           <div className="absolute inset-0 flex items-center justify-center">
             <p className="font-medium">{question?.question}</p>
           </div>
         </div>
         <form
-          className="w-full flex flex-col items-center justify-center mt-4"
+          className="w-full max-w-80 flex flex-col gap-3 justify-start items-center"
           onSubmit={handleSubmit}
         >
-          <div className="flex flex-col lg:flex-row gap-5 items-center justify-center mb-4">
-            {question.choices.map((choice, idx) => (
+          {/* First row - 2 choices */}
+          <div className="flex flex-row gap-3 w-full">
+            {topChoices.map((choice, idx) => (
               <button
                 key={idx}
                 type="button"
-                className={`w-full max-w-60 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${selected === choice.value ? "border-yellow-400" : ""}`}
+                className={`flex-1 h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${selected === choice.value ? "border-4 border-yellow-400" : ""
+                  }`}
                 onClick={() => setSelected(choice.value)}
               >
-                <img
-                  src={choice.image}
-                  alt={choice.value}
-                  className="w-25 mx-auto"
-                />
-                <p>{choice.value}</p>
+                <div className="flex-1 flex items-center justify-center w-full min-h-0">
+                  <img
+                    src={choice.image}
+                    alt={choice.value}
+                    className="max-w-full max-h-full object-contain"
+                  />
+                </div>
+                <div className="w-full text-center pt-2 shrink-0">{choice.value}</div>
               </button>
             ))}
           </div>
+
+          {/* Second row - 1 centered choice */}
+          <div className="flex flex-row gap-3 w-full justify-center">
+            <button
+              type="button"
+              className={`w-[calc(50%-0.375rem)] h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${selected === bottomChoice.value ? "border-4 border-yellow-400" : ""
+                }`}
+              onClick={() => setSelected(bottomChoice.value)}
+            >
+              <div className="flex-1 flex items-center justify-center w-full min-h-0">
+                <img
+                  src={bottomChoice.image}
+                  alt={bottomChoice.value}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+              <div className="w-full text-center pt-2 shrink-0">{bottomChoice.value}</div>
+            </button>
+          </div>
+
           <button
             type="submit"
-            className="px-4 py-2 bg-[#f2d919] border-2 border-black rounded-xl font-bold"
+            className="w-full max-w-40 mt-3 px-4 py-2 bg-[#f2d919] border-2 border-black rounded-xl font-bold"
             disabled={!selected}
           >
             Submit
@@ -65,13 +108,13 @@ function QuestionWith3Choices({ question }) {
 
       <CorrectAnswerModal
         isOpen={showCorrectModal}
-        onClose={() => setShowCorrectModal(false)}
+        onClose={handleCloseCorrectModal}
       />
 
       <WrongAnswerModal
         isOpen={showWrongModal}
         correctAnswer={question.correctAnswer}
-        onClose={() => setShowWrongModal(false)}
+        onClose={handleCloseWrongModal}
       />
     </>
   );

@@ -3,17 +3,12 @@ import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import LogoStanding from "../../assets/LingoLogo Standing.png";
 import { gradeCategories } from "../../constant/grade_category";
+import { gradeSectionMap } from "../../constant/gradeSectionMap";
 import { sectionCategories } from "../../constant/section_category";
 import { db } from "../../firebase";
 import { collection, addDoc } from "firebase/firestore";
 
 const gradeToNumber = {
-  "Unang Baitang": "1",
-  "Ikalawang Baitang": "2",
-  "Ikatlong Baitang": "3",
-  "Ikaapat na Baitang": "4",
-  "Ika-limang Baitang": "5",
-  "Ika-anim na Baitang": "6",
   "Ikapitong Baitang": "7",
   "Ika-walong Baitang": "8",
   "Ika-siyam na Baitang": "9",
@@ -28,6 +23,8 @@ function SignUpDetails() {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const availableSections = gradeSectionMap[grade] || [];
+
   const navigate = useNavigate();
 
   const isFormComplete =
@@ -95,7 +92,10 @@ function SignUpDetails() {
               placeholder="(TYPE)"
               value={lastName}
               onChange={(e) => setLastName(e.target.value.toUpperCase())}
-              className="w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none"
+              className={`w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none max-h-64 overflow-y-auto ${
+                !grade ? "bg-gray-300 text-gray-500 cursor-not-allowed" : ""
+              }`}
+              disabled={!grade}
             />
             <span
               className="text-white font-extrabold text-lg text-shadow-md"
@@ -112,7 +112,7 @@ function SignUpDetails() {
               className="w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none max-h-64 overflow-y-auto"
             >
               <option value="">SELECT</option>
-              {sectionCategories.map((sec, index) => (
+              {availableSections.map((sec, index) => (
                 <option key={index} value={sec}>
                   {sec}
                 </option>

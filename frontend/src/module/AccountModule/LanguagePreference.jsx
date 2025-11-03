@@ -36,10 +36,9 @@ function LanguagePreference() {
           className="text-white font-extrabold text-center
                              text-2xl xs:text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl
                              mb-6 xs:mb-8 sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16
-                             px-2 leading-tight"
+                             px-2 leading-snug"
           style={{
-            WebkitTextStroke: "2px black",
-            textShadow: "3px 3px 0px rgba(0,0,0,0.3)",
+            textShadow: "3px 3px 0px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5)",
           }}
         >
           Anong wika ang gusto mo matutunan,

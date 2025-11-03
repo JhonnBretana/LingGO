@@ -9,19 +9,16 @@ function CebuanoKnowledge() {
 
   const handleStarClick = (level) => {
     console.log(`Selected level: ${level}`);
-    // Navigate to CebuanoMotivation page
     navigate("/cebuano-motivation");
   };
 
   return (
     <BackgroundLayout>
-      {/* Logo - top-right on desktop only (lg+ now, instead of md+) */}
       <div className="hidden lg:block absolute top-4 right-4 lg:top-6 lg:right-6 lg:w-28 lg:h-28 xl:top-8 xl:right-8 xl:w-32 xl:h-32 z-20">
         <img src={Logo} alt="LingGO Logo" className="w-full h-full" />
       </div>
 
       <div className="flex flex-col items-center text-center px-3 py-6 min-h-screen justify-center relative">
-        {/* Logo - centered on mobile and tablet (up to lg-), with sizes set to 30 */}
         <img
           src={Logo}
           alt="LingGO Logo"
@@ -31,11 +28,10 @@ function CebuanoKnowledge() {
         <h1
           className="text-white font-extrabold 
                              text-2xl xs:text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 
-                             leading-tight mb-6 xs:mb-8 sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16
+                             leading-snug mb-6 xs:mb-8 sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16
                              px-2"
           style={{
-            WebkitTextStroke: "1px black",
-            textShadow: "2px 2px 0px rgba(0,0,0,0.3)",
+            textShadow: "2px 2px 0px rgba(0,0,0,0.9), 0px 0px 8px rgba(0,0,0,0.5)",
           }}
         >
           Gaano kalawak ang iyong
@@ -43,13 +39,11 @@ function CebuanoKnowledge() {
           kaalaman sa Cebuano?
         </h1>
 
-        {/* Stars Section */}
         <div
           className="flex flex-col md:flex-row justify-center items-center md:items-end 
                               gap-6 xs:gap-7 sm:gap-8 md:gap-3 lg:gap-10 xl:gap-14 
                               w-full max-w-[95rem] px-2"
         >
-          {/* Star 1 */}
           <button
             onClick={() => handleStarClick("beginner")}
             className="relative w-60 xs:w-64 sm:w-72 md:w-52 lg:w-72 xl:w-[22rem] flex-shrink-0 
@@ -84,7 +78,6 @@ function CebuanoKnowledge() {
             </p>
           </button>
 
-          {/* Star 2 — floating higher on desktop */}
           <button
             onClick={() => handleStarClick("intermediate")}
             className="relative w-60 xs:w-64 sm:w-72 md:w-52 lg:w-72 xl:w-[22rem] flex-shrink-0 
@@ -120,7 +113,6 @@ function CebuanoKnowledge() {
             </p>
           </button>
 
-          {/* Star 3 */}
           <button
             onClick={() => handleStarClick("advanced")}
             className="relative w-60 xs:w-64 sm:w-72 md:w-52 lg:w-72 xl:w-[22rem] flex-shrink-0

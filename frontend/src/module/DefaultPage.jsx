@@ -9,12 +9,11 @@ function DefaultPage() {
   return (
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
-        <div className="mb-5">
+        <div className="mb-5 px-2">
           <p
-            className="text-3xl text-white font-extrabold"
+            className="text-2xl sm:text-3xl text-white font-extrabold leading-relaxed"
             style={{
-              WebkitTextStroke: "1px black",
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
+              textShadow: "2px 2px 0px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0, 0, 0, 0.4)",
             }}
           >
             Ang libre, masaya, at lokal na paraan para matuto ng wika!

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import LogoStanding from "../../assets/LingoLogo Standing.png";
 import { gradeCategories } from "../../constant/grade_category";
+import { gradeSectionMap } from "../../constant/gradeSectionMap";
 import { sectionCategories } from "../../constant/section_category";
 import Bird from "../../assets/LingoLogo Standing.png";
 
@@ -10,6 +11,7 @@ function GradeSectionDetail() {
   const [section, setSection] = useState("");
   const [grade, setGrade] = useState("");
   const navigate = useNavigate();
+  const availableSections = gradeSectionMap[grade] || [];
 
   const isFormComplete = section !== "" && grade !== "";
 
@@ -35,10 +37,13 @@ function GradeSectionDetail() {
             <select
               value={section}
               onChange={(e) => setSection(e.target.value)}
-              className="w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none max-h-64 overflow-y-auto"
+              className={`w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none max-h-64 overflow-y-auto ${
+                !grade ? "bg-gray-300 text-gray-500 cursor-not-allowed" : ""
+              }`}
+              disabled={!grade}
             >
               <option value="">SELECT</option>
-              {sectionCategories.map((sec, index) => (
+              {availableSections.map((sec, index) => (
                 <option key={index} value={sec}>
                   {sec}
                 </option>

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import QuestionsBar from "../../../assets/clickbar.png";
+import CorrectAnswerModal from "../../components/CorrectOverlay";
+import WrongAnswerModal from "../../components/WrongOverlay";
 
-function MatchingWordsWithWords({ question }) {
+function MatchingWordsWithWords({ question, onCorrectAnswer }) {
   const [matches, setMatches] = useState([]);
-  const [feedback, setFeedback] = useState("");
+  const [showCorrect, setShowCorrect] = useState(false);
+  const [showWrong, setShowWrong] = useState(false);
 
   const colors = [
     { bg: "bg-orange-400", border: "border-orange-600" },
@@ -60,7 +63,6 @@ function MatchingWordsWithWords({ question }) {
   const handleSubmit = () => {
     const allComplete = matches.every((m) => m.left && m.right);
     if (!allComplete) {
-      setFeedback("Please complete all matches.");
       return;
     }
 
@@ -71,18 +73,38 @@ function MatchingWordsWithWords({ question }) {
     const isCorrect = correctPairs.every((pair) =>
       matches.find((m) => m.left === pair.left && m.right === pair.right)
     );
-    setFeedback(isCorrect ? "Correct!" : "Try again.");
+
+    if (isCorrect) {
+      setShowCorrect(true);
+    } else {
+      setShowWrong(true);
+    }
   };
 
   const handleReset = () => {
     setMatches([]);
-    setFeedback("");
+  };
+
+  const handleCloseCorrectModal = () => {
+    setShowCorrect(false);
+    setMatches([]);
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
+  };
+
+  const handleCloseWrongModal = () => {
+    setShowWrong(false);
+    setMatches([]);
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
   };
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-screen px-4">
-        <div className="relative w-full max-w-[280px] sm:max-w-xs my-3 sm:my-5">
+      <div className="flex flex-col items-center justify-start px-4 pt-2 gap-4 overflow-hidden h-full">
+        <div className="relative w-full max-w-[280px] sm:max-w-xs">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
           <div className="absolute inset-0 flex items-center justify-center px-2">
             <span className="text-base sm:text-xl font-semibold text-center">
@@ -90,7 +112,7 @@ function MatchingWordsWithWords({ question }) {
             </span>
           </div>
         </div>
-        <div className="flex flex-row gap-3 sm:gap-5 my-3 sm:my-5">
+        <div className="flex flex-row gap-3 sm:gap-5">
           <div className="flex flex-col gap-3 items-center justify-center">
             {question.choices.map((choice) => {
               const color = getWordColor(choice.word1, "left");
@@ -126,7 +148,7 @@ function MatchingWordsWithWords({ question }) {
             })}
           </div>
         </div>
-        <div className="flex gap-3 mt-3 sm:mt-5">
+        <div className="flex gap-3">
           <button
             className="px-6 py-2 bg-gray-400 border-2 border-gray-600 rounded-xl font-bold shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 text-black"
             onClick={handleReset}
@@ -143,12 +165,10 @@ function MatchingWordsWithWords({ question }) {
               </button>
             )}
         </div>
-        {feedback && (
-          <div className="text-base sm:text-lg font-bold mt-3 text-white">
-            {feedback}
-          </div>
-        )}
       </div>
+
+      <CorrectAnswerModal isOpen={showCorrect} onClose={handleCloseCorrectModal} />
+      <WrongAnswerModal isOpen={showWrong} onClose={handleCloseWrongModal} correctAnswer={null} />
     </>
   );
 }
