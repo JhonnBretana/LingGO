@@ -4,7 +4,11 @@ import { Volume2, Turtle } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function Select6ChoicesWithVoiceAndSlow({ question, onCorrectAnswer }) {
+function Select6ChoicesWithVoiceAndSlow({
+  question,
+  onCorrectAnswer,
+  onWrongAnswer,
+}) {
   const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
@@ -33,7 +37,7 @@ function Select6ChoicesWithVoiceAndSlow({ question, onCorrectAnswer }) {
     if (
       selected &&
       selected.trim().toLowerCase() ===
-      (question.correctAnswer || "").trim().toLowerCase()
+        (question.correctAnswer || "").trim().toLowerCase()
     ) {
       setShowCorrectModal(true);
     } else {
@@ -52,8 +56,8 @@ function Select6ChoicesWithVoiceAndSlow({ question, onCorrectAnswer }) {
   const handleCloseWrongModal = () => {
     setShowWrongModal(false);
     setSelected(null);
-    if (onCorrectAnswer) {
-      onCorrectAnswer();
+    if (onWrongAnswer) {
+      onWrongAnswer();
     }
   };
 
@@ -92,10 +96,11 @@ function Select6ChoicesWithVoiceAndSlow({ question, onCorrectAnswer }) {
             <button
               key={idx}
               type="button"
-              className={`w-full text-center bg-gradient-to-r from-white to-gray-50 text-black text-base sm:text-lg font-bold py-3 px-4 rounded-xl border-2 shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 ${selected === choice
-                ? "border-yellow-400 bg-yellow-50 shadow-lg scale-105"
-                : "border-gray-200"
-                }`}
+              className={`w-full text-center bg-gradient-to-r from-white to-gray-50 text-black text-base sm:text-lg font-bold py-3 px-4 rounded-xl border-2 shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 ${
+                selected === choice
+                  ? "border-yellow-400 bg-yellow-50 shadow-lg scale-105"
+                  : "border-gray-200"
+              }`}
               onClick={() => setSelected(choice)}
             >
               {choice}

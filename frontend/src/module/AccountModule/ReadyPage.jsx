@@ -37,7 +37,7 @@ function ReadyPage() {
 
   const handleContinue = () => {
     console.log("Magpatuloy clicked");
-    navigate("/level1");
+    navigate("/choose-level");
   };
 
   if (loading) {
@@ -59,7 +59,8 @@ function ReadyPage() {
                          text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl
                          px-2 leading-snug"
             style={{
-              textShadow: "3px 3px 0px #000, -3px -3px 0px #000, 3px -3px 0px #000, -3px 3px 0px #000, 0px 3px 0px #000, 3px 0px 0px #000, 0px -3px 0px #000, -3px 0px 0px #000",
+              textShadow:
+                "3px 3px 0px #000, -3px -3px 0px #000, 3px -3px 0px #000, -3px 3px 0px #000, 0px 3px 0px #000, 3px 0px 0px #000, 0px -3px 0px #000, -3px 0px 0px #000",
             }}
           >
             Handa ka na ba,
@@ -115,7 +116,8 @@ function ReadyPage() {
             className="text-white font-extrabold text-center
                          text-4xl leading-snug"
             style={{
-              textShadow: "3px 3px 0px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5)",
+              textShadow:
+                "3px 3px 0px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5)",
             }}
           >
             Handa ka na ba,

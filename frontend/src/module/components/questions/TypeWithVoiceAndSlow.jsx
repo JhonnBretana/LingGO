@@ -4,7 +4,7 @@ import { Volume2, Turtle } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function TypeWithVoiceAndSlow({ question, onCorrectAnswer }) {
+function TypeWithVoiceAndSlow({ question, onCorrectAnswer, onWrongAnswer }) {
   const audioRef = useRef(null);
   const [answer, setAnswer] = useState("");
   const [showCorrect, setShowCorrect] = useState(false);
@@ -41,7 +41,6 @@ function TypeWithVoiceAndSlow({ question, onCorrectAnswer }) {
   const handleCloseCorrectModal = () => {
     setShowCorrect(false);
     setAnswer("");
-
     if (onCorrectAnswer) {
       onCorrectAnswer();
     }
@@ -50,9 +49,8 @@ function TypeWithVoiceAndSlow({ question, onCorrectAnswer }) {
   const handleCloseWrongModal = () => {
     setShowWrong(false);
     setAnswer("");
-
-    if (onCorrectAnswer) {
-      onCorrectAnswer();
+    if (onWrongAnswer) {
+      onWrongAnswer();
     }
   };
 
@@ -113,7 +111,10 @@ function TypeWithVoiceAndSlow({ question, onCorrectAnswer }) {
         )}
       </div>
 
-      <CorrectAnswerModal isOpen={showCorrect} onClose={handleCloseCorrectModal} />
+      <CorrectAnswerModal
+        isOpen={showCorrect}
+        onClose={handleCloseCorrectModal}
+      />
 
       <WrongAnswerModal
         isOpen={showWrong}

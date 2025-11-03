@@ -3,7 +3,7 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function QuestionWith4Choices({ question, onCorrectAnswer }) {
+function QuestionWith4Choices({ question, onCorrectAnswer, onWrongAnswer }) {
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
@@ -12,9 +12,10 @@ function QuestionWith4Choices({ question, onCorrectAnswer }) {
     e.preventDefault();
     if (!selected) return;
 
-    const correctAnswer = typeof question.correctAnswer === "string"
-      ? question.correctAnswer
-      : question.correctAnswer?.value || question.correctAnswer?.image;
+    const correctAnswer =
+      typeof question.correctAnswer === "string"
+        ? question.correctAnswer
+        : question.correctAnswer?.value || question.correctAnswer?.image;
 
     if (selected && selected === correctAnswer) {
       setShowCorrectModal(true);
@@ -34,8 +35,8 @@ function QuestionWith4Choices({ question, onCorrectAnswer }) {
   const handleCloseWrongModal = () => {
     setShowWrongModal(false);
     setSelected(null);
-    if (onCorrectAnswer) {
-      onCorrectAnswer();
+    if (onWrongAnswer) {
+      onWrongAnswer();
     }
   };
 
@@ -52,14 +53,22 @@ function QuestionWith4Choices({ question, onCorrectAnswer }) {
     if (typeof question.correctAnswer === "string") {
       return question.correctAnswer;
     }
-    return question.correctAnswer?.value || question.correctAnswer?.image || "See correct image above";
+    return (
+      question.correctAnswer?.value ||
+      question.correctAnswer?.image ||
+      "See correct image above"
+    );
   };
 
   return (
     <>
       <div className="flex flex-col items-center justify-start h-screen overflow-hidden px-4 pt-4">
         <div className="relative w-full max-w-80 mb-3">
-          <img src={QuestionsBar} alt="Questions Bar" className="w-full h-auto" />
+          <img
+            src={QuestionsBar}
+            alt="Questions Bar"
+            className="w-full h-auto"
+          />
           <div className="absolute inset-0 flex items-center justify-center">
             <p className="font-medium">{question?.question}</p>
           </div>
@@ -73,8 +82,9 @@ function QuestionWith4Choices({ question, onCorrectAnswer }) {
               <button
                 key={idx}
                 type="button"
-                className={`flex-1 h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${selected === choice.value ? "border-4 border-yellow-400" : ""
-                  }`}
+                className={`flex-1 h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${
+                  selected === choice.value ? "border-4 border-yellow-400" : ""
+                }`}
                 onClick={() => setSelected(choice.value)}
               >
                 <div className="flex-1 flex items-center justify-center w-full min-h-0">
@@ -84,7 +94,9 @@ function QuestionWith4Choices({ question, onCorrectAnswer }) {
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                <div className="w-full text-center pt-2 shrink-0">{choice.value}</div>
+                <div className="w-full text-center pt-2 shrink-0">
+                  {choice.value}
+                </div>
               </button>
             ))}
           </div>
@@ -93,8 +105,9 @@ function QuestionWith4Choices({ question, onCorrectAnswer }) {
               <button
                 key={idx + 2}
                 type="button"
-                className={`flex-1 h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${selected === choice.value ? "border-4 border-yellow-400" : ""
-                  }`}
+                className={`flex-1 h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${
+                  selected === choice.value ? "border-4 border-yellow-400" : ""
+                }`}
                 onClick={() => setSelected(choice.value)}
               >
                 <div className="flex-1 flex items-center justify-center w-full min-h-0">
@@ -104,7 +117,9 @@ function QuestionWith4Choices({ question, onCorrectAnswer }) {
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                <div className="w-full text-center pt-2 shrink-0">{choice.value}</div>
+                <div className="w-full text-center pt-2 shrink-0">
+                  {choice.value}
+                </div>
               </button>
             ))}
           </div>

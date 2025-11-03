@@ -49,6 +49,8 @@ import Voice_Character from "./module/GamePlayLvl1Module/Voice_Character.jsx";
 //Levels
 import Level1 from "./module/Level1Questions.jsx";
 
+import Result from "./module/components/LevelResultPreview.jsx";
+
 function App() {
   return (
     <div>
@@ -124,9 +126,9 @@ function App() {
 
         {/*levels*/}
         <Route path="/level1" element={<Level1 />} />
+
+        <Route path="/result" element={<Result />} />
       </Routes>
-
-
     </div>
   );
 }

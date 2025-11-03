@@ -4,7 +4,7 @@ import { Volume2, Turtle } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function SixChoicesWithVoice({ question, onCorrectAnswer }) {
+function SixChoicesWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
   const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
@@ -25,7 +25,7 @@ function SixChoicesWithVoice({ question, onCorrectAnswer }) {
     if (
       selected &&
       selected.trim().toLowerCase() ===
-      (question.correctAnswer?.value || "").trim().toLowerCase()
+        (question.correctAnswer?.value || "").trim().toLowerCase()
     ) {
       setShowCorrectModal(true);
     } else {
@@ -36,7 +36,6 @@ function SixChoicesWithVoice({ question, onCorrectAnswer }) {
   const handleCloseCorrectModal = () => {
     setShowCorrectModal(false);
     setSelected(null);
-
     if (onCorrectAnswer) {
       onCorrectAnswer();
     }
@@ -45,9 +44,8 @@ function SixChoicesWithVoice({ question, onCorrectAnswer }) {
   const handleCloseWrongModal = () => {
     setShowWrongModal(false);
     setSelected(null);
-
-    if (onCorrectAnswer) {
-      onCorrectAnswer();
+    if (onWrongAnswer) {
+      onWrongAnswer();
     }
   };
 
@@ -75,10 +73,11 @@ function SixChoicesWithVoice({ question, onCorrectAnswer }) {
                 <button
                   type="button"
                   key={idx}
-                  className={`w-full h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${selected === choice.value
-                    ? "border-4 border-yellow-400"
-                    : ""
-                    }`}
+                  className={`w-full h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${
+                    selected === choice.value
+                      ? "border-4 border-yellow-400"
+                      : ""
+                  }`}
                   onClick={() => setSelected(choice.value)}
                 >
                   <div className="flex-1 flex items-center justify-center w-full min-h-0">
@@ -88,7 +87,9 @@ function SixChoicesWithVoice({ question, onCorrectAnswer }) {
                       className="max-w-full max-h-full object-contain"
                     />
                   </div>
-                  <div className="w-full text-center pt-2 shrink-0">{choice.value}</div>
+                  <div className="w-full text-center pt-2 shrink-0">
+                    {choice.value}
+                  </div>
                 </button>
               ))}
             </div>
@@ -97,10 +98,11 @@ function SixChoicesWithVoice({ question, onCorrectAnswer }) {
                 <button
                   type="button"
                   key={idx}
-                  className={`w-full h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${selected === choice.value
-                    ? "border-4 border-yellow-400"
-                    : ""
-                    }`}
+                  className={`w-full h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${
+                    selected === choice.value
+                      ? "border-4 border-yellow-400"
+                      : ""
+                  }`}
                   onClick={() => setSelected(choice.value)}
                 >
                   <div className="flex-1 flex items-center justify-center w-full min-h-0">
@@ -110,7 +112,9 @@ function SixChoicesWithVoice({ question, onCorrectAnswer }) {
                       className="max-w-full max-h-full object-contain"
                     />
                   </div>
-                  <div className="w-full text-center pt-2 shrink-0">{choice.value}</div>
+                  <div className="w-full text-center pt-2 shrink-0">
+                    {choice.value}
+                  </div>
                 </button>
               ))}
             </div>

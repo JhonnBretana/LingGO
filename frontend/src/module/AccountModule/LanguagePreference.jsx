@@ -38,7 +38,8 @@ function LanguagePreference() {
                              mb-6 xs:mb-8 sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16
                              px-2 leading-snug"
           style={{
-            textShadow: "3px 3px 0px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5)",
+            textShadow:
+              "3px 3px 0px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5)",
           }}
         >
           Anong wika ang gusto mo matutunan,

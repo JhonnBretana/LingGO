@@ -31,7 +31,7 @@ function SigninPage() {
       // Only store the user ID, not all data
       localStorage.setItem("linggoUserId", userId);
       // Don't store password!
-      navigate("/startpage1");
+      navigate("/welcome");
     } else {
       setShowModal(true);
     }
