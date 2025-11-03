@@ -234,7 +234,7 @@ const questions = [
       { word1: "Gulay", word2: "Bahay" },
     ],
     correctAnswer: [
-      { word1: "Wala", word2: "Araw" },
+      { word1: "Wala", word2: "Kaliwa" },
       { word1: "Tuo", word2: "Kanan" },
       { word1: "Balay", word2: "Bahay" },
       { word1: "Adlaw", word2: "Araw" },
