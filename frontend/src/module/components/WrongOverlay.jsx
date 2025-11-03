@@ -2,51 +2,51 @@ import React, { useMemo } from "react";
 import Arrow from "../../assets/Arrow.png";
 
 function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
-    const characterImages = [
-        "/assets/ImageChoices/UnifGirl1.png",
-        "/assets/ImageChoices/UnifGirl3.png"
-    ];
+  const characterImages = [
+    "/assets/ImageChoices/UnifGirl1.png",
+    "/assets/ImageChoices/UnifGirl3.png",
+  ];
 
-    const randomImage = useMemo(() => {
-        if (!isOpen) return "";
-        const randomIndex = Math.floor(Math.random() * characterImages.length);
-        return characterImages[randomIndex];
-    }, [isOpen]);
+  const randomImage = useMemo(() => {
+    if (!isOpen) return "";
+    const randomIndex = Math.floor(Math.random() * characterImages.length);
+    return characterImages[randomIndex];
+  }, [isOpen]);
 
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
-    return (
-        <div className="fixed inset-0 flex items-end justify-start z-50 bg-black/30">
-            <div className="relative w-full bg-white/95 border-t-4 border-orange-500 rounded-t-3xl shadow-2xl p-6 pb-16 text-center animate-slide-up sm:rounded-t-[2rem]">
-                <h2 className="text-2xl font-extrabold text-orange-500 mb-4 tracking-wide">
-                    MALI
-                </h2>
+  return (
+    <div className="fixed inset-0 flex items-end justify-start z-50 bg-black/30">
+      <div className="relative w-full bg-white/95 border-t-4 border-orange-500 rounded-t-3xl shadow-2xl p-6 pb-16 text-center animate-slide-up sm:rounded-t-[2rem]">
+        <h2 className="text-2xl font-extrabold text-orange-500 mb-4 tracking-wide">
+          MALI
+        </h2>
 
-                <div className="flex items-center justify-center gap-4 flex-wrap sm:flex-nowrap">
-                    <img
-                        src={randomImage}
-                        alt="Wrong"
-                        className="w-24 h-24 object-contain"
-                    />
-                    <div className="text-left">
-                        <p className="text-base font-semibold mb-2">Tamang Sagot:</p>
-                        <p className="text-lg font-bold border-b-4 border-black inline-block pb-1">
-                            {correctAnswer || "—"}
-                        </p>
-                    </div>
-                </div>
+        <div className="flex items-center justify-center gap-4 flex-wrap sm:flex-nowrap">
+          <img
+            src={randomImage}
+            alt="Wrong"
+            className="w-24 h-24 object-contain"
+          />
+          <div className="text-left">
+            <p className="text-base font-semibold mb-2">Tamang Sagot:</p>
+            <p className="text-lg font-bold border-b-4 border-black inline-block pb-1">
+              {correctAnswer || "—"}
+            </p>
+          </div>
+        </div>
 
-                <div className="absolute right-6 bottom-4">
-                    <img
-                        src={Arrow}
-                        alt="Next"
-                        className="w-14 h-14 object-contain cursor-pointer animate-bounce-subtle hover:scale-110 active:scale-95 transition-transform drop-shadow-lg"
-                        onClick={onClose}
-                    />
-                </div>
-            </div>
+        <div className="absolute right-6 bottom-4">
+          <img
+            src={Arrow}
+            alt="Next"
+            className="w-14 h-14 object-contain cursor-pointer animate-bounce-subtle hover:scale-110 active:scale-95 transition-transform drop-shadow-lg"
+            onClick={onClose}
+          />
+        </div>
+      </div>
 
-            <style>{`
+      <style>{`
                 @keyframes slide-up {
                     from {
                         transform: translateY(100%);
@@ -72,8 +72,8 @@ function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
                     animation: bounce-subtle 2s ease-in-out infinite;
                 }
             `}</style>
-        </div>
-    );
+    </div>
+  );
 }
 
 export default WrongAnswerModal;

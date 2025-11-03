@@ -43,7 +43,7 @@ const questions = [
       { value: "Tulo", voice: "/assets/Voice/CebuanoNumber/tulo.mp3" },
     ],
     correctAnswer: "Tulo",
-    image: "/assets/ImageChoices/bluegirl1.png",
+    image: "/assets/ImageChoices/Bluegirl1.png",
     voice: null,
   },
   {
@@ -305,7 +305,7 @@ const questions = [
       { value: "Araw", voice: "/assets/Voice/Words/araw.mp3" },
     ],
     correctAnswer: "Pera",
-    image: "/assets/ImageChoices/redgirl1.png",
+    image: "/assets/ImageChoices/Redgirl1.png",
     voice: null,
   },
   {
