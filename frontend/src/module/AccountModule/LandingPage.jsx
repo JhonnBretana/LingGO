@@ -15,7 +15,7 @@ function LandingPage() {
         </div>
         <div className="flex flex-col">
           <button
-            onClick={() => navigate("/welcome")}
+            onClick={() => navigate("/namedetail")}
             className="w-70 bg-white text-black text-sm font-bold py-3 px-4 rounded-2xl border-2 border-black mt-3 hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
           >
             MAGSIMULA

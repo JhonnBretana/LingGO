@@ -41,25 +41,75 @@ function Level1Questions() {
 
     switch (question.type) {
       case "TypeWithVoiceAndSlow":
-        return <TypeWithVoiceAndSlow question={question} onCorrectAnswer={handleCorrectAnswer} />;
+        return (
+          <TypeWithVoiceAndSlow
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+          />
+        );
       case "SixChoicesWithVoice":
-        return <SixChoicesWithVoice question={question} onCorrectAnswer={handleCorrectAnswer} />;
+        return (
+          <SixChoicesWithVoice
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+          />
+        );
       case "FourChoicesWithCharacterAndVoice":
-        return <FourChoicesWithCharacterAndVoice question={question} onCorrectAnswer={handleCorrectAnswer} />;
+        return (
+          <FourChoicesWithCharacterAndVoice
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+          />
+        );
       case "SpeechMicWithVoice":
-        return <SpeechMicWithVoice question={question} onCorrectAnswer={handleCorrectAnswer} />;
+        return (
+          <SpeechMicWithVoice
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+          />
+        );
       case "MatchingWordsWithImage":
-        return <MatchingWordsWithImage question={question} onCorrectAnswer={handleCorrectAnswer} />;
+        return (
+          <MatchingWordsWithImage
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+          />
+        );
       case "QuestionWith3Choices":
-        return <QuestionWith3Choices question={question} onCorrectAnswer={handleCorrectAnswer} />;
+        return (
+          <QuestionWith3Choices
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+          />
+        );
       case "QuestionWith4Choices":
-        return <QuestionWith4Choices question={question} onCorrectAnswer={handleCorrectAnswer} />;
+        return (
+          <QuestionWith4Choices
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+          />
+        );
       case "Select6ChoicesWithVoiceAndSlow":
-        return <Select6ChoicesWithVoiceAndSlow question={question} onCorrectAnswer={handleCorrectAnswer} />;
+        return (
+          <Select6ChoicesWithVoiceAndSlow
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+          />
+        );
       case "MatchingWordsWithWords":
-        return <MatchingWordsWithWords question={question} onCorrectAnswer={handleCorrectAnswer} />;
+        return (
+          <MatchingWordsWithWords
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+          />
+        );
       case "DragAndDrop4ChoicesWithVoice":
-        return <DragAndDrop4ChoicesWithVoice question={question} onCorrectAnswer={handleCorrectAnswer} />;
+        return (
+          <DragAndDrop4ChoicesWithVoice
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+          />
+        );
       default:
         return <div>Unknown question type</div>;
     }
@@ -95,21 +145,25 @@ function Level1Questions() {
         )}
 
         {selectedQuestion ? (
-          <div className="flex-1 overflow-auto">{renderQuestionComponent(selectedQuestion)}</div>
+          <div className="flex-1 overflow-auto">
+            {renderQuestionComponent(selectedQuestion)}
+          </div>
         ) : (
           <div className="flex flex-col items-center justify-center flex-1 py-4">
-            <div className="relative w-80 max-w-full px-4 mb-4">
+            <div className="relative w-80 max-w-full px-4 my-5">
               <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-base sm:text-xl font-bold">LEVEL 1 - Questions</span>
+                <span className="text-base sm:text-xl font-bold">
+                  LEVEL 1 - Questions
+                </span>
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 w-full max-w-full px-4 overflow-y-auto flex-1">
+            <div className="flex flex-col gap-3 w-full max-w-full px-4 overflow-y-auto flex-1 my-4">
               {questionRows.map((row, rowIdx) => (
                 <div
                   key={rowIdx}
-                  className="flex flex-row gap-2 items-center justify-center flex-wrap"
+                  className="flex flex-row gap-3 items-center justify-center flex-wrap"
                 >
                   {row.map((q) => (
                     <button
