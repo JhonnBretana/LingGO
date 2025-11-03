@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import QuestionsBar from "../../../assets/clickbar.png";
+import BombLife from "../../../assets/Bomb.png";
+import BombWrong from "../../../assets/Bomb.gif";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
@@ -7,6 +9,8 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
   const [matches, setMatches] = useState([]);
   const [showCorrect, setShowCorrect] = useState(false);
   const [showWrong, setShowWrong] = useState(false);
+  const [lives, setLives] = useState(3);
+  const [showBombModal, setShowBombModal] = useState(false);
 
   const colors = [
     { bg: "bg-orange-400", border: "border-orange-600" },
@@ -20,6 +24,13 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
   const getWordColor = (word, side) => {
     const match = matches.find((m) => m[side] === word);
     return match ? match.color : null;
+  };
+
+  const checkPairCorrectness = (left, right) => {
+    const correctPair = question.correctAnswer.find(
+      (c) => c.word1 === left && c.word2 === right
+    );
+    return !!correctPair;
   };
 
   const handleClick = (word, side) => {
@@ -42,10 +53,48 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
     );
 
     if (incompleteMatch) {
-      const updatedMatches = matches.map((m) =>
-        m === incompleteMatch ? { ...m, [side]: word } : m
-      );
-      setMatches(updatedMatches);
+      const updatedMatch = { ...incompleteMatch, [side]: word };
+
+      // Check if pair is now complete
+      if (updatedMatch.left && updatedMatch.right) {
+        const isCorrectPair = checkPairCorrectness(
+          updatedMatch.left,
+          updatedMatch.right
+        );
+
+        if (isCorrectPair) {
+          // Correct pair - keep the color
+          const updatedMatches = matches.map((m) =>
+            m === incompleteMatch ? updatedMatch : m
+          );
+          setMatches(updatedMatches);
+
+          // Check if all pairs are matched correctly
+          const allMatched = updatedMatches.length === question.choices.length;
+          if (allMatched) {
+            setTimeout(() => {
+              setShowCorrect(true);
+            }, 500);
+          }
+        } else {
+          // Wrong pair - show bomb modal and reduce life
+          setShowBombModal(true);
+          const newLives = lives - 1;
+          setLives(newLives);
+
+          // Keep the wrong match so user can try again
+          const updatedMatches = matches.map((m) =>
+            m === incompleteMatch ? updatedMatch : m
+          );
+          setMatches(updatedMatches);
+        }
+      } else {
+        // Just update the incomplete match
+        const updatedMatches = matches.map((m) =>
+          m === incompleteMatch ? updatedMatch : m
+        );
+        setMatches(updatedMatches);
+      }
     } else {
       const usedColors = matches.length;
       const nextColor = colors[usedColors % colors.length];
@@ -60,34 +109,10 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
     }
   };
 
-  const handleSubmit = () => {
-    const allComplete = matches.every((m) => m.left && m.right);
-    if (!allComplete) {
-      return;
-    }
-
-    const correctPairs = question.choices.map((c) => ({
-      left: c.word1,
-      right: c.word2,
-    }));
-    const isCorrect = correctPairs.every((pair) =>
-      matches.find((m) => m.left === pair.left && m.right === pair.right)
-    );
-
-    if (isCorrect) {
-      setShowCorrect(true);
-    } else {
-      setShowWrong(true);
-    }
-  };
-
-  const handleReset = () => {
-    setMatches([]);
-  };
-
   const handleCloseCorrectModal = () => {
     setShowCorrect(false);
     setMatches([]);
+    setLives(3);
     if (onCorrectAnswer) {
       onCorrectAnswer();
     }
@@ -96,8 +121,26 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
   const handleCloseWrongModal = () => {
     setShowWrong(false);
     setMatches([]);
+    setLives(3);
     if (onWrongAnswer) {
       onWrongAnswer();
+    }
+  };
+
+  const handleCloseBombModal = () => {
+    setShowBombModal(false);
+    // If no lives left, show wrong answer modal
+    if (lives === 0) {
+      setShowWrong(true);
+    } else {
+      // Keep only correct pairs, remove wrong/incomplete matches
+      const validMatches = matches.filter((m) => {
+        if (m.left && m.right) {
+          return checkPairCorrectness(m.left, m.right);
+        }
+        return false;
+      });
+      setMatches(validMatches);
     }
   };
 
@@ -112,6 +155,21 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
             </span>
           </div>
         </div>
+
+        {/* Lives Display */}
+        <div className="flex gap-2 items-center">
+          {[1, 2, 3].map((lifeNum) => (
+            <img
+              key={lifeNum}
+              src={BombLife}
+              alt={`Life ${lifeNum}`}
+              className={`w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 ${
+                lifeNum > lives ? "opacity-30 grayscale" : ""
+              }`}
+            />
+          ))}
+        </div>
+
         <div className="flex flex-row gap-3 sm:gap-5">
           <div className="flex flex-col gap-3 items-center justify-center">
             {question.choices.map((choice) => {
@@ -150,24 +208,26 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
             })}
           </div>
         </div>
-        <div className="flex gap-3">
-          <button
-            className="px-6 py-2 bg-gray-400 border-2 border-gray-600 rounded-xl font-bold shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 text-black"
-            onClick={handleReset}
-          >
-            Reset
-          </button>
-          {matches.length === question.choices.length &&
-            matches.every((m) => m.left && m.right) && (
-              <button
-                className="px-6 py-2 bg-[#f2d919] border-2 border-black rounded-xl font-bold shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 text-black"
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-            )}
-        </div>
       </div>
+
+      {/* Bomb Modal - Semi-transparent background to see through */}
+      {showBombModal && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl">
+            <img src={BombWrong} alt="Bomb Explosion" className="w-32 h-32" />
+            <p className="text-2xl font-bold text-red-600">Mali ang Tugma!</p>
+            <p className="text-lg text-gray-700">
+              Natitira pang Buhay: {lives}
+            </p>
+            <button
+              className="px-6 py-2 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 transition-all"
+              onClick={handleCloseBombModal}
+            >
+              {lives === 0 ? "Tingnan ang Sagot" : "Subukan Muli"}
+            </button>
+          </div>
+        </div>
+      )}
 
       <CorrectAnswerModal
         isOpen={showCorrect}

@@ -13,6 +13,18 @@ function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
     return characterImages[randomIndex];
   }, [isOpen]);
 
+  const formattedAnswer = useMemo(() => {
+    if (!correctAnswer) return "—";
+
+    if (Array.isArray(correctAnswer)) {
+      return correctAnswer;
+    }
+
+    return correctAnswer;
+  }, [correctAnswer]);
+
+  const isArrayAnswer = Array.isArray(correctAnswer);
+
   if (!isOpen) return null;
 
   return (
@@ -28,11 +40,21 @@ function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
             alt="Wrong"
             className="w-24 h-24 object-contain"
           />
-          <div className="text-left">
+          <div className="text-left max-w-md">
             <p className="text-base font-semibold mb-2">Tamang Sagot:</p>
-            <p className="text-lg font-bold border-b-4 border-black inline-block pb-1">
-              {correctAnswer || "—"}
-            </p>
+            {isArrayAnswer ? (
+              <div className="space-y-2">
+                {formattedAnswer.map((pair, index) => (
+                  <p key={index} className="text-sm font-bold border-b-2 border-black pb-1 block">
+                    {pair.word1} ↔ {pair.word2}
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <p className="text-lg font-bold border-b-4 border-black inline-block pb-1">
+                {formattedAnswer}
+              </p>
+            )}
           </div>
         </div>
 
