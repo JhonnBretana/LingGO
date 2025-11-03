@@ -3,7 +3,7 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function MatchingWordsWithImage({ question }) {
+function MatchingWordsWithImage({ question, onCorrectAnswer, onWrongAnswer }) {
   const [selectedWord, setSelectedWord] = useState(null);
   const [matches, setMatches] = useState([]);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
@@ -47,9 +47,7 @@ function MatchingWordsWithImage({ question }) {
   };
 
   const getCorrectAnswerText = () => {
-    return question.correctAnswer
-      .map((ans) => ans.word)
-      .join(", ");
+    return question.correctAnswer.map((ans) => ans.word).join(", ");
   };
 
   return (
@@ -68,8 +66,9 @@ function MatchingWordsWithImage({ question }) {
             {unmatchedWords.map((word) => (
               <button
                 key={word}
-                className={`w-40 h-20 flex items-center justify-center text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-xl border-2 ${selectedWord === word ? "border-yellow-400" : ""
-                  }`}
+                className={`w-40 h-20 flex items-center justify-center text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-xl border-2 ${
+                  selectedWord === word ? "border-yellow-400" : ""
+                }`}
                 onClick={() => handleWordClick(word)}
               >
                 {word}
@@ -121,13 +120,18 @@ function MatchingWordsWithImage({ question }) {
 
       <CorrectAnswerModal
         isOpen={showCorrectModal}
-        onClose={() => setShowCorrectModal(false)}
+        onClose={() => {
+          setShowCorrectModal(false);
+          if (onCorrectAnswer) onCorrectAnswer();
+        }}
       />
-
       <WrongAnswerModal
         isOpen={showWrongModal}
         correctAnswer={getCorrectAnswerText()}
-        onClose={() => setShowWrongModal(false)}
+        onClose={() => {
+          setShowWrongModal(false);
+          if (onWrongAnswer) onWrongAnswer();
+        }}
       />
     </>
   );

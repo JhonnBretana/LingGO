@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BackgroundLayout from "../module/components/BackgroundLayout.jsx";
 import QuestionsBar from "../assets/clickbar.png";
 import PageHeaderLayout from "../module/components/PageHeaderLayout";
@@ -15,6 +15,10 @@ import TypeWithVoiceAndSlow from "./components/questions/TypeWithVoiceAndSlow.js
 import SixChoicesWithVoice from "./components/questions/SixChoicesWithVoice.jsx";
 import FourChoicesWithCharacterAndVoice from "./components/questions/FourChoicesWithCharacterAndVoice.jsx";
 
+import { recordLevel1Answer } from "../utils/recordAnswer.js";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
+
 function groupIntoRows(arr, itemsPerRow = 2) {
   const rows = [];
   for (let i = 0; i < arr.length; i += itemsPerRow) {
@@ -28,7 +32,21 @@ const QUESTIONS_PER_PAGE = 10;
 function Level1Questions() {
   const [page, setPage] = useState(1);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [answers, setAnswers] = useState({});
   const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("linggoUserId");
+    if (!userId) return;
+    const fetchAnswers = async () => {
+      const userRef = doc(db, "users", userId);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        setAnswers(userSnap.data().Level1Questions || {});
+      }
+    };
+    fetchAnswers();
+  }, []);
 
   const startIdx = (page - 1) * QUESTIONS_PER_PAGE;
   const endIdx = startIdx + QUESTIONS_PER_PAGE;
@@ -37,7 +55,25 @@ function Level1Questions() {
 
   function renderQuestionComponent(question) {
     if (!question) return null;
-    const handleCorrectAnswer = () => setSelectedQuestion(null);
+    const userId = localStorage.getItem("linggoUserId");
+
+    const handleCorrectAnswer = () => {
+      if (userId) {
+        recordLevel1Answer(userId, question.id, true);
+      }
+      setSelectedQuestion(null);
+      // Refresh answers after recording
+      fetchAnswers();
+    };
+
+    const handleWrongAnswer = () => {
+      if (userId) {
+        recordLevel1Answer(userId, question.id, false);
+      }
+      setSelectedQuestion(null);
+      // Refresh answers after recording
+      fetchAnswers();
+    };
 
     switch (question.type) {
       case "TypeWithVoiceAndSlow":
@@ -45,6 +81,7 @@ function Level1Questions() {
           <TypeWithVoiceAndSlow
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
           />
         );
       case "SixChoicesWithVoice":
@@ -52,6 +89,7 @@ function Level1Questions() {
           <SixChoicesWithVoice
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
           />
         );
       case "FourChoicesWithCharacterAndVoice":
@@ -59,6 +97,7 @@ function Level1Questions() {
           <FourChoicesWithCharacterAndVoice
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
           />
         );
       case "SpeechMicWithVoice":
@@ -66,6 +105,7 @@ function Level1Questions() {
           <SpeechMicWithVoice
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
           />
         );
       case "MatchingWordsWithImage":
@@ -73,6 +113,7 @@ function Level1Questions() {
           <MatchingWordsWithImage
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
           />
         );
       case "QuestionWith3Choices":
@@ -80,6 +121,7 @@ function Level1Questions() {
           <QuestionWith3Choices
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
           />
         );
       case "QuestionWith4Choices":
@@ -87,6 +129,7 @@ function Level1Questions() {
           <QuestionWith4Choices
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
           />
         );
       case "Select6ChoicesWithVoiceAndSlow":
@@ -94,6 +137,7 @@ function Level1Questions() {
           <Select6ChoicesWithVoiceAndSlow
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
           />
         );
       case "MatchingWordsWithWords":
@@ -101,6 +145,7 @@ function Level1Questions() {
           <MatchingWordsWithWords
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
           />
         );
       case "DragAndDrop4ChoicesWithVoice":
@@ -108,10 +153,22 @@ function Level1Questions() {
           <DragAndDrop4ChoicesWithVoice
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
           />
         );
       default:
         return <div>Unknown question type</div>;
+    }
+  }
+
+  // Helper to refresh answers after submitting
+  async function fetchAnswers() {
+    const userId = localStorage.getItem("linggoUserId");
+    if (!userId) return;
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      setAnswers(userSnap.data().Level1Questions || {});
     }
   }
 
@@ -165,15 +222,36 @@ function Level1Questions() {
                   key={rowIdx}
                   className="flex flex-row gap-3 items-center justify-center flex-wrap"
                 >
-                  {row.map((q) => (
-                    <button
-                      key={q.id}
-                      className="w-36 sm:w-40 max-w-[calc(50%-0.25rem)] text-center bg-white text-black text-sm sm:text-lg font-bold py-3 px-2 sm:px-4 rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150"
-                      onClick={() => setSelectedQuestion(q)}
-                    >
-                      Question {q.id}
-                    </button>
-                  ))}
+                  {row.map((q) => {
+                    const answer = answers[`Level1Question${q.id}`];
+                    let btnColor = "bg-white";
+                    let textColor = "text-black";
+                    let opacity = "";
+                    let disabled = false;
+
+                    if (answer === "Correct") {
+                      btnColor = "bg-green-400";
+                      textColor = "text-white";
+                      opacity = "opacity-50";
+                      disabled = true;
+                    } else if (answer === "Wrong") {
+                      btnColor = "bg-red-400";
+                      textColor = "text-white";
+                      opacity = "opacity-50";
+                      disabled = true;
+                    }
+
+                    return (
+                      <button
+                        key={q.id}
+                        className={`w-36 sm:w-40 max-w-[calc(50%-0.25rem)] text-center ${btnColor} ${textColor} ${opacity} text-sm sm:text-lg font-bold py-3 px-2 sm:px-4 rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
+                        onClick={() => !disabled && setSelectedQuestion(q)}
+                        disabled={disabled}
+                      >
+                        Question {q.id}
+                      </button>
+                    );
+                  })}
                 </div>
               ))}
             </div>

@@ -3,7 +3,7 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function MatchingWordsWithWords({ question, onCorrectAnswer }) {
+function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
   const [matches, setMatches] = useState([]);
   const [showCorrect, setShowCorrect] = useState(false);
   const [showWrong, setShowWrong] = useState(false);
@@ -27,9 +27,9 @@ function MatchingWordsWithWords({ question, onCorrectAnswer }) {
 
     if (existingMatch) {
       if (existingMatch.left && existingMatch.right) {
-        const updatedMatches = matches.map((m) =>
-          m === existingMatch ? { ...m, [side]: null } : m
-        ).filter((m) => m.left || m.right);
+        const updatedMatches = matches
+          .map((m) => (m === existingMatch ? { ...m, [side]: null } : m))
+          .filter((m) => m.left || m.right);
         setMatches(updatedMatches);
       } else {
         setMatches(matches.filter((m) => m !== existingMatch));
@@ -96,8 +96,8 @@ function MatchingWordsWithWords({ question, onCorrectAnswer }) {
   const handleCloseWrongModal = () => {
     setShowWrong(false);
     setMatches([]);
-    if (onCorrectAnswer) {
-      onCorrectAnswer();
+    if (onWrongAnswer) {
+      onWrongAnswer();
     }
   };
 
@@ -119,10 +119,11 @@ function MatchingWordsWithWords({ question, onCorrectAnswer }) {
               return (
                 <button
                   key={choice.word1}
-                  className={`w-32 sm:w-36 min-h-[50px] flex items-center justify-center text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${color
-                    ? `${color.bg} ${color.border}`
-                    : "bg-white border-gray-300"
-                    }`}
+                  className={`w-32 sm:w-36 min-h-[50px] flex items-center justify-center text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${
+                    color
+                      ? `${color.bg} ${color.border}`
+                      : "bg-white border-gray-300"
+                  }`}
                   onClick={() => handleClick(choice.word1, "left")}
                 >
                   {choice.word1}
@@ -136,10 +137,11 @@ function MatchingWordsWithWords({ question, onCorrectAnswer }) {
               return (
                 <button
                   key={choice.word2}
-                  className={`w-32 sm:w-36 min-h-[50px] text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${color
-                    ? `${color.bg} ${color.border}`
-                    : "bg-white border-gray-300"
-                    }`}
+                  className={`w-32 sm:w-36 min-h-[50px] text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${
+                    color
+                      ? `${color.bg} ${color.border}`
+                      : "bg-white border-gray-300"
+                  }`}
                   onClick={() => handleClick(choice.word2, "right")}
                 >
                   {choice.word2}
@@ -167,8 +169,15 @@ function MatchingWordsWithWords({ question, onCorrectAnswer }) {
         </div>
       </div>
 
-      <CorrectAnswerModal isOpen={showCorrect} onClose={handleCloseCorrectModal} />
-      <WrongAnswerModal isOpen={showWrong} onClose={handleCloseWrongModal} correctAnswer={null} />
+      <CorrectAnswerModal
+        isOpen={showCorrect}
+        onClose={handleCloseCorrectModal}
+      />
+      <WrongAnswerModal
+        isOpen={showWrong}
+        onClose={handleCloseWrongModal}
+        correctAnswer={null}
+      />
     </>
   );
 }
