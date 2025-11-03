@@ -4,7 +4,6 @@ import Arrow from "../../assets/Arrow.png";
 function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
     const characterImages = [
         "/assets/ImageChoices/UnifGirl1.png",
-        "/assets/ImageChoices/UnifGirl2.png",
         "/assets/ImageChoices/UnifGirl3.png"
     ];
 
@@ -17,21 +16,12 @@ function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
     if (!isOpen) return null;
 
     return (
-        <div
-            className="fixed inset-0 flex items-end justify-start z-50 bg-transparent"
-            onClick={onClose}
-        >
-            {/* Bottom full-width card */}
-            <div
-                onClick={(e) => e.stopPropagation()}
-                className="relative w-full bg-white/95 border-t-4 border-orange-500 rounded-t-3xl shadow-2xl p-6 pb-16 text-center animate-slide-up sm:rounded-t-[2rem]"
-            >
-                {/* “MALI” header */}
+        <div className="fixed inset-0 flex items-end justify-start z-50 bg-black/30">
+            <div className="relative w-full bg-white/95 border-t-4 border-orange-500 rounded-t-3xl shadow-2xl p-6 pb-16 text-center animate-slide-up sm:rounded-t-[2rem]">
                 <h2 className="text-2xl font-extrabold text-orange-500 mb-4 tracking-wide">
                     MALI
                 </h2>
 
-                {/* Character + Text Row */}
                 <div className="flex items-center justify-center gap-4 flex-wrap sm:flex-nowrap">
                     <img
                         src={randomImage}
@@ -46,16 +36,16 @@ function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
                     </div>
                 </div>
 
-                {/* Arrow icon (bottom-right corner) */}
-                <img
-                    src={Arrow} // ✅ use imported Arrow image
-                    alt="Next"
-                    className="absolute right-6 bottom-4 w-12 h-12 object-contain cursor-pointer hover:scale-105 transition-transform"
-                    onClick={onClose}
-                />
+                <div className="absolute right-6 bottom-4">
+                    <img
+                        src={Arrow}
+                        alt="Next"
+                        className="w-14 h-14 object-contain cursor-pointer animate-bounce-subtle hover:scale-110 active:scale-95 transition-transform drop-shadow-lg"
+                        onClick={onClose}
+                    />
+                </div>
             </div>
 
-            {/* Animation */}
             <style>{`
                 @keyframes slide-up {
                     from {
@@ -69,6 +59,17 @@ function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
                 }
                 .animate-slide-up {
                     animation: slide-up 0.35s ease-out;
+                }
+                @keyframes bounce-subtle {
+                    0%, 100% {
+                        transform: translateY(0);
+                    }
+                    50% {
+                        transform: translateY(-8px);
+                    }
+                }
+                .animate-bounce-subtle {
+                    animation: bounce-subtle 2s ease-in-out infinite;
                 }
             `}</style>
         </div>

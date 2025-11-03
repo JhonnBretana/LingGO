@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 import BackgroundLayout from "../components/BackgroundLayout";
 import BirdMascot from "../../assets/Chickenlittle.png";
 import CardWithFlag from "../../assets/clickbar.png";
@@ -6,35 +8,65 @@ import { useNavigate } from "react-router-dom";
 
 function ReadyPage() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userId = localStorage.getItem("linggoUserId");
+      if (userId) {
+        try {
+          const userDoc = await getDoc(doc(db, "users", userId));
+          if (userDoc.exists()) {
+            setUser(userDoc.data());
+          }
+        } catch (error) {
+          console.error("Error fetching user:", error);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchUser();
+  }, []);
+
+  const getFirstName = () => {
+    if (!user) return "Juan";
+    return user["Unang Pangalan"] || user.Username || "Juan";
+  };
 
   const handleContinue = () => {
     console.log("Magpatuloy clicked");
-    // Add your navigation logic here
     navigate("/level1");
   };
 
+  if (loading) {
+    return (
+      <BackgroundLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-white text-xl">Loading...</div>
+        </div>
+      </BackgroundLayout>
+    );
+  }
+
   return (
     <BackgroundLayout>
-      {/* Desktop Layout */}
       <div className="hidden md:flex items-center justify-center min-h-screen px-4 overflow-hidden">
-        {/* Left Column - Title and Button */}
         <div className="flex flex-col items-center justify-center gap-12 md:gap-16 lg:gap-20 flex-1">
-          {/* Title */}
           <h1
             className="text-white font-extrabold text-center
                          text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl
-                         px-2 leading-tight"
+                         px-2 leading-snug"
             style={{
-              WebkitTextStroke: "2px black",
-              textShadow: "3px 3px 0px rgba(0,0,0,0.3)",
+              textShadow: "3px 3px 0px #000, -3px -3px 0px #000, 3px -3px 0px #000, -3px 3px 0px #000, 0px 3px 0px #000, 3px 0px 0px #000, 0px -3px 0px #000, -3px 0px 0px #000",
             }}
           >
-            Handa kana ba,
+            Handa ka na ba,
             <br />
-            Juan?
+            {getFirstName()}?
           </h1>
 
-          {/* Continue Button */}
           <div className="relative group">
             <img
               src={CardWithFlag}
@@ -63,7 +95,6 @@ function ReadyPage() {
           </div>
         </div>
 
-        {/* Right Column - Bird Mascot */}
         <div className="flex items-center justify-center flex-1">
           <img
             src={BirdMascot}
@@ -78,24 +109,20 @@ function ReadyPage() {
         </div>
       </div>
 
-      {/* Mobile Layout - FIXED */}
       <div className="flex md:hidden flex-col items-center justify-center min-h-screen px-6 overflow-hidden">
         <div className="flex flex-col items-center gap-10 max-w-md w-full">
-          {/* Title */}
           <h1
             className="text-white font-extrabold text-center
-                         text-4xl leading-tight"
+                         text-4xl leading-snug"
             style={{
-              WebkitTextStroke: "2px black",
-              textShadow: "3px 3px 0px rgba(0,0,0,0.3)",
+              textShadow: "3px 3px 0px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5)",
             }}
           >
-            Handa kana ba,
+            Handa ka na ba,
             <br />
-            Juan?
+            {getFirstName()}?
           </h1>
 
-          {/* Bird Mascot */}
           <img
             src={BirdMascot}
             alt="Lingo Bird Mascot"
@@ -105,7 +132,6 @@ function ReadyPage() {
             }}
           />
 
-          {/* Continue Button */}
           <div className="relative group w-full">
             <img
               src={CardWithFlag}

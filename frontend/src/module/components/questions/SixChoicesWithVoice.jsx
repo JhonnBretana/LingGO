@@ -4,7 +4,7 @@ import { Volume2, Turtle } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function SixChoicesWithVoice({ question }) {
+function SixChoicesWithVoice({ question, onCorrectAnswer }) {
   const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
@@ -13,14 +13,6 @@ function SixChoicesWithVoice({ question }) {
   const handlePlay = () => {
     if (audioRef.current) {
       audioRef.current.playbackRate = 1;
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-    }
-  };
-
-  const handlePlaySlow = () => {
-    if (audioRef.current) {
-      audioRef.current.playbackRate = 0.4;
       audioRef.current.currentTime = 0;
       audioRef.current.play();
     }
@@ -38,6 +30,24 @@ function SixChoicesWithVoice({ question }) {
       setShowCorrectModal(true);
     } else {
       setShowWrongModal(true);
+    }
+  };
+
+  const handleCloseCorrectModal = () => {
+    setShowCorrectModal(false);
+    setSelected(null);
+
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
+  };
+
+  const handleCloseWrongModal = () => {
+    setShowWrongModal(false);
+    setSelected(null);
+
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
     }
   };
 
@@ -59,24 +69,26 @@ function SixChoicesWithVoice({ question }) {
           className="w-full flex flex-col items-center my-4"
           onSubmit={handleSubmit}
         >
-          <div className="w-full max-w-80 flex flex-row gap-3 items-center justify-center mb-4">
+          <div className="w-full max-w-80 flex flex-row gap-3 xs:gap-2 items-center justify-center mb-4">
             <div className="flex flex-col gap-4 flex-1">
               {leftChoices.map((choice, idx) => (
                 <button
                   type="button"
                   key={idx}
-                  className={`w-full h-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${selected === choice.value
+                  className={`w-full h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${selected === choice.value
                     ? "border-4 border-yellow-400"
                     : ""
                     }`}
                   onClick={() => setSelected(choice.value)}
                 >
-                  <img
-                    src={choice.image}
-                    alt={choice.value}
-                    className="w-full max-w-25 mx-auto"
-                  />
-                  <div>{choice.value}</div>
+                  <div className="flex-1 flex items-center justify-center w-full min-h-0">
+                    <img
+                      src={choice.image}
+                      alt={choice.value}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <div className="w-full text-center pt-2 shrink-0">{choice.value}</div>
                 </button>
               ))}
             </div>
@@ -85,18 +97,20 @@ function SixChoicesWithVoice({ question }) {
                 <button
                   type="button"
                   key={idx}
-                  className={`w-full h-40 text-center bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 ${selected === choice.value
+                  className={`w-full h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${selected === choice.value
                     ? "border-4 border-yellow-400"
                     : ""
                     }`}
                   onClick={() => setSelected(choice.value)}
                 >
-                  <img
-                    src={choice.image}
-                    alt={choice.value}
-                    className="w-full max-w-25 mx-auto"
-                  />
-                  <div>{choice.value}</div>
+                  <div className="flex-1 flex items-center justify-center w-full min-h-0">
+                    <img
+                      src={choice.image}
+                      alt={choice.value}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <div className="w-full text-center pt-2 shrink-0">{choice.value}</div>
                 </button>
               ))}
             </div>
@@ -120,13 +134,13 @@ function SixChoicesWithVoice({ question }) {
 
       <CorrectAnswerModal
         isOpen={showCorrectModal}
-        onClose={() => setShowCorrectModal(false)}
+        onClose={handleCloseCorrectModal}
       />
 
       <WrongAnswerModal
         isOpen={showWrongModal}
         correctAnswer={question.correctAnswer?.value}
-        onClose={() => setShowWrongModal(false)}
+        onClose={handleCloseWrongModal}
       />
     </>
   );

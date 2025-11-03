@@ -1,15 +1,30 @@
 import React, { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 import Logo from "../../assets/LingGO Logo.png";
 import Star from "../../assets/star.png";
 
 function PageHeaderLayout() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("linggoUser");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const fetchUser = async () => {
+      const userId = localStorage.getItem("linggoUserId");
+      if (userId) {
+        try {
+          const userDoc = await getDoc(doc(db, "users", userId));
+          if (userDoc.exists()) {
+            setUser(userDoc.data());
+          }
+        } catch (error) {
+          console.error("Error fetching user:", error);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchUser();
   }, []);
 
   const getGradeNumber = (baitang) => {
@@ -25,9 +40,28 @@ function PageHeaderLayout() {
     return gradeMap[baitang] || "";
   };
 
+  const getFullName = () => {
+    if (!user) return "Juan Dela Cruz";
+
+    const firstName = user["Unang Pangalan"] || "";
+    const lastName = user["Apelyido"] || "";
+
+    // Concatenate with space if both exist
+    if (firstName && lastName) {
+      return `${firstName} ${lastName}`;
+    }
+
+    // Return whichever exists, or username as fallback
+    return firstName || lastName || user.Username || "Juan Dela Cruz";
+  };
+
   const gradeDisplay = user
     ? `${getGradeNumber(user.Baitang)}-${user.Pangkat}`
     : "Pangkat at Baitang";
+
+  if (loading) {
+    return <div className="px-3 py-4">Loading...</div>;
+  }
 
   return (
     <div className="flex justify-between items-center px-3 py-4 sm:px-4 sm:py-5 md:px-6 md:py-6">
@@ -45,7 +79,7 @@ function PageHeaderLayout() {
             {gradeDisplay}
           </div>
           <div className="font-bold text-white text-lg sm:text-xl md:text-2xl lg:text-3xl whitespace-nowrap drop-shadow-md" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
-            {user ? user["Unang Pangalana"] || user.Username : "Juan Dela Cruz"}
+            {getFullName()}
           </div>
         </div>
       </div>
