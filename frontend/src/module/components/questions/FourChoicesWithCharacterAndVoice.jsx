@@ -4,7 +4,11 @@ import { Volume2 } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function FourChoicesWithCharacterAndVoice({ question, onCorrectAnswer }) {
+function FourChoicesWithCharacterAndVoice({
+  question,
+  onCorrectAnswer,
+  onWrongAnswer,
+}) {
   const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
@@ -18,7 +22,7 @@ function FourChoicesWithCharacterAndVoice({ question, onCorrectAnswer }) {
       audioRef.current.playbackRate = 1;
       audioRef.current.currentTime = 0;
       audioRef.current.play();
-    } catch (e) { }
+    } catch (e) {}
   };
 
   const handlePlayChoice = (choice) => {
@@ -60,8 +64,8 @@ function FourChoicesWithCharacterAndVoice({ question, onCorrectAnswer }) {
     setShowWrongModal(false);
     setSelected(null);
 
-    if (onCorrectAnswer) {
-      onCorrectAnswer();
+    if (onWrongAnswer) {
+      onWrongAnswer();
     }
   };
 
@@ -103,10 +107,9 @@ function FourChoicesWithCharacterAndVoice({ question, onCorrectAnswer }) {
               return (
                 <div
                   key={idx}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 bg-white text-black cursor-pointer ${isSelected
-                    ? "border-yellow-400 ring-2 ring-yellow-300"
-                    : ""
-                    }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 bg-white text-black cursor-pointer ${
+                    isSelected ? "border-yellow-400 ring-2 ring-yellow-300" : ""
+                  }`}
                   onClick={() => setSelected(choice.value)}
                 >
                   <div className="flex-1 text-lg font-bold text-center">

@@ -4,7 +4,11 @@ import { Volume2 } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function DragAndDrop4ChoicesWithVoice({ question, onCorrectAnswer }) {
+function DragAndDrop4ChoicesWithVoice({
+  question,
+  onCorrectAnswer,
+  onWrongAnswer,
+}) {
   const [droppedValue, setDroppedValue] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
   const [showCorrect, setShowCorrect] = useState(false);
@@ -59,8 +63,8 @@ function DragAndDrop4ChoicesWithVoice({ question, onCorrectAnswer }) {
   const handleCloseWrongModal = () => {
     setShowWrong(false);
     setDroppedValue(null);
-    if (onCorrectAnswer) {
-      onCorrectAnswer();
+    if (onWrongAnswer) {
+      onWrongAnswer();
     }
   };
 
@@ -82,7 +86,7 @@ function DragAndDrop4ChoicesWithVoice({ question, onCorrectAnswer }) {
     const touch = e.changedTouches[0];
     const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
 
-    if (dropZone && dropZone.classList.contains('drop-zone')) {
+    if (dropZone && dropZone.classList.contains("drop-zone")) {
       const correctAnswer = (question.correctAnswer || "").trim().toLowerCase();
       const droppedAnswer = draggedItem.trim().toLowerCase();
 
@@ -147,10 +151,11 @@ function DragAndDrop4ChoicesWithVoice({ question, onCorrectAnswer }) {
           {question.choices.map((choice, idx) => (
             <div
               key={idx}
-              className={`w-full text-center bg-gradient-to-r from-white to-gray-50 text-black text-base sm:text-lg font-bold py-3 px-4 rounded-xl border-2 border-gray-200 cursor-grab shadow-md hover:shadow-xl transition-all duration-200 ${draggedItem === choice
+              className={`w-full text-center bg-gradient-to-r from-white to-gray-50 text-black text-base sm:text-lg font-bold py-3 px-4 rounded-xl border-2 border-gray-200 cursor-grab shadow-md hover:shadow-xl transition-all duration-200 ${
+                draggedItem === choice
                   ? "opacity-30 scale-90"
                   : "hover:scale-105 active:scale-95"
-                } ${droppedValue === choice ? "opacity-40" : ""}`}
+              } ${droppedValue === choice ? "opacity-40" : ""}`}
               draggable
               onDragStart={(e) => handleDragStart(e, choice)}
               onDragEnd={handleDragEnd}
@@ -178,7 +183,7 @@ function DragAndDrop4ChoicesWithVoice({ question, onCorrectAnswer }) {
             style={{
               left: touchPosition.x - 140,
               top: touchPosition.y - 25,
-              width: '280px',
+              width: "280px",
             }}
           >
             <div className="text-center bg-gradient-to-r from-white to-gray-50 text-black text-base sm:text-lg font-bold py-3 px-4 rounded-xl border-2 border-gray-200 shadow-2xl opacity-90">
@@ -188,7 +193,10 @@ function DragAndDrop4ChoicesWithVoice({ question, onCorrectAnswer }) {
         )}
       </div>
 
-      <CorrectAnswerModal isOpen={showCorrect} onClose={handleCloseCorrectModal} />
+      <CorrectAnswerModal
+        isOpen={showCorrect}
+        onClose={handleCloseCorrectModal}
+      />
       <WrongAnswerModal
         isOpen={showWrong}
         onClose={handleCloseWrongModal}

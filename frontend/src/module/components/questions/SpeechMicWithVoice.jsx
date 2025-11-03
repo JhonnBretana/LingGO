@@ -4,7 +4,7 @@ import Microphone from "../../../assets/Microphone.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function SpeechMicWithVoice({ question, onCorrectAnswer }) {
+function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [showSubmit, setShowSubmit] = useState(false);
@@ -82,8 +82,8 @@ function SpeechMicWithVoice({ question, onCorrectAnswer }) {
   const handleCloseWrongModal = () => {
     setShowWrong(false);
     setTranscript("");
-    if (onCorrectAnswer) {
-      onCorrectAnswer();
+    if (onWrongAnswer) {
+      onWrongAnswer();
     }
   };
 
@@ -139,7 +139,10 @@ function SpeechMicWithVoice({ question, onCorrectAnswer }) {
         )}
       </div>
 
-      <CorrectAnswerModal isOpen={showCorrect} onClose={handleCloseCorrectModal} />
+      <CorrectAnswerModal
+        isOpen={showCorrect}
+        onClose={handleCloseCorrectModal}
+      />
       <WrongAnswerModal
         isOpen={showWrong}
         onClose={handleCloseWrongModal}

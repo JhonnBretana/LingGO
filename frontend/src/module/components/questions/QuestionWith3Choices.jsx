@@ -3,7 +3,7 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function QuestionWith3Choices({ question, onCorrectAnswer }) {
+function QuestionWith3Choices({ question, onCorrectAnswer, onWrongAnswer }) {
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
@@ -15,7 +15,7 @@ function QuestionWith3Choices({ question, onCorrectAnswer }) {
     if (
       selected &&
       selected.trim().toLowerCase() ===
-      (question.correctAnswer || "").trim().toLowerCase()
+        (question.correctAnswer || "").trim().toLowerCase()
     ) {
       setShowCorrectModal(true);
     } else {
@@ -34,8 +34,8 @@ function QuestionWith3Choices({ question, onCorrectAnswer }) {
   const handleCloseWrongModal = () => {
     setShowWrongModal(false);
     setSelected(null);
-    if (onCorrectAnswer) {
-      onCorrectAnswer();
+    if (onWrongAnswer) {
+      onWrongAnswer();
     }
   };
 
@@ -46,7 +46,11 @@ function QuestionWith3Choices({ question, onCorrectAnswer }) {
     <>
       <div className="flex flex-col items-center justify-start h-screen overflow-hidden px-4 pt-4">
         <div className="relative w-full max-w-80 mb-3">
-          <img src={QuestionsBar} alt="Questions Bar" className="w-full h-auto" />
+          <img
+            src={QuestionsBar}
+            alt="Questions Bar"
+            className="w-full h-auto"
+          />
           <div className="absolute inset-0 flex items-center justify-center">
             <p className="font-medium">{question?.question}</p>
           </div>
@@ -61,8 +65,9 @@ function QuestionWith3Choices({ question, onCorrectAnswer }) {
               <button
                 key={idx}
                 type="button"
-                className={`flex-1 h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${selected === choice.value ? "border-4 border-yellow-400" : ""
-                  }`}
+                className={`flex-1 h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${
+                  selected === choice.value ? "border-4 border-yellow-400" : ""
+                }`}
                 onClick={() => setSelected(choice.value)}
               >
                 <div className="flex-1 flex items-center justify-center w-full min-h-0">
@@ -72,7 +77,9 @@ function QuestionWith3Choices({ question, onCorrectAnswer }) {
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                <div className="w-full text-center pt-2 shrink-0">{choice.value}</div>
+                <div className="w-full text-center pt-2 shrink-0">
+                  {choice.value}
+                </div>
               </button>
             ))}
           </div>
@@ -81,8 +88,11 @@ function QuestionWith3Choices({ question, onCorrectAnswer }) {
           <div className="flex flex-row gap-3 w-full justify-center">
             <button
               type="button"
-              className={`w-[calc(50%-0.375rem)] h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${selected === bottomChoice.value ? "border-4 border-yellow-400" : ""
-                }`}
+              className={`w-[calc(50%-0.375rem)] h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${
+                selected === bottomChoice.value
+                  ? "border-4 border-yellow-400"
+                  : ""
+              }`}
               onClick={() => setSelected(bottomChoice.value)}
             >
               <div className="flex-1 flex items-center justify-center w-full min-h-0">
@@ -92,7 +102,9 @@ function QuestionWith3Choices({ question, onCorrectAnswer }) {
                   className="max-w-full max-h-full object-contain"
                 />
               </div>
-              <div className="w-full text-center pt-2 shrink-0">{bottomChoice.value}</div>
+              <div className="w-full text-center pt-2 shrink-0">
+                {bottomChoice.value}
+              </div>
             </button>
           </div>
 
