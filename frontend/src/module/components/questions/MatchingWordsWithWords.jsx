@@ -163,9 +163,8 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
               key={lifeNum}
               src={BombLife}
               alt={`Life ${lifeNum}`}
-              className={`w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 ${
-                lifeNum > lives ? "opacity-30 grayscale" : ""
-              }`}
+              className={`w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 ${lifeNum > lives ? "opacity-30 grayscale" : ""
+                }`}
             />
           ))}
         </div>
@@ -177,11 +176,10 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
               return (
                 <button
                   key={choice.word1}
-                  className={`w-32 sm:w-36 min-h-[50px] flex items-center justify-center text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${
-                    color
+                  className={`w-32 sm:w-36 min-h-[50px] flex items-center justify-center text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${color
                       ? `${color.bg} ${color.border}`
                       : "bg-white border-gray-300"
-                  }`}
+                    }`}
                   onClick={() => handleClick(choice.word1, "left")}
                 >
                   {choice.word1}
@@ -195,11 +193,10 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
               return (
                 <button
                   key={choice.word2}
-                  className={`w-32 sm:w-36 min-h-[50px] text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${
-                    color
+                  className={`w-32 sm:w-36 min-h-[50px] text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${color
                       ? `${color.bg} ${color.border}`
                       : "bg-white border-gray-300"
-                  }`}
+                    }`}
                   onClick={() => handleClick(choice.word2, "right")}
                 >
                   {choice.word2}
@@ -236,7 +233,7 @@ function MatchingWordsWithWords({ question, onCorrectAnswer, onWrongAnswer }) {
       <WrongAnswerModal
         isOpen={showWrong}
         onClose={handleCloseWrongModal}
-        correctAnswer={null}
+        correctAnswer={question.correctAnswer}
       />
     </>
   );

@@ -45,9 +45,9 @@ function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
             {isArrayAnswer ? (
               <div className="space-y-2">
                 {formattedAnswer.map((pair, index) => (
-                  <p key={index} className="text-sm font-bold border-b-2 border-black pb-1 block">
+                  <div key={index} className="text-sm font-bold border-b-2 border-black pb-1">
                     {pair.word1} ↔ {pair.word2}
-                  </p>
+                  </div>
                 ))}
               </div>
             ) : (

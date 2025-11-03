@@ -1,5 +1,5 @@
 export const gradeSectionMap = {
-  "Ikapitong Baitang": [
+  "7": [
     "MAGALANG",
     "MAGITING",
     "MAKABANSA",
@@ -10,7 +10,7 @@ export const gradeSectionMap = {
     "MASIGASIG",
     "MATAPAT",
   ],
-  "Ika-walong Baitang": [
+  "8": [
     "ALMARIO",
     "BALAGTAS",
     "BAUTISTA",
@@ -21,7 +21,7 @@ export const gradeSectionMap = {
     "RECTO",
     "ROCES",
   ],
-  "Ika-siyam na Baitang": [
+  "9": [
     "AGONCILLO",
     "AQUINO",
     "BURGOS",
@@ -32,7 +32,7 @@ export const gradeSectionMap = {
     "PONCE",
     "SILANG",
   ],
-  "Ika-sampung Baitang": [
+  "10": [
     "ABUEVA",
     "ALCALA",
     "AMORSOLO",
