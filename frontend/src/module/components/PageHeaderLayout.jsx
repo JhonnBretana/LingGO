@@ -8,8 +8,10 @@ import { useNavigate } from "react-router-dom";
 function PageHeaderLayout() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false); // Modal visibility
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const role = localStorage.getItem("linggoRole");
+
   useEffect(() => {
     const fetchUser = async () => {
       const userId = localStorage.getItem("linggoUserId");
@@ -42,24 +44,27 @@ function PageHeaderLayout() {
     return gradeMap[baitang] || "";
   };
 
+  // Get full name from Firestore fields
   const getFullName = () => {
+    if (role === "Instructor" || role === "Others") {
+      return role;
+    }
     if (!user) return "Juan Dela Cruz";
-
-    const firstName = user["Unang Pangalan"] || "";
-    const lastName = user["Apelyido"] || "";
-
-    // Concatenate with space if both exist
+    const firstName = user.FirstName || "";
+    const lastName = user.LastName || "";
     if (firstName && lastName) {
       return `${firstName} ${lastName}`;
     }
-
-    // Return whichever exists, or username as fallback
     return firstName || lastName || user.Username || "Juan Dela Cruz";
   };
 
-  const gradeDisplay = user
-    ? `${getGradeNumber(user.Baitang)}-${user.Pangkat}`
-    : "Pangkat at Baitang";
+  // Get grade and section from Firestore fields
+  const gradeDisplay =
+    role === "Instructor" || role === "Others"
+      ? "Visitor"
+      : user
+      ? `${user.Grade || ""}${user.Section ? "-" + user.Section : ""}`
+      : "Grade-Section";
 
   const handleLogout = () => {
     localStorage.removeItem("linggoUserId");

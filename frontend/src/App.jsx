@@ -51,6 +51,8 @@ import Level1 from "./module/Level1Questions.jsx";
 
 import Result from "./module/components/LevelResultPreview.jsx";
 
+import Role from "./module/AccountModule/RoleSelection.jsx";
+
 function App() {
   return (
     <div>
@@ -128,6 +130,8 @@ function App() {
         <Route path="/level1" element={<Level1 />} />
 
         <Route path="/result" element={<Result />} />
+
+        <Route path="/role-selection" element={<Role />} />
       </Routes>
     </div>
   );

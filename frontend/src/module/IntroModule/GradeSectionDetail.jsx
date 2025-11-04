@@ -5,6 +5,8 @@ import LogoStanding from "../../assets/LingoLogo Standing.png";
 import { gradeCategories } from "../../constant/grade_category";
 import { gradeSectionMap } from "../../constant/gradeSectionMap";
 import Bird from "../../assets/LingoLogo Standing.png";
+import { db } from "../../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 function GradeSectionDetail() {
   const [section, setSection] = useState("");
@@ -17,6 +19,34 @@ function GradeSectionDetail() {
   const handleGradeChange = (e) => {
     setGrade(e.target.value);
     setSection("");
+  };
+
+  const handleSubmit = async () => {
+    const firstName = localStorage.getItem("firstName");
+    const lastName = localStorage.getItem("lastName");
+    const age = localStorage.getItem("age");
+    const username = firstName;
+    const password = `${lastName}${grade}${section}`;
+    const role = "Student";
+    const level1Questions = {};
+
+    try {
+      const docRef = await addDoc(collection(db, "users"), {
+        FirstName: firstName,
+        LastName: lastName,
+        Username: username,
+        Password: password,
+        Age: age,
+        Role: role,
+        Grade: grade,
+        Section: section,
+        Level1Questions: level1Questions,
+      });
+      localStorage.setItem("linggoUserId", docRef.id);
+      navigate("/language-preference");
+    } catch (error) {
+      alert("Error saving user: " + error.message);
+    }
   };
 
   return (
@@ -61,8 +91,9 @@ function GradeSectionDetail() {
             <select
               value={section}
               onChange={(e) => setSection(e.target.value)}
-              className={`w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none max-h-64 overflow-y-auto ${!grade ? "bg-gray-300 text-gray-500 cursor-not-allowed" : ""
-                }`}
+              className={`w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none max-h-64 overflow-y-auto ${
+                !grade ? "bg-gray-300 text-gray-500 cursor-not-allowed" : ""
+              }`}
               disabled={!grade}
             >
               <option value="">SELECT</option>
@@ -82,12 +113,13 @@ function GradeSectionDetail() {
         </div>
 
         <button
-          onClick={() => navigate("/language-preference")}
+          onClick={handleSubmit}
           disabled={!isFormComplete}
-          className={`border px-4 py-3 w-50 sm:w-60 rounded-lg font-bold text-lg mt-8 transition duration-300 ${isFormComplete
+          className={`border px-4 py-3 w-50 sm:w-60 rounded-lg font-bold text-lg mt-8 transition duration-300 ${
+            isFormComplete
               ? "bg-white hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
+          }`}
         >
           Magpatuloy
         </button>
