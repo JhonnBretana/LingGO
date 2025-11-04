@@ -227,11 +227,11 @@ function Level1Questions() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-3 w-full max-w-full px-4 overflow-y-auto flex-1 my-4">
+                <div className="flex flex-col gap-2 sm:gap-3 w-full max-w-full px-2 sm:px-4 overflow-y-auto flex-1 my-4">
                   {questionRows.map((row, rowIdx) => (
                     <div
                       key={rowIdx}
-                      className="flex flex-row gap-3 items-center justify-center flex-wrap"
+                      className="flex flex-row gap-2 sm:gap-3 items-center justify-center flex-wrap"
                     >
                       {row.map((q) => {
                         const answer = answers[`Level1Question${q.id}`];
@@ -255,7 +255,7 @@ function Level1Questions() {
                         return (
                           <button
                             key={q.id}
-                            className={`w-36 sm:w-40 max-w-[calc(50%-0.25rem)] text-center ${btnColor} ${textColor} ${opacity} text-sm sm:text-lg font-bold py-3 px-2 sm:px-4 rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
+                            className={`w-[140px] sm:w-40 max-w-[calc(50%-0.25rem)] text-center ${btnColor} ${textColor} ${opacity} text-sm sm:text-lg font-bold py-3 px-2 sm:px-4 rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
                             onClick={() => !disabled && setSelectedQuestion(q)}
                             disabled={disabled}
                           >

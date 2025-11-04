@@ -393,7 +393,7 @@ const questions = [
     type: "FourChoicesWithCharacterAndVoice",
     question: null,
     choices: [
-      { value: "Bugas", voice: "/assets/Voice/CebuanoWords/napulo.mp3" },
+      { value: "Bugas", voice: "/assets/Voice/CebuanoWords/bugas.mp3" },
       { value: "Sud-an", voice: "/assets/Voice/CebuanoWords/sud-an.mp3" },
       { value: "Uwel", voice: "/assets/Voice/CebuanoWords/uwel.mp3" },
       { value: "Kan on", voice: "/assets/Voice/CebuanoWords/kan on.mp3" },

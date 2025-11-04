@@ -64,7 +64,7 @@ function PageHeaderLayout() {
   const handleLogout = () => {
     localStorage.removeItem("linggoUserId");
     sessionStorage.removeItem("linggoUserId");
-    navigate("/welcome");
+    navigate("/");
   };
 
   if (loading) {
