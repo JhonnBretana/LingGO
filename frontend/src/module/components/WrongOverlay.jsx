@@ -4,7 +4,7 @@ import Arrow from "../../assets/Arrow.png";
 function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
   const characterImages = [
     "/assets/ImageChoices/UnifGirl1.png",
-    "/assets/ImageChoices/UnifGirl3.png",
+    "/assets/ImageChoices/Unifgirl3.png",
   ];
 
   const randomImage = useMemo(() => {
@@ -45,7 +45,10 @@ function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
             {isArrayAnswer ? (
               <div className="space-y-2">
                 {formattedAnswer.map((pair, index) => (
-                  <div key={index} className="text-sm font-bold border-b-2 border-black pb-1">
+                  <div
+                    key={index}
+                    className="text-sm font-bold border-b-2 border-black pb-1"
+                  >
                     {pair.word1} ↔ {pair.word2}
                   </div>
                 ))}

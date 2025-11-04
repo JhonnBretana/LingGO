@@ -35,7 +35,16 @@ function Level1Questions() {
   const [page, setPage] = useState(1);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [answers, setAnswers] = useState({});
-  const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
+  const [reviewMode, setReviewMode] = useState(false);
+  const [reviewQuestions, setReviewQuestions] = useState([]);
+
+  // Use either all questions or only wrong ones in review mode
+  const displayQuestions = reviewMode ? reviewQuestions : questions;
+  const totalPages = Math.ceil(displayQuestions.length / QUESTIONS_PER_PAGE);
+  const startIdx = (page - 1) * QUESTIONS_PER_PAGE;
+  const endIdx = startIdx + QUESTIONS_PER_PAGE;
+  const paginatedQuestions = displayQuestions.slice(startIdx, endIdx);
+  const questionRows = groupIntoRows(paginatedQuestions, 2);
 
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
@@ -50,29 +59,41 @@ function Level1Questions() {
     fetchAnswers();
   }, []);
 
-  const startIdx = (page - 1) * QUESTIONS_PER_PAGE;
-  const endIdx = startIdx + QUESTIONS_PER_PAGE;
-  const paginatedQuestions = questions.slice(startIdx, endIdx);
-  const questionRows = groupIntoRows(paginatedQuestions, 2);
+  async function fetchAnswers() {
+    const userId = localStorage.getItem("linggoUserId");
+    if (!userId) return;
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      setAnswers(userSnap.data().Level1Questions || {});
+    }
+  }
+
+  function handleReviewWrongQuestions(wrongQuestions) {
+    setReviewQuestions(wrongQuestions);
+    setReviewMode(true);
+    setPage(1);
+    setSelectedQuestion(null);
+  }
 
   function renderQuestionComponent(question) {
     if (!question) return null;
     const userId = localStorage.getItem("linggoUserId");
 
     const handleCorrectAnswer = () => {
-      if (userId) {
+      if (!reviewMode && userId) {
         recordLevel1Answer(userId, question.id, true);
       }
       setSelectedQuestion(null);
-      fetchAnswers();
+      if (!reviewMode) fetchAnswers();
     };
 
     const handleWrongAnswer = () => {
-      if (userId) {
+      if (!reviewMode && userId) {
         recordLevel1Answer(userId, question.id, false);
       }
       setSelectedQuestion(null);
-      fetchAnswers();
+      if (!reviewMode) fetchAnswers();
     };
 
     switch (question.type) {
@@ -161,27 +182,26 @@ function Level1Questions() {
     }
   }
 
-  async function fetchAnswers() {
-    const userId = localStorage.getItem("linggoUserId");
-    if (!userId) return;
-    const userRef = doc(db, "users", userId);
-    const userSnap = await getDoc(userRef);
-    if (userSnap.exists()) {
-      setAnswers(userSnap.data().Level1Questions || {});
-    }
-  }
-
   const allAnswered = questions.every((q) =>
     ["Correct", "Wrong"].includes(answers[`Level1Question${q.id}`])
   );
+
+  // In review mode, don't disable buttons
+  function isAnswered(q) {
+    if (reviewMode) return false;
+    const answer = answers[`Level1Question${q.id}`];
+    return answer === "Correct" || answer === "Wrong";
+  }
 
   return (
     <BackgroundLayout>
       <div className="overflow-hidden w-full h-screen flex flex-col">
         <PageHeaderLayout />
 
-        {allAnswered ? (
-          <LevelResultPreview />
+        {allAnswered && !reviewMode ? (
+          <LevelResultPreview
+            onReviewWrongQuestions={handleReviewWrongQuestions}
+          />
         ) : (
           <>
             {selectedQuestion && (
@@ -238,18 +258,18 @@ function Level1Questions() {
                         let btnColor = "bg-white";
                         let textColor = "text-black";
                         let opacity = "";
-                        let disabled = false;
+                        let disabled = isAnswered(q);
 
-                        if (answer === "Correct") {
-                          btnColor = "bg-green-400";
-                          textColor = "text-white";
-                          opacity = "opacity-50";
-                          disabled = true;
-                        } else if (answer === "Wrong") {
-                          btnColor = "bg-red-400";
-                          textColor = "text-white";
-                          opacity = "opacity-50";
-                          disabled = true;
+                        if (!reviewMode) {
+                          if (answer === "Correct") {
+                            btnColor = "bg-green-400";
+                            textColor = "text-white";
+                            opacity = "opacity-50";
+                          } else if (answer === "Wrong") {
+                            btnColor = "bg-red-400";
+                            textColor = "text-white";
+                            opacity = "opacity-50";
+                          }
                         }
 
                         return (
