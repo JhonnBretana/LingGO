@@ -28,6 +28,15 @@ function Level1Finish() {
     fetchUser();
   }, []);
 
+  // Play level complete sound when page loads
+  useEffect(() => {
+    const playLevelCompleteSound = () => {
+      const audio = new Audio("/assets/AppSounds/level1complete.mp3");
+      audio.play().catch(() => {});
+    };
+    playLevelCompleteSound();
+  }, []);
+
   const getDisplayName = () => {
     if (!user) return "JUAN";
     return user["Unang Pangalan"] || user.Username || "JUAN";
@@ -39,22 +48,9 @@ function Level1Finish() {
         <PageHeaderLayout />
         <div className="flex flex-col items-center text-center m-3 p-3">
           <div className="mb-1">
-            <p
-              className="text-3xl text-white shadow-black text-shadow-lg font-bold my-5"
-              // style={{
-              //   WebkitTextStroke: "1px black",
-              // }}
-            >
+            <p className="text-3xl text-white shadow-black text-shadow-lg font-bold my-5">
               Congratulations, Kaibigan!
             </p>
-            {/* <p
-            className="text-2xl text-white text-shadow-md font-extrabold"
-            style={{
-              WebkitTextStroke: "0.7px black",
-            }}
-          >
-            Maligayang Pagbabalik!
-          </p> */}
           </div>
           <div>
             <img className="h-60 w-65" src={Logo} alt="LingGO Logo" />

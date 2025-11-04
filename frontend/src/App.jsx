@@ -55,11 +55,16 @@ import Role from "./module/AccountModule/RoleSelection.jsx";
 
 import Level1Finish from "./module/components/Level1Finish.jsx";
 
+//bg music
+import useBackgroundMusic from "./hooks/useBackgroundMusic.js";
+
 function App() {
+  const playMusic = useBackgroundMusic();
+
   return (
     <div>
       <Routes>
-        <Route path="/" element={<DefaultPage />} />
+        <Route path="/" element={<DefaultPage playMusic={playMusic} />} />
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/welcome" element={<WelcomePage />} />
 
