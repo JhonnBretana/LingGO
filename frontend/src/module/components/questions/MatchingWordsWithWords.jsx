@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import QuestionsBar from "../../../assets/clickbar.png";
 import BombLife from "../../../assets/Bomb.png";
-import BombWrong from "../../../assets/Bomb.gif";
+import BombWrong from "../../../assets/Bomb.mp4";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
@@ -17,6 +17,7 @@ function MatchingWordsWithWords({
   const [lives, setLives] = useState(3);
   const [showBombModal, setShowBombModal] = useState(false);
   const [showTryAgainModal, setShowTryAgainModal] = useState(false);
+  const videoRef = useRef(null);
 
   const colors = [
     { bg: "bg-orange-400", border: "border-orange-600" },
@@ -26,6 +27,16 @@ function MatchingWordsWithWords({
     { bg: "bg-purple-500", border: "border-purple-700" },
     { bg: "bg-pink-400", border: "border-pink-600" },
   ];
+
+  // Play video when bomb modal opens
+  useEffect(() => {
+    if (showBombModal && videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play().catch(err => {
+        console.log("Video play failed:", err);
+      });
+    }
+  }, [showBombModal]);
 
   const getWordColor = (word, side) => {
     const match = matches.find((m) => m[side] === word);
@@ -177,9 +188,8 @@ function MatchingWordsWithWords({
               key={lifeNum}
               src={BombLife}
               alt={`Life ${lifeNum}`}
-              className={`w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 ${
-                lifeNum > lives ? "opacity-30 grayscale" : ""
-              }`}
+              className={`w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 ${lifeNum > lives ? "opacity-30 grayscale" : ""
+                }`}
             />
           ))}
         </div>
@@ -191,11 +201,10 @@ function MatchingWordsWithWords({
               return (
                 <button
                   key={choice.word1}
-                  className={`w-32 sm:w-36 min-h-[50px] flex items-center justify-center text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${
-                    color
-                      ? `${color.bg} ${color.border}`
-                      : "bg-white border-gray-300"
-                  }`}
+                  className={`w-32 sm:w-36 min-h-[50px] flex items-center justify-center text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${color
+                    ? `${color.bg} ${color.border}`
+                    : "bg-white border-gray-300"
+                    }`}
                   onClick={() => handleClick(choice.word1, "left")}
                 >
                   {choice.word1}
@@ -209,11 +218,10 @@ function MatchingWordsWithWords({
               return (
                 <button
                   key={choice.word2}
-                  className={`w-32 sm:w-36 min-h-[50px] text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${
-                    color
-                      ? `${color.bg} ${color.border}`
-                      : "bg-white border-gray-300"
-                  }`}
+                  className={`w-32 sm:w-36 min-h-[50px] text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${color
+                    ? `${color.bg} ${color.border}`
+                    : "bg-white border-gray-300"
+                    }`}
                   onClick={() => handleClick(choice.word2, "right")}
                 >
                   {choice.word2}
@@ -227,7 +235,13 @@ function MatchingWordsWithWords({
       {showBombModal && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl">
-            <img src={BombWrong} alt="Bomb Explosion" className="w-32 h-32" />
+            <video
+              ref={videoRef}
+              src={BombWrong}
+              className="w-32 h-32 object-cover"
+              muted={false}
+              playsInline
+            />
             <p className="text-2xl font-bold text-red-600">Mali ang Tugma!</p>
             <p className="text-lg text-gray-700">
               Natitira pang Buhay: {lives}
