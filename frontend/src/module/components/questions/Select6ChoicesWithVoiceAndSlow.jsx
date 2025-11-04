@@ -8,6 +8,7 @@ function Select6ChoicesWithVoiceAndSlow({
   question,
   onCorrectAnswer,
   onWrongAnswer,
+  showWrongOverlay = true,
 }) {
   const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
@@ -41,7 +42,14 @@ function Select6ChoicesWithVoiceAndSlow({
     ) {
       setShowCorrectModal(true);
     } else {
-      setShowWrongModal(true);
+      if (showWrongOverlay) {
+        setShowWrongModal(true);
+      } else {
+        setSelected(null);
+        if (onWrongAnswer) {
+          onWrongAnswer();
+        }
+      }
     }
   };
 
@@ -128,11 +136,13 @@ function Select6ChoicesWithVoiceAndSlow({
         onClose={handleCloseCorrectModal}
       />
 
-      <WrongAnswerModal
-        isOpen={showWrongModal}
-        correctAnswer={question.correctAnswer}
-        onClose={handleCloseWrongModal}
-      />
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrongModal}
+          correctAnswer={question.correctAnswer}
+          onClose={handleCloseWrongModal}
+        />
+      )}
     </>
   );
 }

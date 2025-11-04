@@ -246,7 +246,7 @@ const questions = [
     type: "SpeechMicWithVoice",
     question: "Uwel",
     choices: null,
-    correctAnswer: "Uwel",
+    correctAnswer: "U w e l",
     image: null,
     voice: "/assets/Voice/CebuanoWords/uwel.mp3",
   },

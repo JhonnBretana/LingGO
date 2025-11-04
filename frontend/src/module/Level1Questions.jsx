@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../module/components/BackgroundLayout.jsx";
 import QuestionsBar from "../assets/clickbar.png";
 import PageHeaderLayout from "../module/components/PageHeaderLayout";
@@ -45,6 +46,7 @@ function Level1Questions() {
   const endIdx = startIdx + QUESTIONS_PER_PAGE;
   const paginatedQuestions = displayQuestions.slice(startIdx, endIdx);
   const questionRows = groupIntoRows(paginatedQuestions, 2);
+  const [reviewAnswered, setReviewAnswered] = useState([]);
 
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
@@ -79,21 +81,24 @@ function Level1Questions() {
   function renderQuestionComponent(question) {
     if (!question) return null;
     const userId = localStorage.getItem("linggoUserId");
+    const showWrongOverlay = !reviewMode;
 
     const handleCorrectAnswer = () => {
-      if (!reviewMode && userId) {
+      if (reviewMode) {
+        setReviewAnswered((prev) => [...prev, question.id]);
+      } else if (userId) {
         recordLevel1Answer(userId, question.id, true);
+        fetchAnswers();
       }
       setSelectedQuestion(null);
-      if (!reviewMode) fetchAnswers();
     };
 
     const handleWrongAnswer = () => {
       if (!reviewMode && userId) {
         recordLevel1Answer(userId, question.id, false);
+        fetchAnswers();
       }
       setSelectedQuestion(null);
-      if (!reviewMode) fetchAnswers();
     };
 
     switch (question.type) {
@@ -103,6 +108,7 @@ function Level1Questions() {
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       case "SixChoicesWithVoice":
@@ -111,6 +117,7 @@ function Level1Questions() {
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       case "FourChoicesWithCharacterAndVoice":
@@ -119,6 +126,7 @@ function Level1Questions() {
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       case "SpeechMicWithVoice":
@@ -127,6 +135,7 @@ function Level1Questions() {
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       case "MatchingWordsWithImage":
@@ -135,6 +144,7 @@ function Level1Questions() {
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       case "QuestionWith3Choices":
@@ -143,6 +153,7 @@ function Level1Questions() {
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       case "QuestionWith4Choices":
@@ -151,6 +162,7 @@ function Level1Questions() {
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       case "Select6ChoicesWithVoiceAndSlow":
@@ -159,6 +171,7 @@ function Level1Questions() {
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       case "MatchingWordsWithWords":
@@ -167,6 +180,7 @@ function Level1Questions() {
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       case "DragAndDrop4ChoicesWithVoice":
@@ -175,6 +189,7 @@ function Level1Questions() {
             question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       default:
@@ -228,6 +243,7 @@ function Level1Questions() {
               </div>
             )}
 
+            {/* Wrong Questions Component */}
             {selectedQuestion ? (
               <div className="flex-1 overflow-auto">
                 {renderQuestionComponent(selectedQuestion)}
@@ -270,6 +286,14 @@ function Level1Questions() {
                             textColor = "text-white";
                             opacity = "opacity-50";
                           }
+                        } else {
+                          // In review mode, make button green if answered
+                          if (reviewAnswered.includes(q.id)) {
+                            btnColor = "bg-green-400";
+                            textColor = "text-white";
+                            opacity = "";
+                            disabled = true;
+                          }
                         }
 
                         return (
@@ -286,6 +310,15 @@ function Level1Questions() {
                     </div>
                   ))}
                 </div>
+
+                {reviewMode && (
+                  <button
+                    className="w-40 bg-white text-black text-lg font-bold my-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
+                    onClick={() => navigate("/level1-finish")}
+                  >
+                    Sumunod
+                  </button>
+                )}
 
                 <div className="flex gap-3 sm:gap-4 mt-3 items-center">
                   <button

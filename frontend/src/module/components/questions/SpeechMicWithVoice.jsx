@@ -5,7 +5,12 @@ import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 import { Volume2, RotateCcw } from "lucide-react";
 
-function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
+function SpeechMicWithVoice({
+  question,
+  onCorrectAnswer,
+  onWrongAnswer,
+  showWrongOverlay = true,
+}) {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [showSubmit, setShowSubmit] = useState(false);
@@ -83,7 +88,15 @@ function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
     if (userSpoken && userSpoken === correctNormalized) {
       setShowCorrect(true);
     } else {
-      setShowWrong(true);
+      if (showWrongOverlay) {
+        setShowWrong(true);
+      } else {
+        setTranscript("");
+        setShowSubmit(false);
+        if (onWrongAnswer) {
+          onWrongAnswer();
+        }
+      }
     }
 
     setShowSubmit(false);
@@ -181,11 +194,13 @@ function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
         isOpen={showCorrect}
         onClose={handleCloseCorrectModal}
       />
-      <WrongAnswerModal
-        isOpen={showWrong}
-        onClose={handleCloseWrongModal}
-        correctAnswer={question.correctAnswer}
-      />
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrong}
+          onClose={handleCloseWrongModal}
+          correctAnswer={question.correctAnswer}
+        />
+      )}
     </>
   );
 }

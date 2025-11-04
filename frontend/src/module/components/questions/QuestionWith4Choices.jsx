@@ -3,7 +3,12 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function QuestionWith4Choices({ question, onCorrectAnswer, onWrongAnswer }) {
+function QuestionWith4Choices({
+  question,
+  onCorrectAnswer,
+  onWrongAnswer,
+  showWrongOverlay = true,
+}) {
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
@@ -20,7 +25,14 @@ function QuestionWith4Choices({ question, onCorrectAnswer, onWrongAnswer }) {
     if (selected && selected === correctAnswer) {
       setShowCorrectModal(true);
     } else {
-      setShowWrongModal(true);
+      if (showWrongOverlay) {
+        setShowWrongModal(true);
+      } else {
+        setSelected(null);
+        if (onWrongAnswer) {
+          onWrongAnswer();
+        }
+      }
     }
   };
 
@@ -139,11 +151,13 @@ function QuestionWith4Choices({ question, onCorrectAnswer, onWrongAnswer }) {
         onClose={handleCloseCorrectModal}
       />
 
-      <WrongAnswerModal
-        isOpen={showWrongModal}
-        correctAnswer={getCorrectAnswerText()}
-        onClose={handleCloseWrongModal}
-      />
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrongModal}
+          correctAnswer={getCorrectAnswerText()}
+          onClose={handleCloseWrongModal}
+        />
+      )}
     </>
   );
 }

@@ -3,7 +3,12 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function MatchingWordsWithImage({ question, onCorrectAnswer, onWrongAnswer }) {
+function MatchingWordsWithImage({
+  question,
+  onCorrectAnswer,
+  onWrongAnswer,
+  showWrongOverlay = true,
+}) {
   const [selectedWord, setSelectedWord] = useState(null);
   const [matches, setMatches] = useState([]);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
@@ -35,7 +40,13 @@ function MatchingWordsWithImage({ question, onCorrectAnswer, onWrongAnswer }) {
     if (correct) {
       setShowCorrectModal(true);
     } else {
-      setShowWrongModal(true);
+      if (showWrongOverlay) {
+        setShowWrongModal(true);
+      } else {
+        setMatches([]);
+        setSelectedWord(null);
+        if (onWrongAnswer) onWrongAnswer();
+      }
     }
   };
 
@@ -125,14 +136,16 @@ function MatchingWordsWithImage({ question, onCorrectAnswer, onWrongAnswer }) {
           if (onCorrectAnswer) onCorrectAnswer();
         }}
       />
-      <WrongAnswerModal
-        isOpen={showWrongModal}
-        correctAnswer={getCorrectAnswerText()}
-        onClose={() => {
-          setShowWrongModal(false);
-          if (onWrongAnswer) onWrongAnswer();
-        }}
-      />
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrongModal}
+          correctAnswer={getCorrectAnswerText()}
+          onClose={() => {
+            setShowWrongModal(false);
+            if (onWrongAnswer) onWrongAnswer();
+          }}
+        />
+      )}
     </>
   );
 }

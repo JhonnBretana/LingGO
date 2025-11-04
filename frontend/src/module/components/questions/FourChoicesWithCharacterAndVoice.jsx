@@ -8,6 +8,7 @@ function FourChoicesWithCharacterAndVoice({
   question,
   onCorrectAnswer,
   onWrongAnswer,
+  showWrongOverlay = true,
 }) {
   const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
@@ -47,7 +48,14 @@ function FourChoicesWithCharacterAndVoice({
     if (selectedVal && selectedVal === correct.trim().toLowerCase()) {
       setShowCorrectModal(true);
     } else if (selectedVal) {
-      setShowWrongModal(true);
+      if (showWrongOverlay) {
+        setShowWrongModal(true);
+      } else {
+        setSelected(null);
+        if (onWrongAnswer) {
+          onWrongAnswer();
+        }
+      }
     }
   };
 
@@ -147,11 +155,13 @@ function FourChoicesWithCharacterAndVoice({
         onClose={handleCloseCorrectModal}
       />
 
-      <WrongAnswerModal
-        isOpen={showWrongModal}
-        correctAnswer={question.correctAnswer}
-        onClose={handleCloseWrongModal}
-      />
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrongModal}
+          correctAnswer={question.correctAnswer}
+          onClose={handleCloseWrongModal}
+        />
+      )}
     </>
   );
 }
