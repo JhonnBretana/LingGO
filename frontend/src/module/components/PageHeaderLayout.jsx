@@ -31,31 +31,13 @@ function PageHeaderLayout() {
     fetchUser();
   }, []);
 
-  const getGradeNumber = (baitang) => {
-    if (!baitang) return "";
-
-    const gradeMap = {
-      "Ikapitong Baitang": "7",
-      "Ika-walong Baitang": "8",
-      "Ika-siyam na Baitang": "9",
-      "Ika-sampung Baitang": "10",
-    };
-
-    return gradeMap[baitang] || "";
-  };
-
-  // Get full name from Firestore fields
   const getFullName = () => {
     if (role === "Instructor" || role === "Others") {
       return role;
     }
     if (!user) return "Juan Dela Cruz";
     const firstName = user.FirstName || "";
-    const lastName = user.LastName || "";
-    if (firstName && lastName) {
-      return `${firstName} ${lastName}`;
-    }
-    return firstName || lastName || user.Username || "Juan Dela Cruz";
+    return firstName || user.Username || "Juan Dela Cruz";
   };
 
   // Get grade and section from Firestore fields
@@ -63,8 +45,8 @@ function PageHeaderLayout() {
     role === "Instructor" || role === "Others"
       ? "Visitor"
       : user
-      ? `${user.Grade || ""}${user.Section ? "-" + user.Section : ""}`
-      : "Grade-Section";
+        ? `${user.Grade || ""}${user.Section ? "-" + user.Section : ""}`
+        : "Grade-Section";
 
   const handleLogout = () => {
     localStorage.removeItem("linggoUserId");
