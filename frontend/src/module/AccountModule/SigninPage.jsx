@@ -60,7 +60,7 @@ function SigninPage() {
               placeholder="Password"
               autoComplete="off"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value.toUpperCase())}
               className="w-full bg-white text-black text-center font-bold py-2 px-12 rounded-full border-3 border-black text-lg focus:outline-none"
             />
             <button
