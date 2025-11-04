@@ -14,6 +14,7 @@ function Select6ChoicesWithVoiceAndSlow({
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -45,10 +46,8 @@ function Select6ChoicesWithVoiceAndSlow({
       if (showWrongOverlay) {
         setShowWrongModal(true);
       } else {
-        setSelected(null);
-        if (onWrongAnswer) {
-          onWrongAnswer();
-        }
+        // In review mode, show Try Again modal and DO NOT exit
+        setShowTryAgainModal(true);
       }
     }
   };
@@ -143,6 +142,11 @@ function Select6ChoicesWithVoiceAndSlow({
           onClose={handleCloseWrongModal}
         />
       )}
+      <WrongAnswerModal
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
+      />
     </>
   );
 }

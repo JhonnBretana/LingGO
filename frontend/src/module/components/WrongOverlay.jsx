@@ -1,7 +1,12 @@
 import React, { useMemo } from "react";
 import Arrow from "../../assets/Arrow.png";
 
-function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
+function WrongAnswerModal({
+  isOpen,
+  onClose,
+  correctAnswer,
+  isTryAgain = false,
+}) {
   const characterImages = [
     "/assets/ImageChoices/UnifGirl1.png",
     "/assets/ImageChoices/Unifgirl3.png",
@@ -15,11 +20,9 @@ function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
 
   const formattedAnswer = useMemo(() => {
     if (!correctAnswer) return "—";
-
     if (Array.isArray(correctAnswer)) {
       return correctAnswer;
     }
-
     return correctAnswer;
   }, [correctAnswer]);
 
@@ -27,6 +30,29 @@ function WrongAnswerModal({ isOpen, onClose, correctAnswer }) {
 
   if (!isOpen) return null;
 
+  // If in review mode, show Try Again modal
+  if (isTryAgain) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/30">
+        <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl border-2 border-black">
+          <h2 className="text-2xl font-bold text-black text-center">
+            Try Again!
+          </h2>
+          <p className="text-lg text-black text-center mb-4">
+            Please try answering the question again.
+          </p>
+          <button
+            className="px-6 py-2 bg-[#f2d919] text-black font-bold rounded-xl border-2 border-black hover:bg-yellow-300 transition-all"
+            onClick={onClose}
+          >
+            Okay
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Default wrong answer modal
   return (
     <div className="fixed inset-0 flex items-end justify-start z-50 bg-black/30">
       <div className="relative w-full bg-white/95 border-t-4 border-orange-500 rounded-t-3xl shadow-2xl p-6 pb-16 text-center animate-slide-up sm:rounded-t-[2rem]">

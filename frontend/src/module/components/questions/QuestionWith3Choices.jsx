@@ -12,6 +12,7 @@ function QuestionWith3Choices({
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,11 +28,8 @@ function QuestionWith3Choices({
       if (showWrongOverlay) {
         setShowWrongModal(true);
       } else {
-        // Directly call onWrongAnswer and reset selection if overlay is suppressed
-        setSelected(null);
-        if (onWrongAnswer) {
-          onWrongAnswer();
-        }
+        // In review mode, show Try Again modal and DO NOT exit
+        setShowTryAgainModal(true);
       }
     }
   };
@@ -143,6 +141,12 @@ function QuestionWith3Choices({
           onClose={handleCloseWrongModal}
         />
       )}
+
+      <WrongAnswerModal
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
+      />
     </>
   );
 }

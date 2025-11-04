@@ -14,6 +14,7 @@ function FourChoicesWithCharacterAndVoice({
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const playAudioSrc = (src) => {
     if (!src || !audioRef.current) return;
@@ -51,10 +52,7 @@ function FourChoicesWithCharacterAndVoice({
       if (showWrongOverlay) {
         setShowWrongModal(true);
       } else {
-        setSelected(null);
-        if (onWrongAnswer) {
-          onWrongAnswer();
-        }
+        setShowTryAgainModal(true);
       }
     }
   };
@@ -162,6 +160,12 @@ function FourChoicesWithCharacterAndVoice({
           onClose={handleCloseWrongModal}
         />
       )}
+
+      <WrongAnswerModal
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
+      />
     </>
   );
 }

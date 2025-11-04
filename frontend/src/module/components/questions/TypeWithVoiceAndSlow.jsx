@@ -14,6 +14,7 @@ function TypeWithVoiceAndSlow({
   const [answer, setAnswer] = useState("");
   const [showCorrect, setShowCorrect] = useState(false);
   const [showWrong, setShowWrong] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -43,9 +44,7 @@ function TypeWithVoiceAndSlow({
         setShowWrong(true);
       } else {
         setAnswer("");
-        if (onWrongAnswer) {
-          onWrongAnswer();
-        }
+        setShowTryAgainModal(true);
       }
     }
   };
@@ -135,6 +134,11 @@ function TypeWithVoiceAndSlow({
           correctAnswer={question.correctAnswer}
         />
       )}
+      <WrongAnswerModal
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
+      />
     </>
   );
 }

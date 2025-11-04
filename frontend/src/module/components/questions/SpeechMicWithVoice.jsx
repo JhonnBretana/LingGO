@@ -18,6 +18,7 @@ function SpeechMicWithVoice({
   const [showWrong, setShowWrong] = useState(false);
   const recognitionRef = useRef(null);
   const audioRef = useRef(null);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -93,9 +94,7 @@ function SpeechMicWithVoice({
       } else {
         setTranscript("");
         setShowSubmit(false);
-        if (onWrongAnswer) {
-          onWrongAnswer();
-        }
+        setShowTryAgainModal(true);
       }
     }
 
@@ -201,6 +200,11 @@ function SpeechMicWithVoice({
           correctAnswer={question.correctAnswer}
         />
       )}
+      <WrongAnswerModal
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
+      />
     </>
   );
 }

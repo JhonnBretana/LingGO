@@ -13,6 +13,7 @@ function MatchingWordsWithImage({
   const [matches, setMatches] = useState([]);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const unmatchedWords = question.choices
     .map((c) => c.word)
@@ -43,9 +44,8 @@ function MatchingWordsWithImage({
       if (showWrongOverlay) {
         setShowWrongModal(true);
       } else {
-        setMatches([]);
-        setSelectedWord(null);
-        if (onWrongAnswer) onWrongAnswer();
+        // In review mode, show Try Again modal and DO NOT exit
+        setShowTryAgainModal(true);
       }
     }
   };
@@ -146,6 +146,11 @@ function MatchingWordsWithImage({
           }}
         />
       )}
+      <WrongAnswerModal
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
+      />
     </>
   );
 }

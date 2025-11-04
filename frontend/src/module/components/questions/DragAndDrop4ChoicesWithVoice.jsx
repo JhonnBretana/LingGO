@@ -8,6 +8,7 @@ function DragAndDrop4ChoicesWithVoice({
   question,
   onCorrectAnswer,
   onWrongAnswer,
+  showWrongOverlay = true,
 }) {
   const [droppedValue, setDroppedValue] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -15,6 +16,7 @@ function DragAndDrop4ChoicesWithVoice({
   const [showWrong, setShowWrong] = useState(false);
   const [touchPosition, setTouchPosition] = useState(null);
   const audioRef = useRef(null);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const handleDragStart = (e, value) => {
     e.dataTransfer.setData("text/plain", value);
@@ -37,7 +39,11 @@ function DragAndDrop4ChoicesWithVoice({
     if (droppedAnswer === correctAnswer) {
       setShowCorrect(true);
     } else {
-      setShowWrong(true);
+      if (showWrongOverlay) {
+        setShowWrong(true);
+      } else {
+        setShowTryAgainModal(true);
+      }
     }
   };
 
@@ -86,6 +92,7 @@ function DragAndDrop4ChoicesWithVoice({
     const touch = e.changedTouches[0];
     const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
 
+    // In handleTouchEnd:
     if (dropZone && dropZone.classList.contains("drop-zone")) {
       const correctAnswer = (question.correctAnswer || "").trim().toLowerCase();
       const droppedAnswer = draggedItem.trim().toLowerCase();
@@ -95,7 +102,11 @@ function DragAndDrop4ChoicesWithVoice({
       if (droppedAnswer === correctAnswer) {
         setShowCorrect(true);
       } else {
-        setShowWrong(true);
+        if (showWrongOverlay) {
+          setShowWrong(true);
+        } else {
+          setShowTryAgainModal(true); // Show Try Again modal in review mode
+        }
       }
     }
 
@@ -197,10 +208,17 @@ function DragAndDrop4ChoicesWithVoice({
         isOpen={showCorrect}
         onClose={handleCloseCorrectModal}
       />
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrong}
+          correctAnswer={question.correctAnswer}
+          onClose={handleCloseWrongModal}
+        />
+      )}
       <WrongAnswerModal
-        isOpen={showWrong}
-        onClose={handleCloseWrongModal}
-        correctAnswer={question.correctAnswer}
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
       />
     </>
   );

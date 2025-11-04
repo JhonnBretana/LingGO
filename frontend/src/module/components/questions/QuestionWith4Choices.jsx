@@ -12,6 +12,7 @@ function QuestionWith4Choices({
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,10 +29,8 @@ function QuestionWith4Choices({
       if (showWrongOverlay) {
         setShowWrongModal(true);
       } else {
-        setSelected(null);
-        if (onWrongAnswer) {
-          onWrongAnswer();
-        }
+        // In review mode, show Try Again modal and DO NOT exit
+        setShowTryAgainModal(true);
       }
     }
   };
@@ -158,6 +157,11 @@ function QuestionWith4Choices({
           onClose={handleCloseWrongModal}
         />
       )}
+      <WrongAnswerModal
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
+      />
     </>
   );
 }

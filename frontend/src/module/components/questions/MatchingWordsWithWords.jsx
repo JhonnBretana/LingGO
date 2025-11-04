@@ -16,6 +16,7 @@ function MatchingWordsWithWords({
   const [showWrong, setShowWrong] = useState(false);
   const [lives, setLives] = useState(3);
   const [showBombModal, setShowBombModal] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const colors = [
     { bg: "bg-orange-400", border: "border-orange-600" },
@@ -139,11 +140,11 @@ function MatchingWordsWithWords({
       if (showWrongOverlay) {
         setShowWrong(true);
       } else {
+        // In review mode, show Try Again modal and DO NOT exit
+        setShowTryAgainModal(true);
         setMatches([]);
         setLives(3);
-        if (onWrongAnswer) {
-          onWrongAnswer();
-        }
+        // Do NOT call onWrongAnswer();
       }
     } else {
       // Keep only correct pairs, remove wrong/incomplete matches
@@ -223,7 +224,6 @@ function MatchingWordsWithWords({
         </div>
       </div>
 
-      {/* Bomb Modal - Semi-transparent background to see through */}
       {showBombModal && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl">
@@ -253,6 +253,11 @@ function MatchingWordsWithWords({
           correctAnswer={question.correctAnswer}
         />
       )}
+      <WrongAnswerModal
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
+      />
     </>
   );
 }
