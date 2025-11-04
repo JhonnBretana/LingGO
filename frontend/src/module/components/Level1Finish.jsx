@@ -35,18 +35,19 @@ function Level1Finish() {
 
   return (
     <BackgroundLayout>
-      <PageHeaderLayout />
-      <div className="flex flex-col items-center text-center m-3 p-3">
-        <div className="mb-1">
-          <p
-            className="text-5xl text-white text-shadow-md font-extrabold mb-3"
-            style={{
-              WebkitTextStroke: "1px black",
-            }}
-          >
-            Congratulations, Kaibigan!
-          </p>
-          {/* <p
+      <div className="overflow-hidden w-full h-screen flex flex-col">
+        <PageHeaderLayout />
+        <div className="flex flex-col items-center text-center m-3 p-3">
+          <div className="mb-1">
+            <p
+              className="text-3xl text-white shadow-black text-shadow-lg font-bold my-5"
+              // style={{
+              //   WebkitTextStroke: "1px black",
+              // }}
+            >
+              Congratulations, Kaibigan!
+            </p>
+            {/* <p
             className="text-2xl text-white text-shadow-md font-extrabold"
             style={{
               WebkitTextStroke: "0.7px black",
@@ -54,18 +55,19 @@ function Level1Finish() {
           >
             Maligayang Pagbabalik!
           </p> */}
-        </div>
-        <div>
-          <img className="h-50 w-50" src={Logo} alt="LingGO Logo" />
-        </div>
+          </div>
+          <div>
+            <img className="h-60 w-65" src={Logo} alt="LingGO Logo" />
+          </div>
 
-        <div className="mt-5 pt-5">
-          <button
-            onClick={() => navigate("/choose-level")}
-            className="w-40 bg-white text-black text-lg font-bold py-2 px-4 rounded-2xl border-2 border-black mt-5 hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
-          >
-            MAGPATULOY
-          </button>
+          <div className="mt-5 pt-5">
+            <button
+              onClick={() => navigate("/choose-level")}
+              className="w-40 bg-white text-black text-lg font-bold py-2 px-4 rounded-2xl border-2 border-black mt-5 hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
+            >
+              MAGPATULOY
+            </button>
+          </div>
         </div>
       </div>
     </BackgroundLayout>

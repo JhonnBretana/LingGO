@@ -38,7 +38,7 @@ function Level1Questions() {
   const [answers, setAnswers] = useState({});
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewQuestions, setReviewQuestions] = useState([]);
-
+  const navigate = useNavigate();
   // Use either all questions or only wrong ones in review mode
   const displayQuestions = reviewMode ? reviewQuestions : questions;
   const totalPages = Math.ceil(displayQuestions.length / QUESTIONS_PER_PAGE);
@@ -208,6 +208,37 @@ function Level1Questions() {
     return answer === "Correct" || answer === "Wrong";
   }
 
+  // Save reviewAnswered to localStorage whenever it changes
+  useEffect(() => {
+    if (reviewMode) {
+      localStorage.setItem("reviewAnswered", JSON.stringify(reviewAnswered));
+    }
+  }, [reviewAnswered, reviewMode]);
+
+  useEffect(() => {
+    if (reviewMode) {
+      const saved = localStorage.getItem("reviewAnswered");
+      if (saved) setReviewAnswered(JSON.parse(saved));
+    }
+  }, [reviewMode]);
+
+  useEffect(() => {
+    // Only run when answers are loaded
+    const savedReviewAnswered = localStorage.getItem("reviewAnswered");
+    if (savedReviewAnswered && Object.keys(answers).length > 0) {
+      // Find all questions that were wrong
+      const wrongQuestions = questions.filter((q) => {
+        const answer = answers[`Level1Question${q.id}`];
+        return answer === "Wrong";
+      });
+      setReviewQuestions(wrongQuestions);
+      setReviewMode(true);
+      setReviewAnswered(JSON.parse(savedReviewAnswered));
+      setPage(1);
+      setSelectedQuestion(null);
+    }
+  }, [answers]);
+
   return (
     <BackgroundLayout>
       <div className="overflow-hidden w-full h-screen flex flex-col">
@@ -311,10 +342,21 @@ function Level1Questions() {
                   ))}
                 </div>
 
-                {reviewMode && (
+                {reviewMode && reviewQuestions.length > 0 && (
                   <button
-                    className="w-40 bg-white text-black text-lg font-bold my-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
-                    onClick={() => navigate("/level1-finish")}
+                    className="w-40 bg-white text-black text-lg font-bold my-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={
+                      !reviewQuestions.every((q) =>
+                        reviewAnswered.includes(q.id)
+                      )
+                    }
+                    onClick={() => {
+                      setReviewMode(false);
+                      setReviewQuestions([]);
+                      setReviewAnswered([]);
+                      localStorage.removeItem("reviewAnswered");
+                      navigate("/level1-finish");
+                    }}
                   >
                     Sumunod
                   </button>
