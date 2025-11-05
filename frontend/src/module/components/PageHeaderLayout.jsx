@@ -32,21 +32,24 @@ function PageHeaderLayout() {
   }, []);
 
   const getFullName = () => {
-    if (role === "Instructor" || role === "Others") {
-      return role;
-    }
+    // Show role in Tagalog if it's one of these
+    if (role === "Instructor") return "Guro";
+    if (role === "Others") return "Iba pa";
+    if (role === "Researchers") return "Mananaliksik";
+
+    // Otherwise (Student), show user name
     if (!user) return "Juan Dela Cruz";
     const firstName = user.FirstName || "";
     return firstName || user.Username || "Juan Dela Cruz";
   };
 
-  // Get grade and section from Firestore fields
+  // Grade and section display
   const gradeDisplay =
-    role === "Instructor" || role === "Others"
-      ? "Visitor"
+    role === "Instructor" || role === "Others" || role === "Researchers"
+      ? "Bisita"
       : user
-        ? `${user.Grade || ""}${user.Section ? "-" + user.Section : ""}`
-        : "Grade-Section";
+      ? `${user.Grade || ""}${user.Section ? "-" + user.Section : ""}`
+      : "Baitang-Seksyon";
 
   const handleLogout = () => {
     localStorage.removeItem("linggoUserId");
@@ -67,7 +70,7 @@ function PageHeaderLayout() {
 
   const handleClearRecords = async () => {
     await clearLevel1Questions();
-    window.location.reload(); // Or refetch user data if you prefer
+    window.location.reload(); // or re-fetch user data
   };
 
   return (
@@ -109,7 +112,7 @@ function PageHeaderLayout() {
           <div
             className="bg-white rounded-lg shadow-lg p-6 min-w-[300px] relative"
             style={{
-              border: "6px solid #FFD700", // Filipino gold accent
+              border: "6px solid #FFD700",
               boxShadow: "0 4px 24px rgba(228, 99, 99, 0.15)",
             }}
           >
@@ -131,7 +134,7 @@ function PageHeaderLayout() {
                 className="my-1 px-4 py-2 bg-orange-400 text-white rounded hover:bg-red-600"
                 onClick={handleClearRecords}
               >
-                Clear Records
+                I-clear ang Records
               </button>
               <button
                 className="my-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"

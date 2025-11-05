@@ -11,16 +11,17 @@ function NameDetail() {
   return (
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
-        <div className="mb-5">
-          <p
-            className="text-3xl text-white text-shadow-md font-extrabold"
-            style={{
-              WebkitTextStroke: "0.5px black",
-            }}
-          >
-            Anong pangalan mo, kaibigan?
-          </p>
-        </div>
+        <div className="mb-5 px-2">
+  <p
+    className="text-2xl sm:text-3xl text-white font-extrabold leading-relaxed"
+    style={{
+      textShadow:
+        "2px 2px 0px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0, 0, 0, 0.4)",
+    }}
+  >
+    Anong pangalan mo, kaibigan?
+  </p>
+</div>
         <div>
           <img className="h-70 w-75" src={Bird} alt="LingGO Logo" />
         </div>
@@ -28,14 +29,14 @@ function NameDetail() {
           {/* Username Input */}
           <input
             type="text"
-            placeholder="First Name"
+            placeholder="PANGALAN"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value.toUpperCase())}
             className="w-full bg-white text-black text-center font-bold py-2 rounded-full border-3 border-black text-lg focus:outline-none"
           />
           <input
             type="text"
-            placeholder="Last Name"
+            placeholder="APELYIDO"
             value={lastName}
             onChange={(e) => setLastName(e.target.value.toUpperCase())}
             className="w-full bg-white text-black text-center font-bold py-2 rounded-full border-3 border-black text-lg focus:outline-none"

@@ -58,49 +58,6 @@ function LevelResultPreview({ onReviewWrongQuestions }) {
 
   const percentage = ((earnedPoints / totalPoints) * 100).toFixed(1);
 
-  // Helper function to format correct answer
-  const formatCorrectAnswer = (question) => {
-    if (question.type === "MatchingWordsWithWords") {
-      return (
-        <div className="space-y-1">
-          {question.correctAnswer.map((pair, index) => (
-            <div key={index} className="text-green-900">
-              {pair.word1} - {pair.word2}
-            </div>
-          ))}
-        </div>
-      );
-    } else if (question.type === "MatchingWordsWithImage") {
-      return (
-        <div className="space-y-2">
-          {question.correctAnswer.map((pair, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <span className="text-green-900">{pair.word}</span>
-              <span>-</span>
-              <img
-                src={pair.image}
-                alt={pair.word}
-                className="w-8 h-8 object-contain"
-              />
-            </div>
-          ))}
-        </div>
-      );
-    } else if (typeof question.correctAnswer === "string") {
-      return <span className="text-green-900">{question.correctAnswer}</span>;
-    } else if (question.correctAnswer?.value) {
-      return (
-        <span className="text-green-900">{question.correctAnswer.value}</span>
-      );
-    } else {
-      return (
-        <span className="text-green-900">
-          {JSON.stringify(question.correctAnswer)}
-        </span>
-      );
-    }
-  };
-
   return (
     <div className="overflow-hidden w-full h-screen flex flex-col">
       <div className="max-w-2xl mx-auto p-6">
@@ -120,16 +77,16 @@ function LevelResultPreview({ onReviewWrongQuestions }) {
             <img className="h-50 w-52" src={Logo} alt="LingGO Logo" />
             <div className="my-5 text-center">
               <p className="text-2xl shadow-black text-white text-shadow-2xl font-bold my-2">
-                Magaling Kaibigan!
+                Magaling kaibigan!
               </p>
               <p className="text-xl shadow-black text-white text-shadow-2xl font-medium my-2">
-                Ating balikan ang mga Mali
+                Ngayon balikan natin ang ilang katanungan
               </p>
               <button
                 className="w-35 bg-white text-black text-lg font-bold mt-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
                 onClick={() => onReviewWrongQuestions(wrongQuestions)}
               >
-                Sumunod
+                Magpatuloy
               </button>
             </div>
           </div>

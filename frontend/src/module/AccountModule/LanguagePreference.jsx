@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import ClickBar from "../../assets/clickbar.png";
@@ -18,26 +17,27 @@ function LanguagePreference() {
   };
 
   return (
-    <BackgroundLayout>
-      <PageHeaderLayout />
-      {/* Logo - top-right on desktop only (lg+ now, instead of md+) */}
-      <div className="hidden lg:block absolute right-4 lg:top-6 lg:right-6 lg:w-28 lg:h-28 xl:top-8 xl:right-8 xl:w-32 xl:h-32 z-20">
-        <img src={Logo} alt="LingGO Logo" className="w-full h-full" />
-      </div>
+    <div className="h-screen overflow-hidden">
+      <BackgroundLayout>
+        <PageHeaderLayout />
+        {/* Logo - top-right on desktop only (lg+ now, instead of md+) */}
+        <div className="hidden lg:block absolute right-4 lg:top-6 lg:right-6 lg:w-28 lg:h-28 xl:top-8 xl:right-8 xl:w-32 xl:h-32 z-20">
+          <img src={Logo} alt="LingGO Logo" className="w-full h-full" />
+        </div>
 
-      <div className="flex flex-col items-center justify-center px-4 min-h-screen">
-        {/* Logo - centered on mobile and tablet (up to lg-), with mobile and tablet sizes set to 30 */}
-        <img
-          src={Logo}
-          alt="LingGO Logo"
-          className="w-30 h-30 sm:w-30 sm:h-30 md:w-30 md:h-30 lg:hidden mb-3 sm:mb-4"
-        />
+        <div className="flex flex-col items-center px-4 pt-4 pb-4 lg:pt-20 lg:pb-6 h-screen overflow-y-hidden">
+          {/* Logo - centered on mobile and tablet (up to lg-) */}
+          <img
+            src={Logo}
+            alt="LingGO Logo"
+            className="w-24 h-24 md:w-28 md:h-28 lg:hidden mb-2 md:mb-3"
+          />
 
         {/* Title */}
         <h1
           className="text-white font-extrabold text-center
-                             text-2xl xs:text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl
-                             mb-6 xs:mb-8 sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16
+                             text-xl md:text-3xl lg:text-5xl xl:text-6xl
+                             mb-4 md:mb-6 lg:mb-14 xl:mb-16
                              px-2 leading-snug"
           style={{
             textShadow:
@@ -50,11 +50,11 @@ function LanguagePreference() {
         </h1>
 
         {/* Cards Container */}
-        <div className="flex flex-col items-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 w-full max-w-3xl">
+        <div className="flex flex-col items-center gap-2 md:gap-2.5 lg:gap-5 w-full max-w-sm md:max-w-lg lg:max-w-3xl">
           {/* Card 1 - Cebuano */}
           <button
             onClick={() => handleCardClick("cebuano")}
-            className="relative w-full max-w-xl sm:max-w-2xl
+            className="relative w-full
                                  transition-all duration-300 ease-out
                                  hover:scale-105 hover:-translate-y-1
                                  active:scale-100 active:translate-y-0
@@ -70,7 +70,7 @@ function LanguagePreference() {
             <div className="absolute inset-0 flex items-center justify-center">
               <span
                 className="text-black font-black text-center
-                                         text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl
+                                         text-xl md:text-3xl lg:text-5xl xl:text-6xl
                                          group-hover:scale-105 transition-transform duration-300"
               >
                 Cebuano
@@ -81,7 +81,7 @@ function LanguagePreference() {
           {/* Card 2 - Plus Sign (Add Language) */}
           <button
             onClick={() => handleCardClick("add-language-1")}
-            className="relative w-full max-w-xl sm:max-w-2xl
+            className="relative w-full
                                  transition-all duration-300 ease-out
                                  hover:scale-105 hover:-translate-y-1
                                  active:scale-100 active:translate-y-0
@@ -96,8 +96,8 @@ function LanguagePreference() {
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <span
-                className="text-black font-black text-center leading-none -mt-4
-                                         text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl
+                className="text-black font-black text-center leading-none -mt-2 md:-mt-2.5
+                                         text-3xl md:text-5xl lg:text-7xl xl:text-8xl
                                          group-hover:scale-105 transition-transform duration-300"
               >
                 +
@@ -108,7 +108,7 @@ function LanguagePreference() {
           {/* Card 3 - Plus Sign (Add Language) */}
           <button
             onClick={() => handleCardClick("add-language-2")}
-            className="relative w-full max-w-xl sm:max-w-2xl
+            className="relative w-full
                                  transition-all duration-300 ease-out
                                  hover:scale-105 hover:-translate-y-1
                                  active:scale-100 active:translate-y-0
@@ -123,8 +123,8 @@ function LanguagePreference() {
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <span
-                className="text-black font-black text-center leading-none -mt-4
-                                         text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl
+                className="text-black font-black text-center leading-none -mt-2 md:-mt-2.5
+                                         text-3xl md:text-5xl lg:text-7xl xl:text-8xl
                                          group-hover:scale-105 transition-transform duration-300"
               >
                 +
@@ -134,6 +134,7 @@ function LanguagePreference() {
         </div>
       </div>
     </BackgroundLayout>
+    </div>
   );
 }
 

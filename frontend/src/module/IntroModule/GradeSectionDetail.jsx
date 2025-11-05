@@ -52,65 +52,73 @@ function GradeSectionDetail() {
   return (
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
-        <div className="mb-5">
-          <p
-            className="text-3xl text-white text-shadow-md font-extrabold"
-            style={{
-              WebkitTextStroke: "0.5px black",
-            }}
-          >
-            Ano ang iyong pangkat at baitang?
-          </p>
-        </div>
+        <div className="mb-5 px-2">
+            <p
+              className="text-2xl sm:text-3xl text-white font-extrabold leading-relaxed"
+              style={{
+                textShadow:
+                  "2px 2px 0px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0, 0, 0, 0.4)",
+              }}
+            >
+              Ano ang iyong pangkat at baitang?
+            </p>
+          </div>
         <div>
           <img className="h-70 w-75" src={Bird} alt="LingGO Logo" />
         </div>
         <div className="flex flex-col gap-4 w-72 mx-auto">
-          <div className="flex flex-col items-center">
-            <select
-              value={grade}
-              onChange={handleGradeChange}
-              className="w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none max-h-64 overflow-y-auto"
-            >
-              <option value="">SELECT</option>
-              {gradeCategories.map((gr, index) => (
-                <option key={index} value={gr}>
-                  {gr}
-                </option>
-              ))}
-            </select>
-            <span
-              className="text-white font-extrabold text-lg text-shadow-md"
-              style={{ WebkitTextStroke: "0.5px black" }}
-            >
-              BAITANG
-            </span>
-          </div>
+  <div className="flex flex-col items-center">
+    <select
+      value={grade}
+      onChange={handleGradeChange}
+      className="w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none max-h-64 overflow-y-auto"
+    >
+      <option value="">PUMILI</option>
+      {gradeCategories.map((gr, index) => (
+        <option key={index} value={gr}>
+          {gr}
+        </option>
+      ))}
+    </select>
+    <span
+      className="text-white font-extrabold text-lg leading-relaxed"
+      style={{
+        textShadow:
+          "2px 2px 0px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0, 0, 0, 0.4)",
+      }}
+    >
+      BAITANG
+    </span>
+  </div>
 
-          <div className="flex flex-col items-center">
-            <select
-              value={section}
-              onChange={(e) => setSection(e.target.value)}
-              className={`w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none max-h-64 overflow-y-auto ${
-                !grade ? "bg-gray-300 text-gray-500 cursor-not-allowed" : ""
-              }`}
-              disabled={!grade}
-            >
-              <option value="">SELECT</option>
-              {availableSections.map((sec, index) => (
-                <option key={index} value={sec}>
-                  {sec}
-                </option>
-              ))}
-            </select>
-            <span
-              className="text-white font-extrabold text-lg text-shadow-md"
-              style={{ WebkitTextStroke: "0.5px black" }}
-            >
-              PANGKAT
-            </span>
-          </div>
-        </div>
+  <div className="flex flex-col items-center">
+    <select
+      value={section}
+      onChange={(e) => setSection(e.target.value)}
+      className={`w-full bg-white text-black text-center font-bold py-2 rounded-2xl border-3 border-black text-lg focus:outline-none max-h-64 overflow-y-auto ${
+        !grade ? "bg-gray-300 text-gray-500 cursor-not-allowed" : ""
+      }`}
+      disabled={!grade}
+    >
+      <option value="">PUMILI</option>
+      {availableSections.map((sec, index) => (
+        <option key={index} value={sec}>
+          {sec}
+        </option>
+      ))}
+    </select>
+    <span
+      className="text-white font-extrabold text-lg leading-relaxed"
+      style={{
+        textShadow:
+          "2px 2px 0px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0, 0, 0, 0.4)",
+      }}
+    >
+      PANGKAT
+    </span>
+  </div>
+</div>
+
 
         <button
           onClick={handleSubmit}

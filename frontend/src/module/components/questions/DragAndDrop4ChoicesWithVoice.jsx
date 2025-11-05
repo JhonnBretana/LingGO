@@ -17,6 +17,8 @@ function DragAndDrop4ChoicesWithVoice({
   const [touchPosition, setTouchPosition] = useState(null);
   const audioRef = useRef(null);
   const [showTryAgainModal, setShowTryAgainModal] = useState(false);
+  const dropZoneRef = useRef(null);
+  const choiceRefs = useRef([]);
 
   const handleDragStart = (e, value) => {
     e.dataTransfer.setData("text/plain", value);
@@ -74,14 +76,16 @@ function DragAndDrop4ChoicesWithVoice({
     }
   };
 
-  // Handle mobile touch for drag and drop
+  // Improved mobile touch handling
   const handleTouchStart = (e, value) => {
+    // Don't call preventDefault here - let the ref handle it
     setDraggedItem(value);
     const touch = e.touches[0];
     setTouchPosition({ x: touch.clientX, y: touch.clientY });
   };
 
   const handleTouchMove = (e) => {
+    // Don't call preventDefault here - let the ref handle it
     if (draggedItem) {
       const touch = e.touches[0];
       setTouchPosition({ x: touch.clientX, y: touch.clientY });
@@ -89,11 +93,12 @@ function DragAndDrop4ChoicesWithVoice({
   };
 
   const handleTouchEnd = (e) => {
+    e.preventDefault();
     const touch = e.changedTouches[0];
     const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
 
-    // In handleTouchEnd:
-    if (dropZone && dropZone.classList.contains("drop-zone")) {
+    // Check if dropped on the drop zone or any element inside it
+    if (dropZone && (dropZone.classList.contains("drop-zone") || dropZone.closest(".drop-zone"))) {
       const correctAnswer = (question.correctAnswer || "").trim().toLowerCase();
       const droppedAnswer = draggedItem.trim().toLowerCase();
 
@@ -105,7 +110,7 @@ function DragAndDrop4ChoicesWithVoice({
         if (showWrongOverlay) {
           setShowWrong(true);
         } else {
-          setShowTryAgainModal(true); // Show Try Again modal in review mode
+          setShowTryAgainModal(true);
         }
       }
     }
@@ -114,6 +119,37 @@ function DragAndDrop4ChoicesWithVoice({
     setTouchPosition(null);
   };
 
+  // Add non-passive touch event listeners
+  React.useEffect(() => {
+    const choices = choiceRefs.current;
+    
+    const addNonPassiveListeners = (element) => {
+      if (!element) return;
+      
+      const handleTouchStartNonPassive = (e) => {
+        e.preventDefault();
+      };
+      
+      const handleTouchMoveNonPassive = (e) => {
+        e.preventDefault();
+      };
+      
+      element.addEventListener('touchstart', handleTouchStartNonPassive, { passive: false });
+      element.addEventListener('touchmove', handleTouchMoveNonPassive, { passive: false });
+      
+      return () => {
+        element.removeEventListener('touchstart', handleTouchStartNonPassive);
+        element.removeEventListener('touchmove', handleTouchMoveNonPassive);
+      };
+    };
+    
+    const cleanupFunctions = choices.map(addNonPassiveListeners).filter(Boolean);
+    
+    return () => {
+      cleanupFunctions.forEach(cleanup => cleanup());
+    };
+  }, [question.choices]);
+
   return (
     <>
       <div className="flex flex-col items-center justify-start px-4 pt-2 gap-4 overflow-hidden h-full">
@@ -121,7 +157,7 @@ function DragAndDrop4ChoicesWithVoice({
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
           <div className="absolute inset-0 flex items-center justify-center px-4">
             <span className="text-sm xs:text-base sm:text-lg md:text-xl font-semibold text-center leading-tight">
-              I-Drag ang hinihingi
+              I-drag ang hinihingi.
             </span>
           </div>
         </div>
@@ -142,17 +178,18 @@ function DragAndDrop4ChoicesWithVoice({
 
         <div className="flex items-center gap-4">
           <div
-            className="drop-zone w-60 pb-2 pt-2 text-center min-h-[50px] flex items-center justify-center rounded-lg bg-white/90 shadow-md transition-all duration-300"
+            ref={dropZoneRef}
+            className="drop-zone w-60 pb-2 pt-2 text-center min-h-[50px] flex items-center justify-center rounded-lg bg-white/90 shadow-md transition-all duration-300 touch-none"
             onDrop={handleDrop}
             onDragOver={handleDragOver}
           >
             {droppedValue ? (
-              <span className="text-lg font-bold text-gray-800">
+              <span className="text-lg font-bold text-gray-800 pointer-events-none">
                 {droppedValue}
               </span>
             ) : (
-              <span className="text-gray-400 text-sm font-medium">
-                Drop Here
+              <span className="text-gray-400 text-sm font-medium pointer-events-none">
+                Ilagay dito
               </span>
             )}
           </div>
@@ -162,7 +199,8 @@ function DragAndDrop4ChoicesWithVoice({
           {question.choices.map((choice, idx) => (
             <div
               key={idx}
-              className={`w-full text-center bg-gradient-to-r from-white to-gray-50 text-black text-base sm:text-lg font-bold py-3 px-4 rounded-xl border-2 border-gray-200 cursor-grab shadow-md hover:shadow-xl transition-all duration-200 ${
+              ref={(el) => (choiceRefs.current[idx] = el)}
+              className={`w-full text-center bg-gradient-to-r from-white to-gray-50 text-black text-base sm:text-lg font-bold py-3 px-4 rounded-xl border-2 border-gray-200 cursor-grab shadow-md hover:shadow-xl transition-all duration-200 touch-none select-none ${
                 draggedItem === choice
                   ? "opacity-30 scale-90"
                   : "hover:scale-105 active:scale-95"

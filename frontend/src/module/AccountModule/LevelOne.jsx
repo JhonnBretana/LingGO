@@ -28,8 +28,8 @@ function LevelOne() {
           </div>
         </div>
 
-        {/* Back arrow button (optional, place below or above as needed) */}
-        <div className="flex items-center justify-end px-4 py-4">
+        {/* Back arrow button - positioned higher */}
+        <div className="flex items-center justify-end px-4 pb-8">
           <button
             onClick={handleArrowClick}
             className="flex-shrink-0 transition-transform hover:scale-110 active:scale-95"

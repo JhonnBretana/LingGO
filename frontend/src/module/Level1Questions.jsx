@@ -49,8 +49,6 @@ function Level1Questions() {
   const questionRows = groupIntoRows(paginatedQuestions, 2);
   const [reviewAnswered, setReviewAnswered] = useState([]);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
     if (!userId) return;
@@ -244,13 +242,15 @@ function Level1Questions() {
 
   return (
     <BackgroundLayout>
-      <div className="overflow-hidden w-full h-screen flex flex-col">
+      <div className="w-full h-screen flex flex-col overflow-hidden">
         <PageHeaderLayout />
 
         {allAnswered && !reviewMode ? (
-          <LevelResultPreview
-            onReviewWrongQuestions={handleReviewWrongQuestions}
-          />
+          <div className="flex-1 overflow-y-auto">
+            <LevelResultPreview
+              onReviewWrongQuestions={handleReviewWrongQuestions}
+            />
+          </div>
         ) : (
           <>
             {selectedQuestion && (
@@ -283,7 +283,7 @@ function Level1Questions() {
                 {renderQuestionComponent(selectedQuestion)}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center flex-1 py-4">
+              <div className="flex flex-col items-center flex-1 py-4 overflow-y-auto">
                 <div className="relative w-80 max-w-full px-4 my-5">
                   <img
                     src={QuestionsBar}
@@ -292,12 +292,12 @@ function Level1Questions() {
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-base sm:text-xl font-bold">
-                      LEVEL 1 - Questions
+                      Unang Antas - Mga Salita
                     </span>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 sm:gap-3 w-full max-w-full px-2 sm:px-4 overflow-y-auto flex-1 my-4">
+                <div className="flex flex-col gap-2 sm:gap-3 w-full max-w-full px-2 sm:px-4 my-4">
                   {questionRows.map((row, rowIdx) => (
                     <div
                       key={rowIdx}
@@ -337,7 +337,7 @@ function Level1Questions() {
                             onClick={() => !disabled && setSelectedQuestion(q)}
                             disabled={disabled}
                           >
-                            Question {q.id}
+                            {q.id}
                           </button>
                         );
                       })}
