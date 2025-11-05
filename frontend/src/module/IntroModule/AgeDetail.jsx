@@ -7,6 +7,20 @@ function AgeDetail() {
   const navigate = useNavigate();
   const [age, setAge] = useState("");
 
+  const handleAgeChange = (e) => {
+    const value = e.target.value;
+    
+    // Only allow numbers
+    if (value === "" || /^\d+$/.test(value)) {
+      // Convert to number and check if it's a valid age (1-99)
+      const numValue = parseInt(value);
+      
+      if (value === "" || (numValue >= 1 && numValue <= 99)) {
+        setAge(value);
+      }
+    }
+  };
+
   return (
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
@@ -28,9 +42,11 @@ function AgeDetail() {
         <div className="flex flex-col gap-4 w-72 mx-auto">
           <input
             type="text"
+            inputMode="numeric"
             placeholder="EDAD"
             value={age}
-            onChange={(e) => setAge(e.target.value)}
+            onChange={handleAgeChange}
+            maxLength="2"
             className="w-full bg-white text-black text-center font-bold py-2 rounded-full border-3 border-black text-lg focus:outline-none"
           />
         </div>
@@ -41,7 +57,7 @@ function AgeDetail() {
             navigate("/gradesectiondetail");
           }}
           disabled={!age}
-          className="w-50 mt-5 bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
+          className="w-50 mt-5 bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Sumunod
         </button>
