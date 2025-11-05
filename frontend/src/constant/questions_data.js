@@ -244,11 +244,11 @@ const questions = [
   {
     id: 14,
     type: "SpeechMicWithVoice",
-    question: "Uwel",
+    question: "Utan",
     choices: null,
-    correctAnswer: "U w e l",
+    correctAnswer: "Utan",
     image: null,
-    voice: "/assets/Voice/CebuanoWords/uwel.mp3",
+    voice: "/assets/Voice/CebuanoWords/utan.mp3",
   },
   {
     id: 15,

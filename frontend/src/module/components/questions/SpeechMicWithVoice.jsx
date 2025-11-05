@@ -31,12 +31,24 @@ function SpeechMicWithVoice({
   const handleReset = () => {
     setTranscript("");
     setShowSubmit(false);
-    if (recognitionRef.current && isRecording) {
-      recognitionRef.current.stop();
+    setIsRecording(false);
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+        // eslint-disable-next-line no-unused-vars
+      } catch (e) {
+        // Ignore if already stopped
+      }
+      recognitionRef.current = null;
     }
   };
 
   const handleMicClick = () => {
+    // Don't allow clicking mic if transcript already exists (unless reset is clicked)
+    if (transcript && !isRecording) {
+      return;
+    }
+
     if (
       !("webkitSpeechRecognition" in window || "SpeechRecognition" in window)
     ) {
@@ -47,11 +59,18 @@ function SpeechMicWithVoice({
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
+    // If currently recording, stop it
     if (isRecording && recognitionRef.current) {
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+        // eslint-disable-next-line no-unused-vars
+      } catch (e) {
+        // Ignore if already stopped
+      }
       return;
     }
 
+    // Start new recording
     const recognition = new SpeechRecognition();
     recognition.lang = "en-US";
     recognition.interimResults = false;
@@ -69,8 +88,14 @@ function SpeechMicWithVoice({
       setShowSubmit(true);
     };
 
-    recognition.onend = () => setIsRecording(false);
-    recognition.onerror = () => setIsRecording(false);
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setIsRecording(false);
+    };
 
     recognitionRef.current = recognition;
     recognition.start();
@@ -117,6 +142,9 @@ function SpeechMicWithVoice({
     }
   };
 
+  // Check if mic should be disabled
+  const isMicDisabled = transcript && !isRecording;
+
   return (
     <>
       <div className="flex flex-col items-center justify-start px-4 pt-2 gap-4 overflow-hidden h-full">
@@ -140,16 +168,18 @@ function SpeechMicWithVoice({
 
         <div className="flex flex-col items-center">
           <img
-            className={`cursor-pointer ${isRecording ? "animate-pulse" : ""}`}
+            className={`${isMicDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${isRecording ? "animate-pulse" : ""}`}
             src={Microphone}
             alt="Microphone"
             onClick={handleMicClick}
-            style={{ filter: isRecording ? "grayscale(0%)" : "grayscale(40%)" }}
+            style={{ filter: isRecording ? "grayscale(0%)" : isMicDisabled ? "grayscale(80%)" : "grayscale(40%)" }}
           />
           <p className="text-base sm:text-lg font-medium text-white text-center mt-2">
             {isRecording
               ? "Nagre-record... Magsalita na!"
-              : "I-tap at simulang magsalita"}
+              : isMicDisabled
+                ? "I-click ang 'Ulitin' para magsalita muli"
+                : "I-tap at simulang magsalita"}
           </p>
         </div>
 
