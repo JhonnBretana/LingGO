@@ -17,6 +17,7 @@ function MatchingWordsWithWords({
   const [lives, setLives] = useState(3);
   const [showBombModal, setShowBombModal] = useState(false);
   const [showTryAgainModal, setShowTryAgainModal] = useState(false);
+  const [pendingSelection, setPendingSelection] = useState(null); // Track which column was clicked first
   const videoRef = useRef(null);
 
   const colors = [
@@ -53,76 +54,86 @@ function MatchingWordsWithWords({
   const handleClick = (word, side) => {
     const existingMatch = matches.find((m) => m[side] === word);
 
+    // If clicking on an already matched word, unselect it
     if (existingMatch) {
+      // Check if this is the pending selection - allow canceling
+      if (pendingSelection && pendingSelection.match === existingMatch) {
+        setMatches(matches.filter((m) => m !== existingMatch));
+        setPendingSelection(null);
+        return;
+      }
+
       if (existingMatch.left && existingMatch.right) {
         const updatedMatches = matches
           .map((m) => (m === existingMatch ? { ...m, [side]: null } : m))
           .filter((m) => m.left || m.right);
         setMatches(updatedMatches);
+        // Clear pending selection if unselecting
+        setPendingSelection(null);
       } else {
         setMatches(matches.filter((m) => m !== existingMatch));
+        setPendingSelection(null);
       }
       return;
     }
 
-    const incompleteMatch = matches.find(
-      (m) => (side === "left" && !m.left) || (side === "right" && !m.right)
-    );
+    // Check if there's a pending selection
+    if (pendingSelection) {
+      // Prevent clicking the same column twice
+      if (pendingSelection.side === side) {
+        return; // Do nothing if clicking the same column
+      }
 
-    if (incompleteMatch) {
-      const updatedMatch = { ...incompleteMatch, [side]: word };
+      // Complete the match
+      const updatedMatch = { 
+        ...pendingSelection.match, 
+        [side]: word 
+      };
 
-      // Check if pair is now complete
-      if (updatedMatch.left && updatedMatch.right) {
-        const isCorrectPair = checkPairCorrectness(
-          updatedMatch.left,
-          updatedMatch.right
-        );
+      const isCorrectPair = checkPairCorrectness(
+        updatedMatch.left,
+        updatedMatch.right
+      );
 
-        if (isCorrectPair) {
-          // Correct pair - keep the color
-          const updatedMatches = matches.map((m) =>
-            m === incompleteMatch ? updatedMatch : m
-          );
-          setMatches(updatedMatches);
-
-          // Check if all pairs are matched correctly
-          const allMatched = updatedMatches.length === question.choices.length;
-          if (allMatched) {
-            setTimeout(() => {
-              setShowCorrect(true);
-            }, 500);
-          }
-        } else {
-          // Wrong pair - show bomb modal and reduce life
-          setShowBombModal(true);
-          const newLives = lives - 1;
-          setLives(newLives);
-
-          // Keep the wrong match so user can try again
-          const updatedMatches = matches.map((m) =>
-            m === incompleteMatch ? updatedMatch : m
-          );
-          setMatches(updatedMatches);
-        }
-      } else {
-        // Just update the incomplete match
+      if (isCorrectPair) {
+        // Correct pair - keep the color
         const updatedMatches = matches.map((m) =>
-          m === incompleteMatch ? updatedMatch : m
+          m === pendingSelection.match ? updatedMatch : m
         );
         setMatches(updatedMatches);
+        setPendingSelection(null);
+
+        // Check if all pairs are matched correctly
+        const allMatched = updatedMatches.length === question.choices.length;
+        if (allMatched) {
+          setTimeout(() => {
+            setShowCorrect(true);
+          }, 500);
+        }
+      } else {
+        // Wrong pair - show bomb modal and reduce life
+        setShowBombModal(true);
+        const newLives = lives - 1;
+        setLives(newLives);
+
+        // Keep the wrong match so user can try again
+        const updatedMatches = matches.map((m) =>
+          m === pendingSelection.match ? updatedMatch : m
+        );
+        setMatches(updatedMatches);
+        setPendingSelection(null);
       }
     } else {
+      // Start a new match
       const usedColors = matches.length;
       const nextColor = colors[usedColors % colors.length];
-      setMatches([
-        ...matches,
-        {
-          left: side === "left" ? word : null,
-          right: side === "right" ? word : null,
-          color: nextColor,
-        },
-      ]);
+      const newMatch = {
+        left: side === "left" ? word : null,
+        right: side === "right" ? word : null,
+        color: nextColor,
+      };
+      setMatches([...matches, newMatch]);
+      setPendingSelection({ match: newMatch, side });
     }
   };
 
@@ -130,6 +141,7 @@ function MatchingWordsWithWords({
     setShowCorrect(false);
     setMatches([]);
     setLives(3);
+    setPendingSelection(null);
     if (onCorrectAnswer) {
       onCorrectAnswer();
     }
@@ -139,6 +151,7 @@ function MatchingWordsWithWords({
     setShowWrong(false);
     setMatches([]);
     setLives(3);
+    setPendingSelection(null);
     if (onWrongAnswer) {
       onWrongAnswer();
     }
@@ -155,6 +168,7 @@ function MatchingWordsWithWords({
         setShowTryAgainModal(true);
         setMatches([]);
         setLives(3);
+        setPendingSelection(null);
         // Do NOT call onWrongAnswer();
       }
     } else {
@@ -166,6 +180,7 @@ function MatchingWordsWithWords({
         return false;
       });
       setMatches(validMatches);
+      setPendingSelection(null);
     }
   };
 
@@ -188,41 +203,75 @@ function MatchingWordsWithWords({
               key={lifeNum}
               src={BombLife}
               alt={`Life ${lifeNum}`}
-              className={`w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 ${lifeNum > lives ? "opacity-30 grayscale" : ""
-                }`}
+              className={`w-10 h-10 sm:w-12 sm:h-12 transition-all duration-300 ${
+                lifeNum > lives ? "opacity-30 grayscale" : ""
+              }`}
             />
           ))}
         </div>
 
-        <div className="flex flex-row gap-3 sm:gap-5">
-          <div className="flex flex-col gap-3 items-center justify-center">
+        <div className="flex flex-row gap-4 sm:gap-6">
+          {/* Column 1 with Indicator */}
+          <div className="flex flex-col gap-2.5 items-center justify-center">
+            <div className="mb-1 px-5 py-2 bg-gradient-to-br from-blue-500 via-blue-400 to-orange-300 text-white font-bold rounded-full text-sm sm:text-base shadow-lg border border-white/20">
+              Hanay 1
+            </div>
             {question.choices.map((choice) => {
               const color = getWordColor(choice.word1, "left");
+              const isDisabled = pendingSelection?.side === "left";
+              const isPending = pendingSelection?.match.left === choice.word1;
               return (
                 <button
                   key={choice.word1}
-                  className={`w-32 sm:w-36 min-h-[50px] flex items-center justify-center text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${color
-                    ? `${color.bg} ${color.border}`
-                    : "bg-white border-gray-300"
-                    }`}
+                  className={`w-36 sm:w-40 min-h-[56px] flex items-center justify-center text-center text-sm sm:text-base font-bold py-3 px-4 rounded-2xl border-4 shadow-lg transition-all duration-200 ${
+                    color
+                      ? `${color.bg} ${color.border} scale-105`
+                      : "bg-white border-gray-200 hover:border-blue-400"
+                  } ${
+                    isPending
+                      ? "ring-4 ring-blue-400 ring-opacity-50"
+                      : ""
+                  } ${
+                    isDisabled && !isPending
+                      ? "opacity-40 cursor-not-allowed"
+                      : "hover:shadow-xl hover:scale-105 active:scale-95"
+                  }`}
                   onClick={() => handleClick(choice.word1, "left")}
+                  disabled={isDisabled && !isPending}
                 >
                   {choice.word1}
                 </button>
               );
             })}
           </div>
-          <div className="flex flex-col gap-3 items-center justify-center">
+
+          {/* Column 2 with Indicator */}
+          <div className="flex flex-col gap-2.5 items-center justify-center">
+            <div className="mb-1 px-5 py-2 bg-gradient-to-br from-red-500 via-red-400 to-orange-300 text-white font-bold rounded-full text-sm sm:text-base shadow-lg border border-white/20">
+              Hanay 2
+            </div>
             {question.choices.map((choice) => {
               const color = getWordColor(choice.word2, "right");
+              const isDisabled = pendingSelection?.side === "right";
+              const isPending = pendingSelection?.match.right === choice.word2;
               return (
                 <button
                   key={choice.word2}
-                  className={`w-32 sm:w-36 min-h-[50px] text-center text-black text-sm sm:text-lg font-bold py-2 px-3 rounded-xl border-2 shadow-md hover:shadow-lg active:scale-95 transition-all duration-200 ${color
-                    ? `${color.bg} ${color.border}`
-                    : "bg-white border-gray-300"
-                    }`}
+                  className={`w-36 sm:w-40 min-h-[56px] text-center text-sm sm:text-base font-bold py-3 px-4 rounded-2xl border-4 shadow-lg transition-all duration-200 ${
+                    color
+                      ? `${color.bg} ${color.border} scale-105`
+                      : "bg-white border-gray-200 hover:border-red-400"
+                  } ${
+                    isPending
+                      ? "ring-4 ring-red-400 ring-opacity-50"
+                      : ""
+                  } ${
+                    isDisabled && !isPending
+                      ? "opacity-40 cursor-not-allowed"
+                      : "hover:shadow-xl hover:scale-105 active:scale-95"
+                  }`}
                   onClick={() => handleClick(choice.word2, "right")}
+                  disabled={isDisabled && !isPending}
                 >
                   {choice.word2}
                 </button>
