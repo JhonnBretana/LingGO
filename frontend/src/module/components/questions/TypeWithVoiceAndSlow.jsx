@@ -109,7 +109,7 @@ function TypeWithVoiceAndSlow({
             type="submit"
             className="w-full px-6 py-2 sm:py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-base sm:text-lg shadow-lg active:scale-95 transition-transform"
           >
-            Submit
+            Ipasa
           </button>
         </form>
 

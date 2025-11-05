@@ -152,7 +152,7 @@ function SpeechMicWithVoice({
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
           <div className="absolute inset-0 flex items-center justify-center px-4">
             <span className="text-sm xs:text-base sm:text-lg md:text-xl font-semibold text-center leading-tight">
-              Pakinggan at Bigkasin
+              Pakinggan at bigkasin.
             </span>
           </div>
         </div>
@@ -198,7 +198,7 @@ function SpeechMicWithVoice({
               className="w-full px-6 py-2 sm:py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-base sm:text-lg shadow-lg active:scale-95 transition-transform"
               onClick={handleSubmit}
             >
-              Submit
+              Ipasa
             </button>
             <button
               className="w-full sm:w-auto px-6 py-2 sm:py-3 bg-gray-600 hover:bg-gray-700 border-3 border-black rounded-xl font-bold text-base sm:text-lg text-white shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2"

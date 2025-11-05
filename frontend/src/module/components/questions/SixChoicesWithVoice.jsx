@@ -135,7 +135,7 @@ function SixChoicesWithVoice({
             className="w-full max-w-50 my-5 px-4 py-2 bg-[#f2d919] border-3 border-black rounded-xl font-bold"
             disabled={!selected}
           >
-            Submit
+            Ipasa
           </button>
         </form>
         {question?.voice && (

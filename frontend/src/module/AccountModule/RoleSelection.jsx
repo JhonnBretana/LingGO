@@ -11,7 +11,7 @@ function RoleSelection() {
     localStorage.setItem("linggoRole", role); // Save role
     if (role === "Student") {
       navigate("/namedetail");
-    } else if (role === "Instructor" || role === "Others") {
+    } else if (role === "Instructor" || role === "Researchers" || role === "Others") {
       navigate("/level1");
     }
   };
@@ -21,7 +21,7 @@ function RoleSelection() {
       <div className="flex flex-col items-center text-center m-3 p-3">
         <div className="mb-5">
           <p className="text-2xl text-white text-shadow-lg font-extrabold">
-            Kamusta Kaibigan! Ano ang ginagampanang mong bahagi  sa pag-aaral ng wikang Cebuano?
+            Kumusta kaibigan! Ano ang ginagampanan mong bahagi sa pag-aaral ng wikang Cebuano?
           </p>
         </div>
         <div>
@@ -38,8 +38,8 @@ function RoleSelection() {
             </option>
             <option value="Student">Mag-aaral</option>
             <option value="Instructor">Guro</option>
-            <option value="Others">Iba pa</option>
             <option value="Researchers">Mananaliksik</option>
+            <option value="Others">Iba pa</option>
           </select>
         </div>
         <button

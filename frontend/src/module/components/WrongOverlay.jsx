@@ -54,7 +54,7 @@ function WrongAnswerModal({
               Subukan muli!
             </h2>
             <p className="text-lg text-black text-center mb-4">
-              Pakiulit po ang pagsagot sa tanong.
+              Paki-ulit po ang pagsagot sa tanong.
             </p>
             <button
               className="px-6 py-2 bg-[#f2d919] text-black font-bold rounded-xl border-2 border-black hover:bg-yellow-300 transition-all"

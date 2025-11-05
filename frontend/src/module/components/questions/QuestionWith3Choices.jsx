@@ -124,7 +124,7 @@ function QuestionWith3Choices({
             className="w-full max-w-40 mt-3 px-4 py-2 bg-[#f2d919] border-2 border-black rounded-xl font-bold"
             disabled={!selected}
           >
-            Submit
+            Ipasa
           </button>
         </form>
       </div>
