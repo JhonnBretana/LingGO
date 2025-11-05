@@ -2,12 +2,14 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../module/components/BackgroundLayout";
 import Logo from "../assets/LingGO Logo.png";
+import useBackgroundMusic from "../hooks/useBackgroundMusic"; // <-- Import the hook
 
-function DefaultPage({ playMusic }) {
+function DefaultPage() {
   const navigate = useNavigate();
+  const { playMusic } = useBackgroundMusic(); // <-- Use the hook
 
   const handleStart = () => {
-    if (playMusic) playMusic();
+    playMusic();
     navigate("/landing");
   };
 
