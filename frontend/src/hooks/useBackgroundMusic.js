@@ -1,34 +1,52 @@
-import { useEffect, useRef } from "react";
+// ...existing code...
+import { useEffect } from "react";
 
 const MUSIC_SRC = "/assets/AppSounds/BgMusicLingGo.mp3";
 
+function initGlobalAudio() {
+  if (!window._linggo_bg_audio) {
+    const audio = new Audio(MUSIC_SRC);
+    audio.loop = true;
+    audio.volume = 1;
+    const onEnded = () => {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    };
+    audio.addEventListener("ended", onEnded);
+    // store both audio and listener so we can clean up if needed
+    window._linggo_bg_audio = { audio, onEnded };
+  }
+  return window._linggo_bg_audio.audio;
+}
+
 export default function useBackgroundMusic() {
-  const audioRef = useRef(null);
-
   const playMusic = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio(MUSIC_SRC);
-      audioRef.current.loop = true;
-      audioRef.current.volume = 1;
+    const audio = initGlobalAudio();
+    audio.play().catch(() => {});
+  };
 
-      // Fallback: restart music when it ends
-      audioRef.current.addEventListener("ended", () => {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play();
-      });
+  const stopMusic = () => {
+    const obj = window._linggo_bg_audio;
+    if (obj && obj.audio) {
+      try {
+        obj.audio.pause();
+        obj.audio.currentTime = 0;
+      } catch (e) {}
     }
-    audioRef.current.play().catch(() => {});
   };
 
   useEffect(() => {
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-        audioRef.current.removeEventListener("ended", () => {});
-      }
+      // optional: keep audio between routes. If you want to fully remove on unmount uncomment:
+      // const obj = window._linggo_bg_audio;
+      // if (obj) {
+      //   obj.audio.pause();
+      //   obj.audio.currentTime = 0;
+      //   obj.audio.removeEventListener("ended", obj.onEnded);
+      //   delete window._linggo_bg_audio;
+      // }
     };
   }, []);
 
-  return playMusic;
+  return { playMusic, stopMusic };
 }

@@ -4,13 +4,16 @@ import { db } from "../../firebase";
 import Logo from "../../assets/LingGO Logo.png";
 import Star from "../../assets/star.png";
 import { useNavigate } from "react-router-dom";
+import useBackgroundMusic from "../../hooks/useBackgroundMusic";
 
 function PageHeaderLayout() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [musicOn, setMusicOn] = useState(false);
   const navigate = useNavigate();
   const role = localStorage.getItem("linggoRole");
+  const { playMusic, stopMusic } = useBackgroundMusic();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,10 +34,60 @@ function PageHeaderLayout() {
     fetchUser();
   }, []);
 
-  const getFullName = () => {
-    if (role === "Instructor" || role === "Others") {
-      return role;
+  useEffect(() => {
+    if (musicOn) {
+      // Only create if not already playing
+      if (!window._bgMusicAudio) {
+        window._bgMusicAudio = new Audio("/assets/AppSounds/BgMusicLingGo.mp3");
+        window._bgMusicAudio.loop = true;
+        window._bgMusicAudio.volume = 1;
+        window._bgMusicAudio.addEventListener("ended", () => {
+          window._bgMusicAudio.currentTime = 0;
+          window._bgMusicAudio.play();
+        });
+      }
+      window._bgMusicAudio.play().catch(() => {});
+    } else {
+      // Always pause and reset if exists
+      if (window._bgMusicAudio) {
+        window._bgMusicAudio.pause();
+        window._bgMusicAudio.currentTime = 0;
+      }
     }
+  }, [musicOn]);
+
+  // Patch playMusic to store audio ref globally
+  function patchedPlayMusic() {
+    if (!window._bgMusicAudio) {
+      window._bgMusicAudio = new Audio("/assets/AppSounds/BgMusicLingGo.mp3");
+      window._bgMusicAudio.loop = true;
+      window._bgMusicAudio.volume = 1;
+      window._bgMusicAudio.addEventListener("ended", () => {
+        window._bgMusicAudio.currentTime = 0;
+        window._bgMusicAudio.play();
+      });
+    }
+    window._bgMusicAudio.play().catch(() => {});
+  }
+
+  // Use patchedPlayMusic instead of hook for global control
+  useEffect(() => {
+    if (musicOn) playMusic();
+    else stopMusic();
+    // do not recreate audio here
+  }, [musicOn, playMusic, stopMusic]);
+
+  useEffect(() => {
+    return () => {
+      // ensure audio is stopped when header unmounts (optional)
+      stopMusic();
+    };
+  }, [stopMusic]);
+
+  const getFullName = () => {
+    if (role === "Instructor") return "Guro";
+    if (role === "Others") return "Iba pa";
+    if (role === "Researchers") return "Mananaliksik";
     if (!user) return "Juan Dela Cruz";
     const firstName = user.FirstName || "";
     return firstName || user.Username || "Juan Dela Cruz";
@@ -45,12 +98,12 @@ function PageHeaderLayout() {
     role === "Instructor" || role === "Others"
       ? "Visitor"
       : user
-        ? `${user.Grade || ""}${user.Section ? "-" + user.Section : ""}`
-        : "Grade-Section";
+      ? `${user.Grade || ""}${user.Section ? "-" + user.Section : ""}`
+      : "Grade-Section";
 
   const handleLogout = () => {
-    localStorage.removeItem("linggoUserId");
-    sessionStorage.removeItem("linggoUserId");
+    localStorage.clear();
+    sessionStorage.clear();
     navigate("/");
   };
 
@@ -87,7 +140,7 @@ function PageHeaderLayout() {
             {gradeDisplay}
           </div>
           <div
-            className="font-bold text-white text-lg sm:text-xl md:text-2xl lg:text-3xl whitespace-nowrap drop-shadow-md cursor-pointer"
+            className="font-bold text-white text-sm sm:text-xl md:text-2xl lg:text-3xl whitespace-nowrap drop-shadow-md cursor-pointer"
             style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.3)" }}
             onClick={() => setShowModal(true)}
           >
@@ -138,6 +191,15 @@ function PageHeaderLayout() {
                 onClick={handleLogout}
               >
                 Logout
+              </button>
+              {/* Music Toggle Button */}
+              <button
+                className={`my-1 px-4 py-2 rounded ${
+                  musicOn ? "bg-green-500" : "bg-gray-400"
+                } text-white font-bold`}
+                onClick={() => setMusicOn((prev) => !prev)}
+              >
+                {musicOn ? "Patayin ang Musika" : "Buksan ang Musika"}
               </button>
             </div>
           </div>

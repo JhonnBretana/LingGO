@@ -22,7 +22,6 @@ import { db } from "../firebase";
 
 import LevelResultPreview from "./components/LevelResultPreview.jsx";
 
-
 function groupIntoRows(arr, itemsPerRow = 2) {
   const rows = [];
   for (let i = 0; i < arr.length; i += itemsPerRow) {
@@ -48,8 +47,6 @@ function Level1Questions() {
   const paginatedQuestions = displayQuestions.slice(startIdx, endIdx);
   const questionRows = groupIntoRows(paginatedQuestions, 2);
   const [reviewAnswered, setReviewAnswered] = useState([]);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
