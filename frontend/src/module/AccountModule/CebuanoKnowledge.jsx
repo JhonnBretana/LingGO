@@ -64,7 +64,7 @@ function CebuanoKnowledge() {
             <p
               className="absolute inset-0 flex items-center justify-center 
                                     px-8 xs:px-9 sm:px-11 md:px-6 lg:px-11 xl:px-14
-                                    py-8 xs:py-10 sm:py-12 md:py-6 lg:py-12 xl:py-14
+                                    py-8 pt-13 xs:py-10 sm:py-12 md:py-6 lg:py-12 xl:py-14
                                     text-center text-black font-bold 
                                     text-sm xs:text-base sm:text-lg md:text-xs lg:text-lg xl:text-xl
                                     leading-snug tracking-tight
@@ -99,7 +99,7 @@ function CebuanoKnowledge() {
             <p
               className="absolute inset-0 flex items-center justify-center 
                                     px-7 xs:px-8 sm:px-10 md:px-5 lg:px-10 xl:px-12
-                                    py-8 xs:py-10 sm:py-12 md:py-6 lg:py-12 xl:py-14
+                                    py-8 pt-11 xs:py-10 sm:py-12 md:py-6 lg:py-12 xl:py-14
                                     text-center text-black font-bold 
                                     text-sm xs:text-base sm:text-lg md:text-xs lg:text-lg xl:text-xl
                                     leading-snug tracking-tight
@@ -133,7 +133,7 @@ function CebuanoKnowledge() {
             <p
               className="absolute inset-0 flex items-center justify-center 
                                         px-6 xs:px-7 sm:px-9 md:px-4 lg:px-9 xl:px-11
-                                        py-8 xs:py-10 sm:py-12 md:py-6 lg:py-12 xl:py-14
+                                        py-8 pt-12 xs:py-10 sm:py-12 md:py-6 lg:py-12 xl:py-14
                                         text-center text-black font-bold 
                                         text-sm xs:text-base sm:text-lg md:text-[0.65rem] lg:text-sm xl:text-xl
                                         leading-snug tracking-tight
@@ -141,9 +141,9 @@ function CebuanoKnowledge() {
             >
               Marunong <br />
               ako ng ilang salita at
-              <br /> kaya kong makipag-usap
+              <br /> kaya kong makipag-
               <br />
-              sa simpleng
+              usap sa simpleng
               <br />
               Cebuano.
             </p>

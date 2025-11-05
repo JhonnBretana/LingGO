@@ -176,7 +176,7 @@ function MatchingWordsWithWords({
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
           <div className="absolute inset-0 flex items-center justify-center px-2">
             <span className="text-base sm:text-xl font-semibold text-center">
-              {question?.question || "Pindutin ang Magkapares"}
+              {question?.question || "Pindutin ang magkapares."}
             </span>
           </div>
         </div>
@@ -242,15 +242,15 @@ function MatchingWordsWithWords({
               muted={false}
               playsInline
             />
-            <p className="text-2xl font-bold text-red-600">Mali ang Tugma!</p>
+            <p className="text-2xl font-bold text-red-600">Mali ang tugma!</p>
             <p className="text-lg text-gray-700">
-              Natitira pang Buhay: {lives}
+              Natitira pang buhay: {lives}
             </p>
             <button
               className="px-6 py-2 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 transition-all"
               onClick={handleCloseBombModal}
             >
-              {lives === 0 ? "Tingnan ang Sagot" : "Subukan Muli"}
+              {lives === 0 ? "Tingnan ang Sagot" : "subukan Muli"}
             </button>
           </div>
         </div>

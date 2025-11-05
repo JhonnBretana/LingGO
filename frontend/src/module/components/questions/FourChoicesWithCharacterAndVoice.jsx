@@ -88,7 +88,7 @@ function FourChoicesWithCharacterAndVoice({
           <img src={QuestionsBar} alt="Questions Bar" className="w-80" />
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-xl font-semibold">
-              {question?.question || "Piliin ang Tamang Salin"}
+              {question?.question || "Piliin ang tamang salin."}
             </span>
           </div>
         </div>

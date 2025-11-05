@@ -54,6 +54,8 @@ import Result from "./module/components/LevelResultPreview.jsx";
 import Role from "./module/AccountModule/RoleSelection.jsx";
 
 import Level1Finish from "./module/components/Level1Finish.jsx";
+import Level1FinishChoice from "./module/components/Level1FinishChoice.jsx";
+import Level1Return from "./module/components/Level1Return.jsx";
 
 //bg music
 import useBackgroundMusic from "./hooks/useBackgroundMusic.js";
@@ -141,6 +143,8 @@ function App() {
         <Route path="/role-selection" element={<Role />} />
 
         <Route path="/level1-finish" element={<Level1Finish />} />
+        <Route path="/level1-finish-choice" element={<Level1FinishChoice />} />
+        <Route path="/level1-return" element={<Level1Return />} />
       </Routes>
     </div>
   );

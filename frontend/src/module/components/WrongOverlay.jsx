@@ -51,10 +51,10 @@ function WrongAnswerModal({
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/30">
           <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl border-2 border-black">
             <h2 className="text-2xl font-bold text-black text-center">
-              Try Again!
+              Subukan muli!
             </h2>
             <p className="text-lg text-black text-center mb-4">
-              Please try answering the question again.
+              Pakiulit po ang pagsagot sa tanong.
             </p>
             <button
               className="px-6 py-2 bg-[#f2d919] text-black font-bold rounded-xl border-2 border-black hover:bg-yellow-300 transition-all"

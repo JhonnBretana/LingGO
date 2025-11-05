@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import PageHeaderLayout from "../components/PageHeaderLayout";
-import StarLocked1 from "/assets/ImageChoices/Starlocked1.png";
+import StarLocked1 from "/assets/ImageChoices/Star1Finished.png";
 import StarLocked2 from "/assets/ImageChoices/Starlocked2.png";
 import StarLocked3 from "/assets/ImageChoices/Starlocked3.png";
 
-function LevelSelection() {
+function LevelSelection1Finished() {
   const navigate = useNavigate();
 
   const levels = [
@@ -33,14 +33,14 @@ function LevelSelection() {
   const handleLevelClick = (level) => {
     if (!level.locked) {
       if (level.number === 1) {
-        navigate("/level-one");
+        navigate("/level1-return");
       }
     }
   };
 
   return (
     <BackgroundLayout>
-      {/* Changed h-screen to min-h-screen to allow scrolling */}
+      {/* Changed to allow scrolling on mobile/tablet */}
       <div className="overflow-auto w-full min-h-screen flex flex-col">
         <PageHeaderLayout />
         <div className="flex-1 flex flex-col items-center justify-center lg:justify-start text-center px-3 py-8 lg:pt-12">
@@ -88,4 +88,4 @@ function LevelSelection() {
   );
 }
 
-export default LevelSelection;
+export default LevelSelection1Finished;

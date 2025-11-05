@@ -72,7 +72,7 @@ function TypeWithVoiceAndSlow({
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
           <div className="absolute inset-0 flex items-center justify-center px-4">
             <span className="text-sm xs:text-base sm:text-lg md:text-xl font-semibold text-center leading-tight">
-              {question?.question || "I-Type ang iyong narinig"}
+              {question?.question || "I-type ang iyong narinig."}
             </span>
           </div>
         </div>

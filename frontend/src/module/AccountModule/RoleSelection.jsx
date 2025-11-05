@@ -21,27 +21,25 @@ function RoleSelection() {
       <div className="flex flex-col items-center text-center m-3 p-3">
         <div className="mb-5">
           <p className="text-2xl text-white text-shadow-lg font-extrabold">
-            Kamusta Kaibigan! Ano ang iyong role sa pag-aaral ng wikang Cebuano?
+            Kamusta Kaibigan! Ano ang ginagampanang mong bahagi  sa pag-aaral ng wikang Cebuano?
           </p>
         </div>
         <div>
           <img className="h-50 w-55" src={Bird} alt="LingGO Logo" />
         </div>
         <div className="flex flex-col gap-4 w-72 mx-auto">
-          <label className="text-white text-shadow-lg font-extrabold text-2xl">
-            Role:
-          </label>
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
             className="w-full my-5 bg-white text-black text-center font-bold py-2 rounded-full border-3 border-black text-lg focus:outline-none"
           >
             <option value="" disabled>
-              Select your role
+              Pumili
             </option>
-            <option value="Student">Student</option>
-            <option value="Instructor">Instructor</option>
-            <option value="Others">Others</option>
+            <option value="Student">Mag-aaral</option>
+            <option value="Instructor">Guro</option>
+            <option value="Others">Iba pa</option>
+            <option value="Researchers">Mananaliksik</option>
           </select>
         </div>
         <button
