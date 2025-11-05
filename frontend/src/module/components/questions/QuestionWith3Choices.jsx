@@ -3,10 +3,16 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function QuestionWith3Choices({ question, onCorrectAnswer, onWrongAnswer }) {
+function QuestionWith3Choices({
+  question,
+  onCorrectAnswer,
+  onWrongAnswer,
+  showWrongOverlay = true,
+}) {
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,7 +25,12 @@ function QuestionWith3Choices({ question, onCorrectAnswer, onWrongAnswer }) {
     ) {
       setShowCorrectModal(true);
     } else {
-      setShowWrongModal(true);
+      if (showWrongOverlay) {
+        setShowWrongModal(true);
+      } else {
+        // In review mode, show Try Again modal and DO NOT exit
+        setShowTryAgainModal(true);
+      }
     }
   };
 
@@ -123,10 +134,18 @@ function QuestionWith3Choices({ question, onCorrectAnswer, onWrongAnswer }) {
         onClose={handleCloseCorrectModal}
       />
 
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrongModal}
+          correctAnswer={question.correctAnswer}
+          onClose={handleCloseWrongModal}
+        />
+      )}
+
       <WrongAnswerModal
-        isOpen={showWrongModal}
-        correctAnswer={question.correctAnswer}
-        onClose={handleCloseWrongModal}
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
       />
     </>
   );

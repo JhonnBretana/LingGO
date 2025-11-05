@@ -8,8 +8,10 @@ import { useNavigate } from "react-router-dom";
 function PageHeaderLayout() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false); // Modal visibility
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const role = localStorage.getItem("linggoRole");
+
   useEffect(() => {
     const fetchUser = async () => {
       const userId = localStorage.getItem("linggoUserId");
@@ -29,42 +31,27 @@ function PageHeaderLayout() {
     fetchUser();
   }, []);
 
-  const getGradeNumber = (baitang) => {
-    if (!baitang) return "";
-
-    const gradeMap = {
-      "Ikapitong Baitang": "7",
-      "Ika-walong Baitang": "8",
-      "Ika-siyam na Baitang": "9",
-      "Ika-sampung Baitang": "10",
-    };
-
-    return gradeMap[baitang] || "";
-  };
-
   const getFullName = () => {
-    if (!user) return "Juan Dela Cruz";
-
-    const firstName = user["Unang Pangalan"] || "";
-    const lastName = user["Apelyido"] || "";
-
-    // Concatenate with space if both exist
-    if (firstName && lastName) {
-      return `${firstName} ${lastName}`;
+    if (role === "Instructor" || role === "Others") {
+      return role;
     }
-
-    // Return whichever exists, or username as fallback
-    return firstName || lastName || user.Username || "Juan Dela Cruz";
+    if (!user) return "Juan Dela Cruz";
+    const firstName = user.FirstName || "";
+    return firstName || user.Username || "Juan Dela Cruz";
   };
 
-  const gradeDisplay = user
-    ? `${getGradeNumber(user.Baitang)}-${user.Pangkat}`
-    : "Pangkat at Baitang";
+  // Get grade and section from Firestore fields
+  const gradeDisplay =
+    role === "Instructor" || role === "Others"
+      ? "Visitor"
+      : user
+        ? `${user.Grade || ""}${user.Section ? "-" + user.Section : ""}`
+        : "Grade-Section";
 
   const handleLogout = () => {
     localStorage.removeItem("linggoUserId");
     sessionStorage.removeItem("linggoUserId");
-    navigate("/welcome");
+    navigate("/");
   };
 
   if (loading) {

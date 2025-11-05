@@ -3,11 +3,17 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function MatchingWordsWithImage({ question, onCorrectAnswer, onWrongAnswer }) {
+function MatchingWordsWithImage({
+  question,
+  onCorrectAnswer,
+  onWrongAnswer,
+  showWrongOverlay = true,
+}) {
   const [selectedWord, setSelectedWord] = useState(null);
   const [matches, setMatches] = useState([]);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const unmatchedWords = question.choices
     .map((c) => c.word)
@@ -35,7 +41,12 @@ function MatchingWordsWithImage({ question, onCorrectAnswer, onWrongAnswer }) {
     if (correct) {
       setShowCorrectModal(true);
     } else {
-      setShowWrongModal(true);
+      if (showWrongOverlay) {
+        setShowWrongModal(true);
+      } else {
+        // In review mode, show Try Again modal and DO NOT exit
+        setShowTryAgainModal(true);
+      }
     }
   };
 
@@ -125,13 +136,20 @@ function MatchingWordsWithImage({ question, onCorrectAnswer, onWrongAnswer }) {
           if (onCorrectAnswer) onCorrectAnswer();
         }}
       />
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrongModal}
+          correctAnswer={getCorrectAnswerText()}
+          onClose={() => {
+            setShowWrongModal(false);
+            if (onWrongAnswer) onWrongAnswer();
+          }}
+        />
+      )}
       <WrongAnswerModal
-        isOpen={showWrongModal}
-        correctAnswer={getCorrectAnswerText()}
-        onClose={() => {
-          setShowWrongModal(false);
-          if (onWrongAnswer) onWrongAnswer();
-        }}
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
       />
     </>
   );

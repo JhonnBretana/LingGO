@@ -51,11 +51,20 @@ import Level1 from "./module/Level1Questions.jsx";
 
 import Result from "./module/components/LevelResultPreview.jsx";
 
+import Role from "./module/AccountModule/RoleSelection.jsx";
+
+import Level1Finish from "./module/components/Level1Finish.jsx";
+
+//bg music
+import useBackgroundMusic from "./hooks/useBackgroundMusic.js";
+
 function App() {
+  const playMusic = useBackgroundMusic();
+
   return (
     <div>
       <Routes>
-        <Route path="/" element={<DefaultPage />} />
+        <Route path="/" element={<DefaultPage playMusic={playMusic} />} />
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/welcome" element={<WelcomePage />} />
 
@@ -128,6 +137,10 @@ function App() {
         <Route path="/level1" element={<Level1 />} />
 
         <Route path="/result" element={<Result />} />
+
+        <Route path="/role-selection" element={<Role />} />
+
+        <Route path="/level1-finish" element={<Level1Finish />} />
       </Routes>
     </div>
   );

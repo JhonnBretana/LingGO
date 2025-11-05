@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import Bird from "../../assets/LingoLogo Standing.png";
+
 function NameDetail() {
   const navigate = useNavigate();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
   return (
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
@@ -24,13 +28,26 @@ function NameDetail() {
           {/* Username Input */}
           <input
             type="text"
-            placeholder="Enter your name"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value.toUpperCase())}
+            className="w-full bg-white text-black text-center font-bold py-2 rounded-full border-3 border-black text-lg focus:outline-none"
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value.toUpperCase())}
             className="w-full bg-white text-black text-center font-bold py-2 rounded-full border-3 border-black text-lg focus:outline-none"
           />
         </div>
 
         <button
-          onClick={() => navigate("/agedetail")}
+          onClick={() => {
+            localStorage.setItem("firstName", firstName);
+            localStorage.setItem("lastName", lastName);
+            navigate("/agedetail");
+          }}
           className="w-50 mt-5 bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
         >
           Sumunod

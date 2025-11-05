@@ -8,11 +8,13 @@ function Select6ChoicesWithVoiceAndSlow({
   question,
   onCorrectAnswer,
   onWrongAnswer,
+  showWrongOverlay = true,
 }) {
   const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -41,7 +43,12 @@ function Select6ChoicesWithVoiceAndSlow({
     ) {
       setShowCorrectModal(true);
     } else {
-      setShowWrongModal(true);
+      if (showWrongOverlay) {
+        setShowWrongModal(true);
+      } else {
+        // In review mode, show Try Again modal and DO NOT exit
+        setShowTryAgainModal(true);
+      }
     }
   };
 
@@ -128,10 +135,17 @@ function Select6ChoicesWithVoiceAndSlow({
         onClose={handleCloseCorrectModal}
       />
 
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrongModal}
+          correctAnswer={question.correctAnswer}
+          onClose={handleCloseWrongModal}
+        />
+      )}
       <WrongAnswerModal
-        isOpen={showWrongModal}
-        correctAnswer={question.correctAnswer}
-        onClose={handleCloseWrongModal}
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
       />
     </>
   );

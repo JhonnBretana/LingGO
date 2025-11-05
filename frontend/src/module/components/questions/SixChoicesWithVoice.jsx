@@ -4,11 +4,17 @@ import { Volume2, Turtle } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function SixChoicesWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
+function SixChoicesWithVoice({
+  question,
+  onCorrectAnswer,
+  onWrongAnswer,
+  showWrongOverlay = true,
+}) {
   const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -29,7 +35,12 @@ function SixChoicesWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
     ) {
       setShowCorrectModal(true);
     } else {
-      setShowWrongModal(true);
+      if (showWrongOverlay) {
+        setShowWrongModal(true);
+      } else {
+        // In review mode, show Try Again modal and DO NOT exit
+        setShowTryAgainModal(true);
+      }
     }
   };
 
@@ -141,10 +152,17 @@ function SixChoicesWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
         onClose={handleCloseCorrectModal}
       />
 
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrongModal}
+          correctAnswer={question.correctAnswer?.value}
+          onClose={handleCloseWrongModal}
+        />
+      )}
       <WrongAnswerModal
-        isOpen={showWrongModal}
-        correctAnswer={question.correctAnswer?.value}
-        onClose={handleCloseWrongModal}
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
       />
     </>
   );

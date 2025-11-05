@@ -3,16 +3,52 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import Microphone from "../../../assets/Microphone.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
+import { Volume2, RotateCcw } from "lucide-react";
 
-function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
+function SpeechMicWithVoice({
+  question,
+  onCorrectAnswer,
+  onWrongAnswer,
+  showWrongOverlay = true,
+}) {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [showSubmit, setShowSubmit] = useState(false);
   const [showCorrect, setShowCorrect] = useState(false);
   const [showWrong, setShowWrong] = useState(false);
   const recognitionRef = useRef(null);
+  const audioRef = useRef(null);
+  const [showTryAgainModal, setShowTryAgainModal] = useState(false);
+
+  const handlePlay = () => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = 1;
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    }
+  };
+
+  const handleReset = () => {
+    setTranscript("");
+    setShowSubmit(false);
+    setIsRecording(false);
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+        // eslint-disable-next-line no-unused-vars
+      } catch (e) {
+        // Ignore if already stopped
+      }
+      recognitionRef.current = null;
+    }
+  };
 
   const handleMicClick = () => {
+    // Don't allow clicking mic if transcript already exists (unless reset is clicked)
+    if (transcript && !isRecording) {
+      return;
+    }
+
     if (
       !("webkitSpeechRecognition" in window || "SpeechRecognition" in window)
     ) {
@@ -23,11 +59,18 @@ function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
+    // If currently recording, stop it
     if (isRecording && recognitionRef.current) {
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+        // eslint-disable-next-line no-unused-vars
+      } catch (e) {
+        // Ignore if already stopped
+      }
       return;
     }
 
+    // Start new recording
     const recognition = new SpeechRecognition();
     recognition.lang = "en-US";
     recognition.interimResults = false;
@@ -45,8 +88,14 @@ function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
       setShowSubmit(true);
     };
 
-    recognition.onend = () => setIsRecording(false);
-    recognition.onerror = () => setIsRecording(false);
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setIsRecording(false);
+    };
 
     recognitionRef.current = recognition;
     recognition.start();
@@ -65,7 +114,13 @@ function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
     if (userSpoken && userSpoken === correctNormalized) {
       setShowCorrect(true);
     } else {
-      setShowWrong(true);
+      if (showWrongOverlay) {
+        setShowWrong(true);
+      } else {
+        setTranscript("");
+        setShowSubmit(false);
+        setShowTryAgainModal(true);
+      }
     }
 
     setShowSubmit(false);
@@ -87,6 +142,9 @@ function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
     }
   };
 
+  // Check if mic should be disabled
+  const isMicDisabled = transcript && !isRecording;
+
   return (
     <>
       <div className="flex flex-col items-center justify-start px-4 pt-2 gap-4 overflow-hidden h-full">
@@ -100,6 +158,9 @@ function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
         </div>
 
         <div className="flex items-center gap-4">
+          <button onClick={handlePlay} disabled={!question?.voice}>
+            <Volume2 className="text-white" size={40} />
+          </button>
           <p className="text-2xl sm:text-4xl font-semibold text-white">
             {question?.question}
           </p>
@@ -107,20 +168,22 @@ function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
 
         <div className="flex flex-col items-center">
           <img
-            className={`cursor-pointer ${isRecording ? "animate-pulse" : ""}`}
+            className={`${isMicDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${isRecording ? "animate-pulse" : ""}`}
             src={Microphone}
             alt="Microphone"
             onClick={handleMicClick}
-            style={{ filter: isRecording ? "grayscale(0%)" : "grayscale(40%)" }}
+            style={{ filter: isRecording ? "grayscale(0%)" : isMicDisabled ? "grayscale(80%)" : "grayscale(40%)" }}
           />
           <p className="text-base sm:text-lg font-medium text-white text-center mt-2">
             {isRecording
               ? "Nagre-record... Magsalita na!"
-              : "I-tap at simulang magsalita"}
+              : isMicDisabled
+                ? "I-click ang 'Ulitin' para magsalita muli"
+                : "I-tap at simulang magsalita"}
           </p>
         </div>
 
-        {transcript && (
+        {transcript && !isRecording && (
           <div className="text-white text-base sm:text-lg font-bold text-center">
             <span>Sinabi mo: </span>
             <span className="bg-yellow-200 text-black px-2 rounded">
@@ -129,13 +192,30 @@ function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
           </div>
         )}
 
-        {showSubmit && (
-          <button
-            className="w-full max-w-xs px-6 py-2 sm:py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-base sm:text-lg shadow-lg active:scale-95 transition-transform"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
+        {showSubmit && !isRecording && (
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
+            <button
+              className="w-full px-6 py-2 sm:py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-base sm:text-lg shadow-lg active:scale-95 transition-transform"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+            <button
+              className="w-full sm:w-auto px-6 py-2 sm:py-3 bg-gray-600 hover:bg-gray-700 border-3 border-black rounded-xl font-bold text-base sm:text-lg text-white shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2"
+              onClick={handleReset}
+            >
+              <RotateCcw size={20} />
+              <span>Ulitin</span>
+            </button>
+          </div>
+        )}
+
+        {question?.voice && (
+          <audio
+            ref={audioRef}
+            src={question.voice}
+            style={{ display: "none" }}
+          />
         )}
       </div>
 
@@ -143,10 +223,17 @@ function SpeechMicWithVoice({ question, onCorrectAnswer, onWrongAnswer }) {
         isOpen={showCorrect}
         onClose={handleCloseCorrectModal}
       />
+      {showWrongOverlay && (
+        <WrongAnswerModal
+          isOpen={showWrong}
+          onClose={handleCloseWrongModal}
+          correctAnswer={question.correctAnswer}
+        />
+      )}
       <WrongAnswerModal
-        isOpen={showWrong}
-        onClose={handleCloseWrongModal}
-        correctAnswer={question.correctAnswer}
+        isOpen={showTryAgainModal}
+        onClose={() => setShowTryAgainModal(false)}
+        isTryAgain={true}
       />
     </>
   );

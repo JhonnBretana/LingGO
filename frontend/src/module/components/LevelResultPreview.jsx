@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import questions from "../../constant/questions_data.js";
+import Logo from "../../assets/LingGO Logo.png";
+import PageHeaderLayout from "../components/PageHeaderLayout.jsx";
+import BackgroundLayout from "../components/BackgroundLayout.jsx";
 
-function LevelResultPreview() {
+function LevelResultPreview({ onReviewWrongQuestions }) {
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -23,67 +26,114 @@ function LevelResultPreview() {
 
   if (loading) return <div className="p-8 text-center">Loading...</div>;
 
-  const correctQuestions = questions.filter(
-    (q) => answers[`Level1Question${q.id}`] === "Correct"
-  );
+  // Calculate total possible points
+  const totalPoints = questions.reduce((sum, q) => {
+    if (
+      q.type === "MatchingWordsWithWords" ||
+      q.type === "MatchingWordsWithImage"
+    ) {
+      return sum + q.correctAnswer.length;
+    }
+    return sum + 1;
+  }, 0);
+
+  // Calculate earned points
+  const earnedPoints = questions.reduce((sum, q) => {
+    const answer = answers[`Level1Question${q.id}`];
+    if (answer === "Correct") {
+      if (
+        q.type === "MatchingWordsWithWords" ||
+        q.type === "MatchingWordsWithImage"
+      ) {
+        return sum + q.correctAnswer.length;
+      }
+      return sum + 1;
+    }
+    return sum;
+  }, 0);
+
   const wrongQuestions = questions.filter(
     (q) => answers[`Level1Question${q.id}`] === "Wrong"
   );
 
+  const percentage = ((earnedPoints / totalPoints) * 100).toFixed(1);
+
+  // Helper function to format correct answer
+  const formatCorrectAnswer = (question) => {
+    if (question.type === "MatchingWordsWithWords") {
+      return (
+        <div className="space-y-1">
+          {question.correctAnswer.map((pair, index) => (
+            <div key={index} className="text-green-900">
+              {pair.word1} - {pair.word2}
+            </div>
+          ))}
+        </div>
+      );
+    } else if (question.type === "MatchingWordsWithImage") {
+      return (
+        <div className="space-y-2">
+          {question.correctAnswer.map((pair, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <span className="text-green-900">{pair.word}</span>
+              <span>-</span>
+              <img
+                src={pair.image}
+                alt={pair.word}
+                className="w-8 h-8 object-contain"
+              />
+            </div>
+          ))}
+        </div>
+      );
+    } else if (typeof question.correctAnswer === "string") {
+      return <span className="text-green-900">{question.correctAnswer}</span>;
+    } else if (question.correctAnswer?.value) {
+      return (
+        <span className="text-green-900">{question.correctAnswer.value}</span>
+      );
+    } else {
+      return (
+        <span className="text-green-900">
+          {JSON.stringify(question.correctAnswer)}
+        </span>
+      );
+    }
+  };
+
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4 text-center">Level 1 Results</h2>
+    <div className="overflow-hidden w-full h-screen flex flex-col">
+      <div className="max-w-2xl mx-auto p-6">
+        <h2 className="text-2xl text-white shadow-black text-shadow-2xl font-bold mb-4 text-center">
+          Level 1 Results
+        </h2>
 
-      <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-2 text-green-700">
-          Correct Answers
-        </h3>
-        {correctQuestions.length === 0 ? (
-          <div className="text-gray-500">No correct answers yet.</div>
-        ) : (
-          <ul>
-            {correctQuestions.map((q) => (
-              <li
-                key={q.id}
-                className="mb-2 p-3 rounded bg-green-100 border border-green-400 text-green-900"
-              >
-                <span className="font-bold">Question {q.id}:</span>{" "}
-                {q.question || "Voice/Image Question"}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+        <div className="mb-6 p-4 bg-white border-2 border-black rounded-lg text-center">
+          <div className="text-3xl font-bold text-black">
+            {earnedPoints} / {totalPoints}
+          </div>
+          <div className="text-lg text-black">Score: {percentage}%</div>
+        </div>
 
-      <div>
-        <h3 className="text-xl font-semibold mb-2 text-red-700">
-          Wrong Answers
-        </h3>
-        {wrongQuestions.length === 0 ? (
-          <div className="text-gray-500">No wrong answers!</div>
-        ) : (
-          <ul>
-            {wrongQuestions.map((q) => (
-              <li
-                key={q.id}
-                className="mb-4 p-3 rounded bg-red-100 border border-red-400 text-red-900"
+        <div>
+          <div className="flex flex-col items-center justify-center">
+            <img className="h-50 w-52" src={Logo} alt="LingGO Logo" />
+            <div className="my-5 text-center">
+              <p className="text-2xl shadow-black text-white text-shadow-2xl font-bold my-2">
+                Magaling Kaibigan!
+              </p>
+              <p className="text-xl shadow-black text-white text-shadow-2xl font-medium my-2">
+                Ating balikan ang mga Mali
+              </p>
+              <button
+                className="w-35 bg-white text-black text-lg font-bold mt-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
+                onClick={() => onReviewWrongQuestions(wrongQuestions)}
               >
-                <div>
-                  <span className="font-bold">Question {q.id}:</span>{" "}
-                  {q.question || "Voice/Image Question"}
-                </div>
-                <div className="mt-2 text-sm">
-                  <span className="font-semibold text-gray-700">
-                    Correct Answer:
-                  </span>{" "}
-                  {typeof q.correctAnswer === "string"
-                    ? q.correctAnswer
-                    : q.correctAnswer?.value || JSON.stringify(q.correctAnswer)}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+                Sumunod
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

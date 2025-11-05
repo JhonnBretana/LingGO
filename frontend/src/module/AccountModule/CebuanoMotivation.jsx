@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import ClickBar from "../../assets/clickbar.png";
 import Logo from "../../assets/LingGO Logo.png";
+import PageHeaderLayout from "../components/PageHeaderLayout";
 
 function CebuanoMotivation() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ function CebuanoMotivation() {
 
   return (
     <BackgroundLayout>
+      <PageHeaderLayout />
       <div className="hidden lg:block absolute top-4 right-4 lg:top-6 lg:right-6 lg:w-28 lg:h-28 xl:top-8 xl:right-8 xl:w-32 xl:h-32 z-20">
         <img src={Logo} alt="LingGO Logo" className="w-full h-full" />
       </div>
@@ -31,7 +33,8 @@ function CebuanoMotivation() {
                              mb-6 xs:mb-8 sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16
                              px-2 leading-snug"
           style={{
-            textShadow: "3px 3px 0px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5)",
+            textShadow:
+              "3px 3px 0px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5)",
           }}
         >
           Bakit mo nais matuto ng Cebuano,
@@ -61,7 +64,8 @@ function CebuanoMotivation() {
                                          text-[0.6rem] xs:text-xs sm:text-base md:text-lg lg:text-xl xl:text-2xl
                                          group-hover:scale-105 transition-transform duration-300"
               >
-                Upang mapalawak ang aking kaalaman sa iba't-ibang wikang mayroon sa Pilipinas.
+                Upang mapalawak ang aking kaalaman sa iba't-ibang wikang mayroon
+                sa Pilipinas.
               </p>
             </div>
           </button>
@@ -87,7 +91,8 @@ function CebuanoMotivation() {
                                          text-[0.6rem] xs:text-xs sm:text-base md:text-lg lg:text-xl xl:text-2xl
                                          group-hover:scale-105 transition-transform duration-300"
               >
-                Upang makakonekta sa mas maraming tao na nagsasalita ng Cebuano gaya ng mga kaibigan o kaklase.
+                Upang makakonekta sa mas maraming tao na nagsasalita ng Cebuano
+                gaya ng mga kaibigan o kaklase.
               </p>
             </div>
           </button>
@@ -113,7 +118,8 @@ function CebuanoMotivation() {
                                          text-[0.6rem] xs:text-xs sm:text-base md:text-lg lg:text-xl xl:text-2xl
                                          group-hover:scale-105 transition-transform duration-300"
               >
-                Upang magamit sa pakikipagkomunikasyon kapag napadpad sa lugar na may mga Cebuano.
+                Upang magamit sa pakikipagkomunikasyon kapag napadpad sa lugar
+                na may mga Cebuano.
               </p>
             </div>
           </button>

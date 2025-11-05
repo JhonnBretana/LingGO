@@ -52,18 +52,16 @@ const questions = [
     type: "MatchingWordsWithWords",
     question: "Pindutin ang Magkapares.",
     choices: [
-      { word1: "Kanin", word2: "Bugas" },
+      { word1: "Kanin", word2: "Uwel" },
       { word1: "Bigas", word2: "Sud-an" },
       { word1: "Mantika", word2: "Kan on" },
-      { word1: "Ulam", word2: "Utan" },
-      { word1: "Gulay", word2: "Uwel" },
+      { word1: "Ulam", word2: "Bugas" },
     ],
     correctAnswer: [
       { word1: "Kanin", word2: "Kan on" },
       { word1: "Bigas", word2: "Bugas" },
       { word1: "Mantika", word2: "Uwel" },
       { word1: "Ulam", word2: "Sud-an" },
-      { word1: "Gulay", word2: "Utan" },
     ],
     image: null,
     voice: null,
@@ -149,7 +147,7 @@ const questions = [
     choices: null,
     correctAnswer: "Pera",
     image: null,
-    voice: null,
+    voice: "/assets/Voice/Words/pera.mp3",
   },
   {
     // Select 6 Choices With Voice And Slow Sample Question
@@ -234,7 +232,7 @@ const questions = [
       { word1: "Gulay", word2: "Bahay" },
     ],
     correctAnswer: [
-      { word1: "Wala", word2: "Araw" },
+      { word1: "Wala", word2: "Kaliwa" },
       { word1: "Tuo", word2: "Kanan" },
       { word1: "Balay", word2: "Bahay" },
       { word1: "Adlaw", word2: "Araw" },
@@ -246,11 +244,11 @@ const questions = [
   {
     id: 14,
     type: "SpeechMicWithVoice",
-    question: "Uwel",
+    question: "Utan",
     choices: null,
-    correctAnswer: "Uwel",
+    correctAnswer: "Utan",
     image: null,
-    voice: null,
+    voice: "/assets/Voice/CebuanoWords/utan.mp3",
   },
   {
     id: 15,
@@ -315,7 +313,7 @@ const questions = [
     choices: null,
     correctAnswer: "Ulam",
     image: null,
-    voice: null,
+    voice: "/assets/Voice/CebuanoWords/ulam.mp3",
   },
   {
     id: 20,
@@ -395,13 +393,13 @@ const questions = [
     type: "FourChoicesWithCharacterAndVoice",
     question: null,
     choices: [
-      { value: "Bugas", voice: "/assets/Voice/CebuanoWords/napulo.mp3" },
+      { value: "Bugas", voice: "/assets/Voice/CebuanoWords/bugas.mp3" },
       { value: "Sud-an", voice: "/assets/Voice/CebuanoWords/sud-an.mp3" },
       { value: "Uwel", voice: "/assets/Voice/CebuanoWords/uwel.mp3" },
       { value: "Kan on", voice: "/assets/Voice/CebuanoWords/kan on.mp3" },
     ],
     correctAnswer: "Uwel",
-    image: "/assets/ImageChoices/bluegirl2.png",
+    image: "/assets/ImageChoices/Bluegirl2.png",
     voice: null,
   },
   {
@@ -433,7 +431,7 @@ const questions = [
       { value: "Pera", voice: "/assets/Voice/Words/pera.mp3" },
     ],
     correctAnswer: "Kanan",
-    image: "/assets/ImageChoices/redgirl2.png",
+    image: "/assets/ImageChoices/Redgirl2.png",
     voice: null,
   },
   {

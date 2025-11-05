@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../module/components/BackgroundLayout.jsx";
 import QuestionsBar from "../assets/clickbar.png";
 import PageHeaderLayout from "../module/components/PageHeaderLayout";
@@ -21,6 +22,7 @@ import { db } from "../firebase";
 
 import LevelResultPreview from "./components/LevelResultPreview.jsx";
 
+
 function groupIntoRows(arr, itemsPerRow = 2) {
   const rows = [];
   for (let i = 0; i < arr.length; i += itemsPerRow) {
@@ -35,7 +37,19 @@ function Level1Questions() {
   const [page, setPage] = useState(1);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [answers, setAnswers] = useState({});
-  const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
+  const [reviewMode, setReviewMode] = useState(false);
+  const [reviewQuestions, setReviewQuestions] = useState([]);
+  const navigate = useNavigate();
+  // Use either all questions or only wrong ones in review mode
+  const displayQuestions = reviewMode ? reviewQuestions : questions;
+  const totalPages = Math.ceil(displayQuestions.length / QUESTIONS_PER_PAGE);
+  const startIdx = (page - 1) * QUESTIONS_PER_PAGE;
+  const endIdx = startIdx + QUESTIONS_PER_PAGE;
+  const paginatedQuestions = displayQuestions.slice(startIdx, endIdx);
+  const questionRows = groupIntoRows(paginatedQuestions, 2);
+  const [reviewAnswered, setReviewAnswered] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
@@ -50,117 +64,6 @@ function Level1Questions() {
     fetchAnswers();
   }, []);
 
-  const startIdx = (page - 1) * QUESTIONS_PER_PAGE;
-  const endIdx = startIdx + QUESTIONS_PER_PAGE;
-  const paginatedQuestions = questions.slice(startIdx, endIdx);
-  const questionRows = groupIntoRows(paginatedQuestions, 2);
-
-  function renderQuestionComponent(question) {
-    if (!question) return null;
-    const userId = localStorage.getItem("linggoUserId");
-
-    const handleCorrectAnswer = () => {
-      if (userId) {
-        recordLevel1Answer(userId, question.id, true);
-      }
-      setSelectedQuestion(null);
-      fetchAnswers();
-    };
-
-    const handleWrongAnswer = () => {
-      if (userId) {
-        recordLevel1Answer(userId, question.id, false);
-      }
-      setSelectedQuestion(null);
-      fetchAnswers();
-    };
-
-    switch (question.type) {
-      case "TypeWithVoiceAndSlow":
-        return (
-          <TypeWithVoiceAndSlow
-            question={question}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
-          />
-        );
-      case "SixChoicesWithVoice":
-        return (
-          <SixChoicesWithVoice
-            question={question}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
-          />
-        );
-      case "FourChoicesWithCharacterAndVoice":
-        return (
-          <FourChoicesWithCharacterAndVoice
-            question={question}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
-          />
-        );
-      case "SpeechMicWithVoice":
-        return (
-          <SpeechMicWithVoice
-            question={question}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
-          />
-        );
-      case "MatchingWordsWithImage":
-        return (
-          <MatchingWordsWithImage
-            question={question}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
-          />
-        );
-      case "QuestionWith3Choices":
-        return (
-          <QuestionWith3Choices
-            question={question}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
-          />
-        );
-      case "QuestionWith4Choices":
-        return (
-          <QuestionWith4Choices
-            question={question}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
-          />
-        );
-      case "Select6ChoicesWithVoiceAndSlow":
-        return (
-          <Select6ChoicesWithVoiceAndSlow
-            question={question}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
-          />
-        );
-      case "MatchingWordsWithWords":
-        return (
-          <MatchingWordsWithWords
-            question={question}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
-          />
-        );
-      case "DragAndDrop4ChoicesWithVoice":
-        return (
-          <DragAndDrop4ChoicesWithVoice
-            question={question}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
-          />
-        );
-      default:
-        return <div>Unknown question type</div>;
-    }
-  }
-
   async function fetchAnswers() {
     const userId = localStorage.getItem("linggoUserId");
     if (!userId) return;
@@ -171,17 +74,183 @@ function Level1Questions() {
     }
   }
 
+  function handleReviewWrongQuestions(wrongQuestions) {
+    setReviewQuestions(wrongQuestions);
+    setReviewMode(true);
+    setPage(1);
+    setSelectedQuestion(null);
+  }
+
+  function renderQuestionComponent(question) {
+    if (!question) return null;
+    const userId = localStorage.getItem("linggoUserId");
+    const showWrongOverlay = !reviewMode;
+
+    const handleCorrectAnswer = () => {
+      if (reviewMode) {
+        setReviewAnswered((prev) => [...prev, question.id]);
+      } else if (userId) {
+        recordLevel1Answer(userId, question.id, true);
+        fetchAnswers();
+      }
+      setSelectedQuestion(null);
+    };
+
+    const handleWrongAnswer = () => {
+      if (!reviewMode && userId) {
+        recordLevel1Answer(userId, question.id, false);
+        fetchAnswers();
+      }
+      setSelectedQuestion(null);
+    };
+
+    switch (question.type) {
+      case "TypeWithVoiceAndSlow":
+        return (
+          <TypeWithVoiceAndSlow
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "SixChoicesWithVoice":
+        return (
+          <SixChoicesWithVoice
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "FourChoicesWithCharacterAndVoice":
+        return (
+          <FourChoicesWithCharacterAndVoice
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "SpeechMicWithVoice":
+        return (
+          <SpeechMicWithVoice
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "MatchingWordsWithImage":
+        return (
+          <MatchingWordsWithImage
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "QuestionWith3Choices":
+        return (
+          <QuestionWith3Choices
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "QuestionWith4Choices":
+        return (
+          <QuestionWith4Choices
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "Select6ChoicesWithVoiceAndSlow":
+        return (
+          <Select6ChoicesWithVoiceAndSlow
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "MatchingWordsWithWords":
+        return (
+          <MatchingWordsWithWords
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "DragAndDrop4ChoicesWithVoice":
+        return (
+          <DragAndDrop4ChoicesWithVoice
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      default:
+        return <div>Unknown question type</div>;
+    }
+  }
+
   const allAnswered = questions.every((q) =>
     ["Correct", "Wrong"].includes(answers[`Level1Question${q.id}`])
   );
+
+  // In review mode, don't disable buttons
+  function isAnswered(q) {
+    if (reviewMode) return false;
+    const answer = answers[`Level1Question${q.id}`];
+    return answer === "Correct" || answer === "Wrong";
+  }
+
+  // Save reviewAnswered to localStorage whenever it changes
+  useEffect(() => {
+    if (reviewMode) {
+      localStorage.setItem("reviewAnswered", JSON.stringify(reviewAnswered));
+    }
+  }, [reviewAnswered, reviewMode]);
+
+  useEffect(() => {
+    if (reviewMode) {
+      const saved = localStorage.getItem("reviewAnswered");
+      if (saved) setReviewAnswered(JSON.parse(saved));
+    }
+  }, [reviewMode]);
+
+  useEffect(() => {
+    // Only run when answers are loaded
+    const savedReviewAnswered = localStorage.getItem("reviewAnswered");
+    if (savedReviewAnswered && Object.keys(answers).length > 0) {
+      // Find all questions that were wrong
+      const wrongQuestions = questions.filter((q) => {
+        const answer = answers[`Level1Question${q.id}`];
+        return answer === "Wrong";
+      });
+      setReviewQuestions(wrongQuestions);
+      setReviewMode(true);
+      setReviewAnswered(JSON.parse(savedReviewAnswered));
+      setPage(1);
+      setSelectedQuestion(null);
+    }
+  }, [answers]);
 
   return (
     <BackgroundLayout>
       <div className="overflow-hidden w-full h-screen flex flex-col">
         <PageHeaderLayout />
 
-        {allAnswered ? (
-          <LevelResultPreview />
+        {allAnswered && !reviewMode ? (
+          <LevelResultPreview
+            onReviewWrongQuestions={handleReviewWrongQuestions}
+          />
         ) : (
           <>
             {selectedQuestion && (
@@ -208,6 +277,7 @@ function Level1Questions() {
               </div>
             )}
 
+            {/* Wrong Questions Component */}
             {selectedQuestion ? (
               <div className="flex-1 overflow-auto">
                 {renderQuestionComponent(selectedQuestion)}
@@ -227,35 +297,43 @@ function Level1Questions() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-3 w-full max-w-full px-4 overflow-y-auto flex-1 my-4">
+                <div className="flex flex-col gap-2 sm:gap-3 w-full max-w-full px-2 sm:px-4 overflow-y-auto flex-1 my-4">
                   {questionRows.map((row, rowIdx) => (
                     <div
                       key={rowIdx}
-                      className="flex flex-row gap-3 items-center justify-center flex-wrap"
+                      className="flex flex-row gap-2 sm:gap-3 items-center justify-center flex-wrap"
                     >
                       {row.map((q) => {
                         const answer = answers[`Level1Question${q.id}`];
                         let btnColor = "bg-white";
                         let textColor = "text-black";
                         let opacity = "";
-                        let disabled = false;
+                        let disabled = isAnswered(q);
 
-                        if (answer === "Correct") {
-                          btnColor = "bg-green-400";
-                          textColor = "text-white";
-                          opacity = "opacity-50";
-                          disabled = true;
-                        } else if (answer === "Wrong") {
-                          btnColor = "bg-red-400";
-                          textColor = "text-white";
-                          opacity = "opacity-50";
-                          disabled = true;
+                        if (!reviewMode) {
+                          if (answer === "Correct") {
+                            btnColor = "bg-green-400";
+                            textColor = "text-white";
+                            opacity = "opacity-50";
+                          } else if (answer === "Wrong") {
+                            btnColor = "bg-red-400";
+                            textColor = "text-white";
+                            opacity = "opacity-50";
+                          }
+                        } else {
+                          // In review mode, make button green if answered
+                          if (reviewAnswered.includes(q.id)) {
+                            btnColor = "bg-green-400";
+                            textColor = "text-white";
+                            opacity = "";
+                            disabled = true;
+                          }
                         }
 
                         return (
                           <button
                             key={q.id}
-                            className={`w-36 sm:w-40 max-w-[calc(50%-0.25rem)] text-center ${btnColor} ${textColor} ${opacity} text-sm sm:text-lg font-bold py-3 px-2 sm:px-4 rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
+                            className={`w-[140px] sm:w-40 max-w-[calc(50%-0.25rem)] text-center ${btnColor} ${textColor} ${opacity} text-sm sm:text-lg font-bold py-3 px-2 sm:px-4 rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
                             onClick={() => !disabled && setSelectedQuestion(q)}
                             disabled={disabled}
                           >
@@ -266,6 +344,26 @@ function Level1Questions() {
                     </div>
                   ))}
                 </div>
+
+                {reviewMode && reviewQuestions.length > 0 && (
+                  <button
+                    className="w-40 bg-white text-black text-lg font-bold my-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={
+                      !reviewQuestions.every((q) =>
+                        reviewAnswered.includes(q.id)
+                      )
+                    }
+                    onClick={() => {
+                      setReviewMode(false);
+                      setReviewQuestions([]);
+                      setReviewAnswered([]);
+                      localStorage.removeItem("reviewAnswered");
+                      navigate("/level1-finish");
+                    }}
+                  >
+                    Sumunod
+                  </button>
+                )}
 
                 <div className="flex gap-3 sm:gap-4 mt-3 items-center">
                   <button

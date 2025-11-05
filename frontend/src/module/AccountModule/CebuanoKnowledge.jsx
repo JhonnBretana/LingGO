@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import Star from "../../assets/star1.png";
 import Logo from "../../assets/LingGO Logo.png";
+import PageHeaderLayout from "../components/PageHeaderLayout";
 
 function CebuanoKnowledge() {
   const navigate = useNavigate();
@@ -14,10 +15,10 @@ function CebuanoKnowledge() {
 
   return (
     <BackgroundLayout>
+      <PageHeaderLayout />
       <div className="hidden lg:block absolute top-4 right-4 lg:top-6 lg:right-6 lg:w-28 lg:h-28 xl:top-8 xl:right-8 xl:w-32 xl:h-32 z-20">
         <img src={Logo} alt="LingGO Logo" className="w-full h-full" />
       </div>
-
       <div className="flex flex-col items-center text-center px-3 py-6 min-h-screen justify-center relative">
         <img
           src={Logo}
@@ -31,7 +32,8 @@ function CebuanoKnowledge() {
                              leading-snug mb-6 xs:mb-8 sm:mb-10 md:mb-12 lg:mb-14 xl:mb-16
                              px-2"
           style={{
-            textShadow: "2px 2px 0px rgba(0,0,0,0.9), 0px 0px 8px rgba(0,0,0,0.5)",
+            textShadow:
+              "2px 2px 0px rgba(0,0,0,0.9), 0px 0px 8px rgba(0,0,0,0.5)",
           }}
         >
           Gaano kalawak ang iyong
