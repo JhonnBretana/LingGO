@@ -53,7 +53,7 @@ function Level1Questions() {
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
     if (!userId) return;
-    
+
     const fetchData = async () => {
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
@@ -61,21 +61,21 @@ function Level1Questions() {
         const userData = userSnap.data();
         const level1Answers = userData.Level1Questions || {};
         const wrongAnswered = userData.WrongQuestionsAnswered || {};
-        
+
         setAnswers(level1Answers);
-        
+
         // Check if there are wrong questions to review
         const wrongQuestions = questions.filter((q) => {
           const answer = level1Answers[`Level1Question${q.id}`];
           return answer === "Wrong";
         });
-        
+
         if (wrongQuestions.length > 0) {
           // Load which ones have already been answered in review
           const alreadyAnswered = wrongQuestions
             .filter((q) => wrongAnswered[`Level1Question${q.id}`] === true)
             .map((q) => q.id);
-          
+
           setReviewQuestions(wrongQuestions);
           setReviewAnswered(alreadyAnswered);
           setReviewMode(true);
@@ -83,7 +83,7 @@ function Level1Questions() {
         }
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -236,6 +236,25 @@ function Level1Questions() {
     ["Correct", "Wrong"].includes(answers[`Level1Question${q.id}`])
   );
 
+  // Add this useEffect after the allAnswered definition
+  useEffect(() => {
+    if (allAnswered && !reviewMode) {
+      // Calculate score
+      const level1Score = questions.reduce((acc, q) => {
+        return acc + (answers[`Level1Question${q.id}`] === "Correct" ? 1 : 0);
+      }, 0);
+
+      // Save to Firestore under Score.level1Score
+      const userId = localStorage.getItem("linggoUserId");
+      if (userId) {
+        const userRef = doc(db, "users", userId);
+        updateDoc(userRef, {
+          "Score.level1Score": level1Score,
+        });
+      }
+    }
+  }, [allAnswered, reviewMode, answers, questions]);
+
   // In review mode, don't disable buttons
   function isAnswered(q) {
     if (reviewMode) return false;
@@ -360,18 +379,20 @@ function Level1Questions() {
                       if (userId && reviewQuestions.length > 0) {
                         const userRef = doc(db, "users", userId);
                         const updates = {};
-                        
+
                         // Ensure all questions are marked as answered
                         reviewQuestions.forEach((q) => {
-                          updates[`WrongQuestionsAnswered.Level1Question${q.id}`] = true;
+                          updates[
+                            `WrongQuestionsAnswered.Level1Question${q.id}`
+                          ] = true;
                         });
-                        
+
                         // Mark the entire review as completed
-                        updates['Level1ReviewCompleted'] = true;
-                        
+                        updates["Level1ReviewCompleted"] = true;
+
                         await updateDoc(userRef, updates);
                       }
-                      
+
                       setReviewMode(false);
                       setReviewQuestions([]);
                       setReviewAnswered([]);
