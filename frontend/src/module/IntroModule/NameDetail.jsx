@@ -12,16 +12,16 @@ function NameDetail() {
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
         <div className="mb-5 px-2">
-  <p
-    className="text-2xl sm:text-3xl text-white font-extrabold leading-relaxed"
-    style={{
-      textShadow:
-        "2px 2px 0px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0, 0, 0, 0.4)",
-    }}
-  >
-    Anong pangalan mo, kaibigan?
-  </p>
-</div>
+          <p
+            className="text-2xl sm:text-3xl text-white font-extrabold leading-relaxed"
+            style={{
+              textShadow:
+                "2px 2px 0px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0, 0, 0, 0.4)",
+            }}
+          >
+            Anong pangalan mo, kaibigan?
+          </p>
+        </div>
         <div>
           <img className="h-70 w-75" src={Bird} alt="LingGO Logo" />
         </div>

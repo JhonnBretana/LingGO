@@ -9,13 +9,12 @@ function CebuanoKnowledge() {
   const navigate = useNavigate();
 
   const handleStarClick = (level) => {
-    console.log(`Selected level: ${level}`);
+    localStorage.setItem("proficiency", level); // Save proficiency
     navigate("/cebuano-motivation");
   };
 
   return (
     <BackgroundLayout>
-      <PageHeaderLayout />
       <div className="hidden lg:block absolute top-4 right-4 lg:top-6 lg:right-6 lg:w-28 lg:h-28 xl:top-8 xl:right-8 xl:w-32 xl:h-32 z-20">
         <img src={Logo} alt="LingGO Logo" className="w-full h-full" />
       </div>

@@ -84,22 +84,17 @@ function PageHeaderLayout() {
     };
   }, [stopMusic]);
 
-  const getFullName = () => {
-    if (role === "Instructor") return "Guro";
-    if (role === "Others") return "Iba pa";
-    if (role === "Researchers") return "Mananaliksik";
-    if (!user) return "Juan Dela Cruz";
-    const firstName = user.FirstName || "";
-    return firstName || user.Username || "Juan Dela Cruz";
-  };
-
-  // Grade and section display
   const gradeDisplay =
-    role === "Instructor" || role === "Others" || role === "Researchers"
-      ? "Bisita"
-      : user
+    user && user.Role === "Mag-aaral"
       ? `${user.Grade || ""}${user.Section ? "-" + user.Section : ""}`
-      : "Baitang-Seksyon";
+      : user
+      ? user.Role // Directly show the role for non-students
+      : "Bisita";
+
+  const getFullName = () => {
+    if (!user) return "Juan Dela Cruz";
+    return user.Name || "Juan Dela Cruz";
+  };
 
   const handleLogout = () => {
     localStorage.clear();

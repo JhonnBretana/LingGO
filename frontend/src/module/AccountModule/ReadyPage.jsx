@@ -32,7 +32,7 @@ function ReadyPage() {
 
   const getFirstName = () => {
     if (!user) return "Juan";
-    return user["Unang Pangalan"] || user.Username || "Juan";
+    return user.FirstName || user.Username || "Juan";
   };
 
   const handleContinue = () => {
