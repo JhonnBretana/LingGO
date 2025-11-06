@@ -238,22 +238,32 @@ function Level1Questions() {
 
   // Add this useEffect after the allAnswered definition
   useEffect(() => {
-    if (allAnswered && !reviewMode) {
-      // Calculate score
-      const level1Score = questions.reduce((acc, q) => {
-        return acc + (answers[`Level1Question${q.id}`] === "Correct" ? 1 : 0);
-      }, 0);
-
-      // Save to Firestore under Score.level1Score
-      const userId = localStorage.getItem("linggoUserId");
-      if (userId) {
-        const userRef = doc(db, "users", userId);
-        updateDoc(userRef, {
-          "Score.level1Score": level1Score,
-        });
+  if (allAnswered && !reviewMode) {
+    // Calculate earned points (same as LevelResultPreview)
+    const earnedPoints = questions.reduce((sum, q) => {
+      const answer = answers[`Level1Question${q.id}`];
+      if (answer === "Correct") {
+        if (
+          q.type === "MatchingWordsWithWords" ||
+          q.type === "MatchingWordsWithImage"
+        ) {
+          return sum + q.correctAnswer.length;
+        }
+        return sum + 1;
       }
+      return sum;
+    }, 0);
+
+    // Save to Firestore under Score.level1Score
+    const userId = localStorage.getItem("linggoUserId");
+    if (userId) {
+      const userRef = doc(db, "users", userId);
+      updateDoc(userRef, {
+        "Score.level1Score": earnedPoints,
+      });
     }
-  }, [allAnswered, reviewMode, answers, questions]);
+  }
+}, [allAnswered, reviewMode, answers, questions]);
 
   // In review mode, don't disable buttons
   function isAnswered(q) {
