@@ -55,7 +55,7 @@ function Level1Finish() {
           "3px 3px 0px rgba(0,0,0,0.8), 0px 0px 8px rgba(0, 0, 0, 0.4)",
       }}
     >
-      Mahusay, {getDisplayName()}!
+      Mahusay!
     </p>
     <p
       className="text-xl text-white font-semibold mt-2"
@@ -64,7 +64,7 @@ function Level1Finish() {
           "2px 2px 0px rgba(0,0,0,0.7), 0px 0px 6px rgba(0,0,0,0.3)",
       }}
     >
-      Binabati kita kaibigan
+      Binabati kita {getDisplayName()}
     </p>
   </div>
 

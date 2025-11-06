@@ -1,36 +1,18 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import QuestionsBar from "../../../assets/clickbar.png";
-import { Volume2, Turtle } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function Select6ChoicesWithVoiceAndSlow({
+function Select6Choices({
   question,
   onCorrectAnswer,
   onWrongAnswer,
   showWrongOverlay = true,
 }) {
-  const audioRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
   const [showTryAgainModal, setShowTryAgainModal] = useState(false);
-
-  const handlePlay = () => {
-    if (audioRef.current) {
-      audioRef.current.playbackRate = 1;
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-    }
-  };
-
-  const handlePlaySlow = () => {
-    if (audioRef.current) {
-      audioRef.current.playbackRate = 0.4;
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -75,25 +57,9 @@ function Select6ChoicesWithVoiceAndSlow({
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
           <div className="absolute inset-0 flex items-center justify-center px-4">
             <span className="text-sm xs:text-base sm:text-lg md:text-xl font-semibold text-center leading-tight">
-              {question?.question || "Pindutin and Maririnig mo"}
+              {question?.question || "Pindutin ang tamang sagot"}
             </span>
           </div>
-        </div>
-        <div className="flex items-center gap-3 sm:gap-4">
-          <button
-            className="bg-orange-300 p-2 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all duration-200"
-            onClick={handlePlay}
-            disabled={!question?.voice}
-          >
-            <Volume2 className="text-black" size={54} />
-          </button>
-          <button
-            className="bg-orange-300 p-2 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all duration-200"
-            onClick={handlePlaySlow}
-            disabled={!question?.voice}
-          >
-            <Turtle className="text-black" size={54} />
-          </button>
         </div>
         <form
           className="w-full max-w-[280px] sm:max-w-xs flex flex-col gap-3 sm:gap-5 items-center justify-center"
@@ -121,13 +87,6 @@ function Select6ChoicesWithVoiceAndSlow({
             Ipasa
           </button>
         </form>
-        {question?.voice && (
-          <audio
-            ref={audioRef}
-            src={question.voice}
-            style={{ display: "none" }}
-          />
-        )}
       </div>
 
       <CorrectAnswerModal
@@ -151,4 +110,4 @@ function Select6ChoicesWithVoiceAndSlow({
   );
 }
 
-export default Select6ChoicesWithVoiceAndSlow;
+export default Select6Choices;

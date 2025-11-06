@@ -66,6 +66,12 @@ function Level1Finish() {
 
   const percentage = ((earnedPoints / totalPoints) * 100).toFixed(1);
 
+  const handleLogout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate("/");
+  };
+
   if (loading) {
     return (
       <BackgroundLayout>
@@ -133,7 +139,7 @@ function Level1Finish() {
               <div className="w-full max-w-xs">
                 <button
                   className="w-full bg-gradient-to-br from-white via-yellow-100 to-white text-black text-2xl font-black py-5 px-8 rounded-3xl border-4 border-black hover:from-yellow-300 hover:via-yellow-400 hover:to-yellow-300 hover:scale-110 active:scale-95 transition-all duration-300 relative overflow-hidden group"
-                  onClick={() => navigate("/")}
+                  onClick={handleLogout}
                   style={{
                     boxShadow: "0 0 25px rgba(242, 217, 25, 0.7), 0 8px 30px rgba(0,0,0,0.4)"
                   }}

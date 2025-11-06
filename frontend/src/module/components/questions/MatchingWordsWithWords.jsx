@@ -54,26 +54,36 @@ function MatchingWordsWithWords({
   const handleClick = (word, side) => {
     const existingMatch = matches.find((m) => m[side] === word);
 
-    // If clicking on an already matched word, unselect it
+    // If clicking on an already matched word
     if (existingMatch) {
-      // Check if this is the pending selection - allow canceling
+      // Only allow canceling if it's a pending selection (incomplete pair)
       if (pendingSelection && pendingSelection.match === existingMatch) {
         setMatches(matches.filter((m) => m !== existingMatch));
         setPendingSelection(null);
         return;
       }
 
+      // If it's a complete pair, check if it's correct
       if (existingMatch.left && existingMatch.right) {
+        const isCorrect = checkPairCorrectness(existingMatch.left, existingMatch.right);
+        
+        // Don't allow unselecting correct pairs
+        if (isCorrect) {
+          return;
+        }
+        
+        // Allow unselecting wrong pairs
         const updatedMatches = matches
           .map((m) => (m === existingMatch ? { ...m, [side]: null } : m))
           .filter((m) => m.left || m.right);
         setMatches(updatedMatches);
-        // Clear pending selection if unselecting
         setPendingSelection(null);
-      } else {
-        setMatches(matches.filter((m) => m !== existingMatch));
-        setPendingSelection(null);
+        return;
       }
+
+      // If it's an incomplete pair that's not pending, remove it
+      setMatches(matches.filter((m) => m !== existingMatch));
+      setPendingSelection(null);
       return;
     }
 

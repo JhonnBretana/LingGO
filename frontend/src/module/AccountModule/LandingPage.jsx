@@ -24,7 +24,7 @@ function LandingPage() {
             onClick={() => navigate("/signin")}
             className="w-70 bg-white text-black text-sm font-bold py-3 px-4 rounded-2xl border-2 border-black mt-3 hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
           >
-            MAG-SIGNIN SA ACCOUNT KO
+            MAG-SIGN IN SA ACCOUNT KO
           </button>
         </div>
       </div>

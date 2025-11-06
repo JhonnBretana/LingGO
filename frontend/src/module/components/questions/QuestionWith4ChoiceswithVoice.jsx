@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import QuestionsBar from "../../../assets/clickbar.png";
+import React, { useState, useRef } from "react";
+import { Volume2 } from "lucide-react";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
-function QuestionWith4Choices({
+function QuestionWith4ChoiceswithVoice({
   question,
   onCorrectAnswer,
   onWrongAnswer,
@@ -13,6 +13,14 @@ function QuestionWith4Choices({
   const [showCorrectModal, setShowCorrectModal] = useState(false);
   const [showWrongModal, setShowWrongModal] = useState(false);
   const [showTryAgainModal, setShowTryAgainModal] = useState(false);
+  const audioRef = useRef(null);
+
+  const handlePlayVoice = () => {
+    if (audioRef.current && question.voice) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,7 +37,6 @@ function QuestionWith4Choices({
       if (showWrongOverlay) {
         setShowWrongModal(true);
       } else {
-        // In review mode, show Try Again modal and DO NOT exit
         setShowTryAgainModal(true);
       }
     }
@@ -73,17 +80,31 @@ function QuestionWith4Choices({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-start h-screen overflow-hidden px-4 pt-4">
-        <div className="relative w-full max-w-80 mb-3">
-          <img
-            src={QuestionsBar}
-            alt="Questions Bar"
-            className="w-full h-auto"
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="font-medium">{question?.question}</p>
-          </div>
+      <div className="flex flex-col items-center justify-start h-screen overflow-hidden px-4 pt-4 gap-4">
+        {/* Voice Button and Question Text */}
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button
+            type="button"
+            onClick={handlePlayVoice}
+            className="bg-transparent border-none flex-shrink-0"
+            disabled={!question.voice}
+          >
+            <Volume2 className="text-white" size={40} />
+          </button>
+          <p className="text-lg sm:text-2xl font-bold text-white">
+            {question?.question || "Daghang Salamat"}
+          </p>
         </div>
+
+        {/* Hidden audio element */}
+        {question.voice && (
+          <audio
+            ref={audioRef}
+            src={question.voice}
+            style={{ display: "none" }}
+          />
+        )}
+
         <form
           className="w-full max-w-80 flex flex-col gap-3 justify-start items-center"
           onSubmit={handleSubmit}
@@ -93,19 +114,21 @@ function QuestionWith4Choices({
               <button
                 key={idx}
                 type="button"
-                className={`flex-1 h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${
-                  selected === choice.value ? "border-4 border-yellow-400" : ""
+                className={`flex-1 h-40 flex flex-col bg-white text-black text-base font-bold p-3 rounded-2xl border-4 shadow-lg overflow-hidden transition-all duration-200 ${
+                  selected === choice.value
+                    ? "border-yellow-400 scale-105 shadow-xl"
+                    : "border-gray-200 hover:scale-105 hover:shadow-xl"
                 }`}
                 onClick={() => setSelected(choice.value)}
               >
-                <div className="flex-1 flex items-center justify-center w-full min-h-0">
+                <div className="flex-1 flex items-center justify-center w-full min-h-0 mb-2">
                   <img
                     src={choice.image}
                     alt={choice.value}
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                <div className="w-full text-center pt-2 shrink-0">
+                <div className="w-full text-center shrink-0 text-[10px] whitespace-nowrap overflow-hidden text-ellipsis px-1">
                   {choice.value}
                 </div>
               </button>
@@ -116,19 +139,21 @@ function QuestionWith4Choices({
               <button
                 key={idx + 2}
                 type="button"
-                className={`flex-1 h-40 flex flex-col bg-white text-black text-lg font-bold p-3 rounded-lg border-2 overflow-hidden ${
-                  selected === choice.value ? "border-4 border-yellow-400" : ""
+                className={`flex-1 h-40 flex flex-col bg-white text-black text-base font-bold p-3 rounded-2xl border-4 shadow-lg overflow-hidden transition-all duration-200 ${
+                  selected === choice.value
+                    ? "border-yellow-400 scale-105 shadow-xl"
+                    : "border-gray-200 hover:scale-105 hover:shadow-xl"
                 }`}
                 onClick={() => setSelected(choice.value)}
               >
-                <div className="flex-1 flex items-center justify-center w-full min-h-0">
+                <div className="flex-1 flex items-center justify-center w-full min-h-0 mb-2">
                   <img
                     src={choice.image}
                     alt={choice.value}
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                <div className="w-full text-center pt-2 shrink-0">
+                <div className="w-full text-center shrink-0 text-[10px] whitespace-nowrap overflow-hidden text-ellipsis px-1">
                   {choice.value}
                 </div>
               </button>
@@ -137,7 +162,7 @@ function QuestionWith4Choices({
 
           <button
             type="submit"
-            className="w-full max-w-40 mt-3 px-4 py-2 bg-[#f2d919] border-2 border-black rounded-xl font-bold"
+            className="w-full max-w-40 mt-3 px-4 py-2 bg-[#f2d919] border-2 border-black rounded-xl font-bold hover:bg-yellow-400 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={!selected}
           >
             Ipasa
@@ -166,4 +191,4 @@ function QuestionWith4Choices({
   );
 }
 
-export default QuestionWith4Choices;
+export default QuestionWith4ChoiceswithVoice;

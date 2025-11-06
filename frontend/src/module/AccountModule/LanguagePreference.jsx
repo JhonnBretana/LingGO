@@ -44,9 +44,7 @@ function LanguagePreference() {
               "3px 3px 0px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5)",
           }}
         >
-          Anong wika ang gusto mo matutunan,
-          <br />
-          kaibigan?
+          Anong wika ang gusto mo matutunan, kaibigan?
         </h1>
 
         {/* Cards Container */}

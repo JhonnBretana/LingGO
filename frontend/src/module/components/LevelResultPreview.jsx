@@ -80,7 +80,7 @@ function LevelResultPreview({ onReviewWrongQuestions }) {
                 Magaling kaibigan!
               </p>
               <p className="text-xl shadow-black text-white text-shadow-2xl font-medium my-2">
-                Ngayon balikan natin ang ilang katanungan
+                Ngayon balikan natin ang ilang katanungan.  
               </p>
               <button
                 className="w-35 bg-white text-black text-lg font-bold mt-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"

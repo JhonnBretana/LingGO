@@ -38,6 +38,9 @@ import QuestionWith4Choices from "./module/components/questions/QuestionWith4Cho
 import TypeWithVoiceAndSlow from "./module/components/questions/TypeWithVoiceAndSlow.jsx";
 import SixChoicesWithVoice from "./module/components/questions/SixChoicesWithVoice.jsx";
 import FourChoicesWithCharacterAndVoice from "./module/components/questions/FourChoicesWithCharacterAndVoice.jsx";
+import QuestionWith4ChoiceswithVoice from "./module/components/questions/QuestionWith4ChoiceswithVoice.jsx";
+import Select6Choices from "./module/components/questions/Select6Choices.jsx";
+import QuestionWith4ChoicesnoImage from "./module/components/questions/QuestionWith4ChoicesnoImage.jsx";
 
 import CorrectOverlay from "./module/components/CorrectOverlay.jsx";
 
@@ -48,6 +51,9 @@ import Voice_Character from "./module/GamePlayLvl1Module/Voice_Character.jsx";
 
 //Levels
 import Level1 from "./module/Level1Questions.jsx";
+import Level2 from "./module/Level2.Questions.jsx";
+
+import LevelTwo from "./module/AccountModule/LevelTwo.jsx";
 
 import Result from "./module/components/LevelResultPreview.jsx";
 
@@ -80,6 +86,8 @@ function App() {
         <Route path="/signin" element={<SigninPage />} />
         <Route path="/choose-level" element={<ChooseLevel />} />
         <Route path="/level-one" element={<LevelOne />} />
+        <Route path="/level2" element={<Level2 />} />
+        <Route path="/level-two" element={<LevelTwo />} />
 
         {/*intro module*/}
         <Route path="/startpage1" element={<StartPage1 />} />
@@ -126,6 +134,15 @@ function App() {
         <Route
           path="/four-choices-with-character-and-voice"
           element={<FourChoicesWithCharacterAndVoice />}
+        />
+        <Route
+          path="/question-with-4-choices-with-voice"
+          element={<QuestionWith4ChoiceswithVoice />}
+        />
+        <Route path="/select-6-choices" element={<Select6Choices />} />
+        <Route
+          path="/question-with-4-choices-no-image"
+          element={<QuestionWith4ChoicesnoImage />}
         />
 
         {/*gameplay module*/}

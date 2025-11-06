@@ -179,19 +179,9 @@ const questions = [
     voice: "/assets/Voice/CebuanoWords/sud-an.mp3",
   },
   {
-    // Speech Mic With Voice Sample Question
-    // id: 10,
-    // type: "SpeechMicWithVoice",
-    // question: "Pera",
-    // choices: null,
-    // correctAnswer: "Kwarta",
-    // image: null,
-    // voice: null,
-
-    // Select 6 Choices With Voice And Slow Sample Question
     id: 10,
     type: "Select6ChoicesWithVoiceAndSlow",
-    question: "Pindutin and salitang maririning mo.",
+    question: "Pindutin and salitang maririnig mo.",
     choices: ["tuo", "sud-an", "balay", "utan", "uwel", "wala"],
     correctAnswer: "balay",
     image: null,
@@ -340,7 +330,7 @@ const questions = [
   {
     id: 22,
     type: "MatchingWordsWithWords",
-    question: "Pindutin ang Magkapares.",
+    question: "Pindutin ang magkapares.",
     choices: [
       { word1: "duha", word2: "walo" },
       { word1: "lima", word2: "isa" },
@@ -361,7 +351,7 @@ const questions = [
   {
     id: 23,
     type: "MatchingWordsWithWords",
-    question: "Pindutin ang Magkapares.",
+    question: "Pindutin ang magkapares.",
     choices: [
     { word1: "tatlo", word2: "siyam" },
     { word1: "siyam", word2: "tulo" },
@@ -446,7 +436,7 @@ const questions = [
   {
     id: 30,
     type: "Select6ChoicesWithVoiceAndSlow",
-    question: "Pindutin and maririning mo.",
+    question: "Pindutin and maririnig mo.",
     choices: ["usa", "unom", "siyam", "upat", "duha", "tulo"],
     correctAnswer: "unom",
     image: null,

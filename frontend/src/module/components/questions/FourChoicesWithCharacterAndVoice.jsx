@@ -141,7 +141,7 @@ function FourChoicesWithCharacterAndVoice({
             className="w-full max-w-xs my-5 px-4 py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-lg"
             disabled={!selected}
           >
-            Submit
+            Ipasa
           </button>
         </form>
 

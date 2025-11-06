@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../module/components/BackgroundLayout.jsx";
 import QuestionsBar from "../assets/clickbar.png";
 import PageHeaderLayout from "../module/components/PageHeaderLayout";
-import questions from "../constant/questions_data.js";
+import questions from "../constant/questionsl2_data.js";
 
 import DragAndDrop4ChoicesWithVoice from "./components/questions/DragAndDrop4ChoicesWithVoice.jsx";
 import SpeechMicWithVoice from "./components/questions/SpeechMicWithVoice.jsx";
@@ -15,9 +15,12 @@ import QuestionWith4Choices from "./components/questions/QuestionWith4Choices.js
 import TypeWithVoiceAndSlow from "./components/questions/TypeWithVoiceAndSlow.jsx";
 import SixChoicesWithVoice from "./components/questions/SixChoicesWithVoice.jsx";
 import FourChoicesWithCharacterAndVoice from "./components/questions/FourChoicesWithCharacterAndVoice.jsx";
+import QuestionWith4ChoiceswithVoice from "./components/questions/QuestionWith4ChoiceswithVoice.jsx";
+import Select6Choices from "./components/questions/Select6Choices.jsx";
+import QuestionWith4ChoicesnoImage from "./components/questions/QuestionWith4ChoicesnoImage.jsx";
 
-import { recordLevel1Answer } from "../utils/recordAnswer.js";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { recordLevel2Answer } from "../utils/recordAnswer.js";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
 import LevelResultPreview from "./components/LevelResultPreview.jsx";
@@ -32,7 +35,7 @@ function groupIntoRows(arr, itemsPerRow = 2) {
 
 const QUESTIONS_PER_PAGE = 10;
 
-function Level1Questions() {
+function Level2Questions() {
   const [page, setPage] = useState(1);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [answers, setAnswers] = useState({});
@@ -55,7 +58,7 @@ function Level1Questions() {
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
-        setAnswers(userSnap.data().Level1Questions || {});
+        setAnswers(userSnap.data().Level2Questions || {});
       }
     };
     fetchAnswers();
@@ -67,7 +70,7 @@ function Level1Questions() {
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
-      setAnswers(userSnap.data().Level1Questions || {});
+      setAnswers(userSnap.data().Level2Questions || {});
     }
   }
 
@@ -83,29 +86,11 @@ function Level1Questions() {
     const userId = localStorage.getItem("linggoUserId");
     const showWrongOverlay = !reviewMode;
 
-    // const handleCorrectAnswer = () => {
-    //   if (reviewMode) {
-    //     setReviewAnswered((prev) => [...prev, question.id]);
-    //   } else if (userId) {
-    //     recordLevel1Answer(userId, question.id, true);
-    //     fetchAnswers();
-    //   }
-    //   setSelectedQuestion(null);
-    // };
-
-    const handleCorrectAnswer = async () => {
+    const handleCorrectAnswer = () => {
       if (reviewMode) {
         setReviewAnswered((prev) => [...prev, question.id]);
-        // Only update WrongQuestionsAnswered, do NOT change Level1Questions answer
-        if (userId) {
-          const userRef = doc(db, "users", userId);
-          await updateDoc(userRef, {
-            [`WrongQuestionsAnswered.Level1Question${question.id}`]: true,
-          });
-          fetchAnswers();
-        }
       } else if (userId) {
-        recordLevel1Answer(userId, question.id, true);
+        recordLevel2Answer(userId, question.id, true);
         fetchAnswers();
       }
       setSelectedQuestion(null);
@@ -113,7 +98,7 @@ function Level1Questions() {
 
     const handleWrongAnswer = () => {
       if (!reviewMode && userId) {
-        recordLevel1Answer(userId, question.id, false);
+        recordLevel2Answer(userId, question.id, false);
         fetchAnswers();
       }
       setSelectedQuestion(null);
@@ -210,19 +195,46 @@ function Level1Questions() {
             showWrongOverlay={showWrongOverlay}
           />
         );
+      case "QuestionWith4ChoiceswithVoice":
+        return (
+          <QuestionWith4ChoiceswithVoice
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "Select6Choices":
+        return (
+          <Select6Choices
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
+      case "QuestionWith4ChoicesnoImage":
+        return (
+          <QuestionWith4ChoicesnoImage
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
+        );
       default:
         return <div>Unknown question type</div>;
     }
   }
 
   const allAnswered = questions.every((q) =>
-    ["Correct", "Wrong"].includes(answers[`Level1Question${q.id}`])
+    ["Correct", "Wrong"].includes(answers[`2Question${q.id}`])
   );
 
   // In review mode, don't disable buttons
   function isAnswered(q) {
     if (reviewMode) return false;
-    const answer = answers[`Level1Question${q.id}`];
+    const answer = answers[`Level2Question${q.id}`];
     return answer === "Correct" || answer === "Wrong";
   }
 
@@ -246,7 +258,7 @@ function Level1Questions() {
     if (savedReviewAnswered && Object.keys(answers).length > 0) {
       // Find all questions that were wrong
       const wrongQuestions = questions.filter((q) => {
-        const answer = answers[`Level1Question${q.id}`];
+        const answer = answers[`Level2Question${q.id}`];
         return answer === "Wrong";
       });
       setReviewQuestions(wrongQuestions);
@@ -254,17 +266,6 @@ function Level1Questions() {
       setReviewAnswered(JSON.parse(savedReviewAnswered));
       setPage(1);
       setSelectedQuestion(null);
-
-      // Set WrongQuestionsAnswered to false for all wrong questions
-      const userId = localStorage.getItem("linggoUserId");
-      if (userId && wrongQuestions.length > 0) {
-        const userRef = doc(db, "users", userId);
-        const updates = {};
-        wrongQuestions.forEach((q) => {
-          updates[`WrongQuestionsAnswered.Level1Question${q.id}`] = false;
-        });
-        updateDoc(userRef, updates);
-      }
     }
   }, [answers]);
 
@@ -312,7 +313,7 @@ function Level1Questions() {
               </div>
             ) : (
               <div className="flex flex-col items-center flex-1 py-4 overflow-y-auto">
-                <div className="relative w-80 max-w-full px-4 my-5">
+                <div className="relative w-85 max-w-full px-4 my-5">
                   <img
                     src={QuestionsBar}
                     alt="Questions Bar"
@@ -320,7 +321,7 @@ function Level1Questions() {
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-base sm:text-xl font-bold">
-                      Unang Antas - Mga Salita
+                      Pangalawang Antas - Mga Parirala
                     </span>
                   </div>
                 </div>
@@ -332,7 +333,7 @@ function Level1Questions() {
                       className="flex flex-row gap-2 sm:gap-3 items-center justify-center flex-wrap"
                     >
                       {row.map((q) => {
-                        const answer = answers[`Level1Question${q.id}`];
+                        const answer = answers[`Level2Question${q.id}`];
                         let btnColor = "bg-white";
                         let textColor = "text-black";
                         let opacity = "";
@@ -381,24 +382,12 @@ function Level1Questions() {
                         reviewAnswered.includes(q.id)
                       )
                     }
-                    onClick={async () => {
-                      // Set all reviewed wrong questions as answered in Firestore
-                      const userId = localStorage.getItem("linggoUserId");
-                      if (userId && reviewQuestions.length > 0) {
-                        const userRef = doc(db, "users", userId);
-                        const updates = {};
-                        reviewQuestions.forEach((q) => {
-                          updates[
-                            `WrongQuestionsAnswered.Level1Question${q.id}`
-                          ] = true;
-                        });
-                        await updateDoc(userRef, updates);
-                      }
+                    onClick={() => {
                       setReviewMode(false);
                       setReviewQuestions([]);
                       setReviewAnswered([]);
                       localStorage.removeItem("reviewAnswered");
-                      navigate("/level1-finish");
+                      navigate("/level2-finish");
                     }}
                   >
                     Sumunod
@@ -433,4 +422,4 @@ function Level1Questions() {
   );
 }
 
-export default Level1Questions;
+export default Level2Questions;

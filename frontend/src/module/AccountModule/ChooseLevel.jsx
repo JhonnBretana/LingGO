@@ -5,22 +5,51 @@ import PageHeaderLayout from "../components/PageHeaderLayout";
 import StarLocked1 from "/assets/ImageChoices/Starlocked1.png";
 import StarLocked2 from "/assets/ImageChoices/Starlocked2.png";
 import StarLocked3 from "/assets/ImageChoices/Starlocked3.png";
+import StarUnlocked2 from "/assets/ImageChoices/StarUnlocked2.png";
+import Star1Finished from "/assets/ImageChoices/Star1Finished.png";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase.js";
 
 function LevelSelection() {
   const navigate = useNavigate();
+  const [level2Unlocked, setLevel2Unlocked] = useState(false);
+
+  useEffect(() => {
+    const checkLevel1Completion = async () => {
+      const userId = localStorage.getItem("linggoUserId");
+      if (!userId) return;
+      const userRef = doc(db, "users", userId);
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) return;
+      const data = userSnap.data();
+      const wrongQuestionsAnswered = data.WrongQuestionsAnswered || {};
+      // Get all Level1Question keys
+      const level1Keys = Object.keys(wrongQuestionsAnswered).filter((k) =>
+        k.startsWith("Level1Question")
+      );
+      // If all Level1Question keys are true and there is at least one Level1Question
+      if (
+        level1Keys.length > 0 &&
+        level1Keys.every((k) => wrongQuestionsAnswered[k] === true)
+      ) {
+        setLevel2Unlocked(true);
+      }
+    };
+    checkLevel1Completion();
+  }, []);
 
   const levels = [
     {
       number: 1,
       title: "MGA SALITA",
       locked: false,
-      starImage: StarLocked1,
+      starImage: level2Unlocked ? Star1Finished : StarLocked1,
     },
     {
       number: 2,
       title: "MGA PARIRALA",
-      locked: true,
-      starImage: StarLocked2,
+      locked: !level2Unlocked,
+      starImage: level2Unlocked ? StarUnlocked2 : StarLocked2,
     },
     {
       number: 3,
@@ -34,6 +63,8 @@ function LevelSelection() {
     if (!level.locked) {
       if (level.number === 1) {
         navigate("/level-one");
+      } else if (level.number === 2) {
+        navigate("/level-two");
       }
     }
   };

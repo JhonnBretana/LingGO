@@ -21,3 +21,20 @@ export async function recordLevel1Answer(userId, questionId, isCorrect) {
     { merge: true }
   );
 }
+
+export async function recordLevel2Answer(userId, questionId, isCorrect) {
+  const questionField = `Level2Questions.Level2Question${questionId}`;
+  const userRef = doc(db, "users", userId);
+
+  await setDoc(
+    userRef,
+    {
+      Level1Questions: {
+        [`Level2Question${questionId}`]: isCorrect ? "Correct" : "Wrong",
+      },
+    },
+    { merge: true }
+  );
+}
+
+

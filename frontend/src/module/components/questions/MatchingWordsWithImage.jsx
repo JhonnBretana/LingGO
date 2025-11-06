@@ -123,7 +123,7 @@ function MatchingWordsWithImage({
               className="px-4 py-2 bg-[#f2d919] border-3 border-black rounded-xl font-bold"
               onClick={handleSubmit}
             >
-              Submit
+              Ipasa
             </button>
           )}
         </div>

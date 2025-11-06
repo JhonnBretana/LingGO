@@ -37,9 +37,7 @@ function CebuanoMotivation() {
                 "3px 3px 0px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5)",
             }}
           >
-            Bakit mo nais matuto ng Cebuano,
-            <br />
-            kaibigan?
+            Bakit mo nais matuto ng Cebuano, kaibigan?
           </h1>
 
           <div className="flex flex-col items-center gap-2 md:gap-2.5 lg:gap-7 w-full max-w-sm md:max-w-lg lg:max-w-4xl px-2">
