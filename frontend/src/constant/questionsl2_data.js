@@ -31,7 +31,7 @@ const questionsl2 = [
     choices: null,
     correctAnswer: "Magandang Tanghali",
     image: null,
-    voice: "/assets/Voice/CebuanoWords/utan.mp3",
+    voice: "/assets/Voice/TagalogLevel2/magandangtanghali.mp3",
   },
   {
     id: 4,

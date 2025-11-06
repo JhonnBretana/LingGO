@@ -11,52 +11,48 @@ import { db } from "../../firebase.js";
 function LevelOne() {
   const navigate = useNavigate();
 
-  // Helper to check if all questions are answered
-  const isLevel1Complete = () => {
-    const answers = JSON.parse(localStorage.getItem("answers")) || {};
-    return questions.every((q) =>
-      ["Correct", "Wrong"].includes(answers[`Level1Question${q.id}`])
-    );
-  };
-
-  // Helper to check if review is complete
-  const isReviewComplete = () => {
-    const answers = JSON.parse(localStorage.getItem("answers")) || {};
-    const wrongQuestions = questions.filter(
-      (q) => answers[`Level1Question${q.id}`] === "Wrong"
-    );
-    if (wrongQuestions.length === 0) return true;
-    const reviewAnswered =
-      JSON.parse(localStorage.getItem("reviewAnswered")) || [];
-    return wrongQuestions.every((q) => reviewAnswered.includes(q.id));
-  };
-
-  // NEW: Check WrongQuestionsAnswered in Firestore
-  const checkWrongQuestionsAnswered = async () => {
+  const handleArrowClick = async () => {
     const userId = localStorage.getItem("linggoUserId");
-    if (!userId) return false;
+    
+    if (!userId) {
+      navigate("/level1");
+      return;
+    }
+
+    // Fetch fresh data from Firestore
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) return false;
-    const data = userSnap.data();
-    const wrongQuestionsAnswered = data.WrongQuestionsAnswered || {};
-    // Only check for questions that were originally wrong
-    const answers = JSON.parse(localStorage.getItem("answers")) || {};
-    const wrongQuestions = questions.filter(
-      (q) => answers[`Level1Question${q.id}`] === "Wrong"
-    );
-    return wrongQuestions.every(
-      (q) => wrongQuestionsAnswered[`Level1Question${q.id}`] === true
-    );
-  };
+    
+    if (!userSnap.exists()) {
+      navigate("/level1");
+      return;
+    }
 
-  const handleArrowClick = async () => {
-    // Check Firestore for WrongQuestionsAnswered
-    if (await checkWrongQuestionsAnswered()) {
-      navigate("/level1-return");
-    } else if (isLevel1Complete() && isReviewComplete()) {
+    const data = userSnap.data();
+    const level1Questions = data.Level1Questions || {};
+    const level1ReviewCompleted = data.Level1ReviewCompleted || false;
+    
+    // Check if all questions are answered
+    const allQuestionsAnswered = questions.every((q) =>
+      ["Correct", "Wrong"].includes(level1Questions[`Level1Question${q.id}`])
+    );
+    
+    // If not all questions answered, go to quiz
+    if (!allQuestionsAnswered) {
+      navigate("/level1");
+      return;
+    }
+    
+    // Find wrong questions
+    const wrongQuestions = questions.filter(
+      (q) => level1Questions[`Level1Question${q.id}`] === "Wrong"
+    );
+    
+    // If no wrong questions (all correct) OR review completed, proceed to finish
+    if (wrongQuestions.length === 0 || level1ReviewCompleted) {
       navigate("/level1-return");
     } else {
+      // Still have wrong questions that need review
       navigate("/level1");
     }
   };
