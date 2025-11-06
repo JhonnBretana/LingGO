@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../components/BackgroundLayout";
 import ClickBar from "../../assets/clickbar.png";
@@ -9,6 +10,7 @@ import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 
 function CebuanoMotivation() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const saveUserToFirestore = async () => {
     const role = localStorage.getItem("linggoRole");
@@ -55,9 +57,11 @@ function CebuanoMotivation() {
   };
 
   const handleCardClick = async (motivation) => {
-    localStorage.setItem("reason", motivation); // Save reason
-    await saveUserToFirestore(); // Wait for Firestore save
-    navigate("/ready"); // Change "/" to your desired next route
+    if (loading) return; // Prevent double click
+    setLoading(true);
+    localStorage.setItem("reason", motivation);
+    await saveUserToFirestore();
+    navigate("/ready");
   };
 
   return (
@@ -89,11 +93,13 @@ function CebuanoMotivation() {
         <div className="flex flex-col items-center gap-2 md:gap-2.5 lg:gap-7 w-full max-w-sm md:max-w-lg lg:max-w-4xl px-2">
           <button
             onClick={() => handleCardClick("expand-knowledge")}
-            className="relative w-full
-                                   transition-all duration-300 ease-out
-                                   hover:scale-105 hover:-translate-y-1
-                                   active:scale-100 active:translate-y-0
-                                   cursor-pointer group"
+            disabled={loading}
+            className={`relative w-full transition-all duration-300 ease-out
+            hover:scale-105 hover:-translate-y-1
+            active:scale-100 active:translate-y-0
+            cursor-pointer group ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             <img
               src={ClickBar}
@@ -112,15 +118,22 @@ function CebuanoMotivation() {
                 sa Pilipinas.
               </p>
             </div>
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60">
+                <span className="text-black font-bold">Saving...</span>
+              </div>
+            )}
           </button>
 
           <button
             onClick={() => handleCardClick("connect-people")}
-            className="relative w-full
-                                   transition-all duration-300 ease-out
-                                   hover:scale-105 hover:-translate-y-1
-                                   active:scale-100 active:translate-y-0
-                                   cursor-pointer group"
+            disabled={loading}
+            className={`relative w-full transition-all duration-300 ease-out
+            hover:scale-105 hover:-translate-y-1
+            active:scale-100 active:translate-y-0
+            cursor-pointer group ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             <img
               src={ClickBar}
@@ -139,15 +152,22 @@ function CebuanoMotivation() {
                 gaya ng mga kaibigan o kaklase.
               </p>
             </div>
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60">
+                <span className="text-black font-bold">Saving...</span>
+              </div>
+            )}
           </button>
 
           <button
             onClick={() => handleCardClick("communicate-better")}
-            className="relative w-full
-                                   transition-all duration-300 ease-out
-                                   hover:scale-105 hover:-translate-y-1
-                                   active:scale-100 active:translate-y-0
-                                   cursor-pointer group"
+            disabled={loading}
+            className={`relative w-full transition-all duration-300 ease-out
+            hover:scale-105 hover:-translate-y-1
+            active:scale-100 active:translate-y-0
+            cursor-pointer group ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             <img
               src={ClickBar}
@@ -166,6 +186,11 @@ function CebuanoMotivation() {
                 na may mga Cebuano.
               </p>
             </div>
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60">
+                <span className="text-black font-bold">Saving...</span>
+              </div>
+            )}
           </button>
         </div>
       </div>
