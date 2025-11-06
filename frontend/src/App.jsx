@@ -53,6 +53,8 @@ import Voice_Character from "./module/GamePlayLvl1Module/Voice_Character.jsx";
 import Level1 from "./module/Level1Questions.jsx";
 import Level2 from "./module/Level2.Questions.jsx";
 
+import LevelTwo from "./module/AccountModule/LevelTwo.jsx";
+
 import Result from "./module/components/LevelResultPreview.jsx";
 
 import Role from "./module/AccountModule/RoleSelection.jsx";
@@ -84,7 +86,8 @@ function App() {
         <Route path="/signin" element={<SigninPage />} />
         <Route path="/choose-level" element={<ChooseLevel />} />
         <Route path="/level-one" element={<LevelOne />} />
-        <Route path="/level-two" element={<Level2 />} />
+        <Route path="/level2" element={<Level2 />} />
+        <Route path="/level-two" element={<LevelTwo />} />
 
         {/*intro module*/}
         <Route path="/startpage1" element={<StartPage1 />} />
@@ -137,7 +140,10 @@ function App() {
           element={<QuestionWith4ChoiceswithVoice />}
         />
         <Route path="/select-6-choices" element={<Select6Choices />} />
-        <Route path="/question-with-4-choices-no-image" element={<QuestionWith4ChoicesnoImage />} />
+        <Route
+          path="/question-with-4-choices-no-image"
+          element={<QuestionWith4ChoicesnoImage />}
+        />
 
         {/*gameplay module*/}
         <Route path="/voice_slowgame" element={<Voice_SlowGame />} />

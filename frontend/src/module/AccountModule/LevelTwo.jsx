@@ -7,12 +7,13 @@ import Arrow from "/assets/ImageChoices/arrow2.png";
 import questions from "../../constant/questions_data.js";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase.js";
+import StarLevel2 from "/assets/ImageChoices/StarLevelTwo.png";
 
-function LevelOne() {
+function LevelTwo() {
   const navigate = useNavigate();
 
   // Helper to check if all questions are answered
-  const isLevel1Complete = () => {
+  const isLevel2Complete = () => {
     const answers = JSON.parse(localStorage.getItem("answers")) || {};
     return questions.every((q) =>
       ["Correct", "Wrong"].includes(answers[`Level1Question${q.id}`])
@@ -50,15 +51,19 @@ function LevelOne() {
     );
   };
 
+  //   const handleArrowClick = async () => {
+  //     // Check Firestore for WrongQuestionsAnswered
+  //     if (await checkWrongQuestionsAnswered()) {
+  //       navigate("/level1-return");
+  //     } else if (isLevel1Complete() && isReviewComplete()) {
+  //       navigate("/level1-return");
+  //     } else {
+  //       navigate("/level1");
+  //     }
+  //   };
+
   const handleArrowClick = async () => {
-    // Check Firestore for WrongQuestionsAnswered
-    if (await checkWrongQuestionsAnswered()) {
-      navigate("/level1-return");
-    } else if (isLevel1Complete() && isReviewComplete()) {
-      navigate("/level1-return");
-    } else {
-      navigate("/level1");
-    }
+    navigate("/level2");
   };
 
   return (
@@ -68,7 +73,7 @@ function LevelOne() {
         <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
           <div className="relative w-64 sm:w-72 md:w-80 lg:w-96 xl:w-[28rem]">
             <img
-              src={Star}
+              src={StarLevel2}
               alt="Star"
               className="w-full h-full drop-shadow-2xl"
             />
@@ -91,4 +96,4 @@ function LevelOne() {
   );
 }
 
-export default LevelOne;
+export default LevelTwo;

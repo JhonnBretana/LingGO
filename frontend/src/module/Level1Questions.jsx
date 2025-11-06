@@ -17,7 +17,7 @@ import SixChoicesWithVoice from "./components/questions/SixChoicesWithVoice.jsx"
 import FourChoicesWithCharacterAndVoice from "./components/questions/FourChoicesWithCharacterAndVoice.jsx";
 
 import { recordLevel1Answer } from "../utils/recordAnswer.js";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
 import LevelResultPreview from "./components/LevelResultPreview.jsx";
@@ -83,9 +83,27 @@ function Level1Questions() {
     const userId = localStorage.getItem("linggoUserId");
     const showWrongOverlay = !reviewMode;
 
-    const handleCorrectAnswer = () => {
+    // const handleCorrectAnswer = () => {
+    //   if (reviewMode) {
+    //     setReviewAnswered((prev) => [...prev, question.id]);
+    //   } else if (userId) {
+    //     recordLevel1Answer(userId, question.id, true);
+    //     fetchAnswers();
+    //   }
+    //   setSelectedQuestion(null);
+    // };
+
+    const handleCorrectAnswer = async () => {
       if (reviewMode) {
         setReviewAnswered((prev) => [...prev, question.id]);
+        // Only update WrongQuestionsAnswered, do NOT change Level1Questions answer
+        if (userId) {
+          const userRef = doc(db, "users", userId);
+          await updateDoc(userRef, {
+            [`WrongQuestionsAnswered.Level1Question${question.id}`]: true,
+          });
+          fetchAnswers();
+        }
       } else if (userId) {
         recordLevel1Answer(userId, question.id, true);
         fetchAnswers();
@@ -236,6 +254,17 @@ function Level1Questions() {
       setReviewAnswered(JSON.parse(savedReviewAnswered));
       setPage(1);
       setSelectedQuestion(null);
+
+      // Set WrongQuestionsAnswered to false for all wrong questions
+      const userId = localStorage.getItem("linggoUserId");
+      if (userId && wrongQuestions.length > 0) {
+        const userRef = doc(db, "users", userId);
+        const updates = {};
+        wrongQuestions.forEach((q) => {
+          updates[`WrongQuestionsAnswered.Level1Question${q.id}`] = false;
+        });
+        updateDoc(userRef, updates);
+      }
     }
   }, [answers]);
 
@@ -352,7 +381,19 @@ function Level1Questions() {
                         reviewAnswered.includes(q.id)
                       )
                     }
-                    onClick={() => {
+                    onClick={async () => {
+                      // Set all reviewed wrong questions as answered in Firestore
+                      const userId = localStorage.getItem("linggoUserId");
+                      if (userId && reviewQuestions.length > 0) {
+                        const userRef = doc(db, "users", userId);
+                        const updates = {};
+                        reviewQuestions.forEach((q) => {
+                          updates[
+                            `WrongQuestionsAnswered.Level1Question${q.id}`
+                          ] = true;
+                        });
+                        await updateDoc(userRef, updates);
+                      }
                       setReviewMode(false);
                       setReviewQuestions([]);
                       setReviewAnswered([]);

@@ -195,7 +195,7 @@ function Level2Questions() {
             showWrongOverlay={showWrongOverlay}
           />
         );
-         case "QuestionWith4ChoiceswithVoice":
+      case "QuestionWith4ChoiceswithVoice":
         return (
           <QuestionWith4ChoiceswithVoice
             question={question}
@@ -204,7 +204,7 @@ function Level2Questions() {
             showWrongOverlay={showWrongOverlay}
           />
         );
-        case "Select6Choices":
+      case "Select6Choices":
         return (
           <Select6Choices
             question={question}
@@ -213,14 +213,14 @@ function Level2Questions() {
             showWrongOverlay={showWrongOverlay}
           />
         );
-        case "QuestionWith4ChoicesnoImage":
+      case "QuestionWith4ChoicesnoImage":
         return (
           <QuestionWith4ChoicesnoImage
-          question={question}
-          onCorrectAnswer={handleCorrectAnswer}
-          onWrongAnswer={handleWrongAnswer}
-          showWrongOverlay={showWrongOverlay}
-        />
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
+          />
         );
       default:
         return <div>Unknown question type</div>;
@@ -313,7 +313,7 @@ function Level2Questions() {
               </div>
             ) : (
               <div className="flex flex-col items-center flex-1 py-4 overflow-y-auto">
-                <div className="relative w-80 max-w-full px-4 my-5">
+                <div className="relative w-85 max-w-full px-4 my-5">
                   <img
                     src={QuestionsBar}
                     alt="Questions Bar"
@@ -321,7 +321,7 @@ function Level2Questions() {
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-base sm:text-xl font-bold">
-                      Unang Antas - Mga Salita
+                      Pangalawang Antas - Mga Parirala
                     </span>
                   </div>
                 </div>
