@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import BackgroundLayout from "../components/BackgroundLayout";
 import Logo from "../../assets/LingGO Logo.png";
 import PageHeaderLayout from "../components/PageHeaderLayout";
 import questions from "../../constant/questions_data.js";
+import questionsLevel2 from "../../constant/questionsl2_data.js";
 
 function Level1Finish() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
+  
+  // Get which level to display from navigation state or default to level 1
+  const currentLevel = location.state?.level || 1;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -20,8 +25,15 @@ function Level1Finish() {
         try {
           const userDoc = await getDoc(doc(db, "users", userId));
           if (userDoc.exists()) {
-            setUser(userDoc.data());
-            setAnswers(userDoc.data().Level1Questions || {});
+            const userData = userDoc.data();
+            setUser(userData);
+            
+            // Load answers based on current level
+            if (currentLevel === 1) {
+              setAnswers(userData.Level1Questions || {});
+            } else if (currentLevel === 2) {
+              setAnswers(userData.Level2Questions || {});
+            }
           }
         } catch (error) {
           console.error("Error fetching user:", error);
@@ -30,7 +42,7 @@ function Level1Finish() {
       setLoading(false);
     };
     fetchUser();
-  }, []);
+  }, [currentLevel]);
 
   useEffect(() => {
     const playLevelCompleteSound = () => {
@@ -40,7 +52,11 @@ function Level1Finish() {
     playLevelCompleteSound();
   }, []);
 
-  const totalPoints = questions.reduce((sum, q) => {
+  // Select questions and prefix based on current level
+  const questionsArray = currentLevel === 1 ? questions : questionsLevel2;
+  const questionPrefix = currentLevel === 1 ? "Level1" : "Level2";
+
+  const totalPoints = questionsArray.reduce((sum, q) => {
     if (
       q.type === "MatchingWordsWithWords" ||
       q.type === "MatchingWordsWithImage"
@@ -50,8 +66,8 @@ function Level1Finish() {
     return sum + 1;
   }, 0);
 
-  const earnedPoints = questions.reduce((sum, q) => {
-    const answer = answers[`Level1Question${q.id}`];
+  const earnedPoints = questionsArray.reduce((sum, q) => {
+    const answer = answers[`${questionPrefix}Question${q.id}`];
     if (answer === "Correct") {
       if (
         q.type === "MatchingWordsWithWords" ||
@@ -65,6 +81,10 @@ function Level1Finish() {
   }, 0);
 
   const percentage = ((earnedPoints / totalPoints) * 100).toFixed(1);
+
+  // Dynamic title and subtitle based on level
+  const levelTitle = currentLevel === 1 ? "Unang Antas" : "Ikalawang Antas";
+  const levelSubtitle = currentLevel === 1 ? "MGA SALITA" : "MGA PARIRALA";
 
   const handleLogout = () => {
     localStorage.clear();
@@ -91,15 +111,23 @@ function Level1Finish() {
         <PageHeaderLayout />
         <div className="flex-1 flex flex-col items-center justify-center text-center px-3 py-8">
           <div className="max-w-2xl mx-auto w-full px-4">
-            {/* Title with glow effect */}
+            {/* Title with glow effect - Dynamic based on level */}
             <h2 
-              className="text-5xl md:text-6xl text-white font-black mb-8 text-center animate-pulse" 
+              className="text-5xl md:text-6xl text-white font-black mb-4 text-center animate-pulse" 
               style={{
                 textShadow: "0 0 20px rgba(242, 217, 25, 0.8), 3px 3px 8px rgba(0,0,0,0.9), 0 0 40px rgba(242, 217, 25, 0.4)"
               }}
             >
-              Unang Antas
+              {levelTitle}
             </h2>
+            
+            {/* Subtitle */}
+            <p className="text-2xl md:text-3xl text-white font-bold mb-8 text-center tracking-wide"
+               style={{
+                 textShadow: "2px 2px 4px rgba(0,0,0,0.8)"
+               }}>
+              ({levelSubtitle})
+            </p>
 
             {/* Enhanced Score Box with gradient and glow */}
             <div 

@@ -120,7 +120,7 @@ function CebuanoMotivation() {
             </div>
             {loading && (
               <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60">
-                <span className="text-black font-bold">Saving...</span>
+                <span className="text-black font-bold">Sine-save ang account...</span>
               </div>
             )}
           </button>
