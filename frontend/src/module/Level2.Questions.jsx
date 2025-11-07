@@ -20,10 +20,10 @@ import Select6Choices from "./components/questions/Select6Choices.jsx";
 import QuestionWith4ChoicesnoImage from "./components/questions/QuestionWith4ChoicesnoImage.jsx";
 
 import { recordLevel2Answer } from "../utils/recordAnswer.js";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
-import LevelResultPreview from "./components/LevelResultPreview.jsx";
+import Level2ResultPreview from "./components/Level2ResultPreview.jsx";
 
 function groupIntoRows(arr, itemsPerRow = 2) {
   const rows = [];
@@ -41,7 +41,9 @@ function Level2Questions() {
   const [answers, setAnswers] = useState({});
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewQuestions, setReviewQuestions] = useState([]);
+  const [reviewAnswered, setReviewAnswered] = useState([]);
   const navigate = useNavigate();
+
   // Use either all questions or only wrong ones in review mode
   const displayQuestions = reviewMode ? reviewQuestions : questions;
   const totalPages = Math.ceil(displayQuestions.length / QUESTIONS_PER_PAGE);
@@ -49,19 +51,43 @@ function Level2Questions() {
   const endIdx = startIdx + QUESTIONS_PER_PAGE;
   const paginatedQuestions = displayQuestions.slice(startIdx, endIdx);
   const questionRows = groupIntoRows(paginatedQuestions, 2);
-  const [reviewAnswered, setReviewAnswered] = useState([]);
 
+  // Initial load - fetch data from Firestore
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
     if (!userId) return;
-    const fetchAnswers = async () => {
+
+    const fetchData = async () => {
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
-        setAnswers(userSnap.data().Level2Questions || {});
+        const userData = userSnap.data();
+        const level2Answers = userData.Level2Questions || {};
+        const wrongAnswered = userData.WrongQuestionsAnsweredLevel2 || {};
+
+        setAnswers(level2Answers);
+
+        // Check if there are wrong questions to review
+        const wrongQuestions = questions.filter((q) => {
+          const answer = level2Answers[`Level2Question${q.id}`];
+          return answer === "Wrong";
+        });
+
+        if (wrongQuestions.length > 0) {
+          // Load which ones have already been answered in review
+          const alreadyAnswered = wrongQuestions
+            .filter((q) => wrongAnswered[`Level2Question${q.id}`] === true)
+            .map((q) => q.id);
+
+          setReviewQuestions(wrongQuestions);
+          setReviewAnswered(alreadyAnswered);
+          setReviewMode(true);
+          setPage(1);
+        }
       }
     };
-    fetchAnswers();
+
+    fetchData();
   }, []);
 
   async function fetchAnswers() {
@@ -70,7 +96,8 @@ function Level2Questions() {
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
-      setAnswers(userSnap.data().Level2Questions || {});
+      const userData = userSnap.data();
+      setAnswers(userData.Level2Questions || {});
     }
   }
 
@@ -86,9 +113,17 @@ function Level2Questions() {
     const userId = localStorage.getItem("linggoUserId");
     const showWrongOverlay = !reviewMode;
 
-    const handleCorrectAnswer = () => {
+    const handleCorrectAnswer = async () => {
       if (reviewMode) {
         setReviewAnswered((prev) => [...prev, question.id]);
+        // Save progress immediately to Firestore
+        if (userId) {
+          const userRef = doc(db, "users", userId);
+          await updateDoc(userRef, {
+            [`WrongQuestionsAnsweredLevel2.Level2Question${question.id}`]: true,
+          });
+          fetchAnswers();
+        }
       } else if (userId) {
         recordLevel2Answer(userId, question.id, true);
         fetchAnswers();
@@ -228,8 +263,37 @@ function Level2Questions() {
   }
 
   const allAnswered = questions.every((q) =>
-    ["Correct", "Wrong"].includes(answers[`2Question${q.id}`])
+    ["Correct", "Wrong"].includes(answers[`Level2Question${q.id}`])
   );
+
+  // Save level2Score to Firestore when all questions are answered
+  useEffect(() => {
+    if (allAnswered && !reviewMode) {
+      // Calculate earned points (same as Level2ResultPreview)
+      const earnedPoints = questions.reduce((sum, q) => {
+        const answer = answers[`Level2Question${q.id}`];
+        if (answer === "Correct") {
+          if (
+            q.type === "MatchingWordsWithWords" ||
+            q.type === "MatchingWordsWithImage"
+          ) {
+            return sum + q.correctAnswer.length;
+          }
+          return sum + 1;
+        }
+        return sum;
+      }, 0);
+
+      // Save to Firestore under Score.level2Score
+      const userId = localStorage.getItem("linggoUserId");
+      if (userId) {
+        const userRef = doc(db, "users", userId);
+        updateDoc(userRef, {
+          "Score.level2Score": earnedPoints,
+        });
+      }
+    }
+  }, [allAnswered, reviewMode, answers, questions]);
 
   // In review mode, don't disable buttons
   function isAnswered(q) {
@@ -238,37 +302,6 @@ function Level2Questions() {
     return answer === "Correct" || answer === "Wrong";
   }
 
-  // Save reviewAnswered to localStorage whenever it changes
-  useEffect(() => {
-    if (reviewMode) {
-      localStorage.setItem("reviewAnswered", JSON.stringify(reviewAnswered));
-    }
-  }, [reviewAnswered, reviewMode]);
-
-  useEffect(() => {
-    if (reviewMode) {
-      const saved = localStorage.getItem("reviewAnswered");
-      if (saved) setReviewAnswered(JSON.parse(saved));
-    }
-  }, [reviewMode]);
-
-  useEffect(() => {
-    // Only run when answers are loaded
-    const savedReviewAnswered = localStorage.getItem("reviewAnswered");
-    if (savedReviewAnswered && Object.keys(answers).length > 0) {
-      // Find all questions that were wrong
-      const wrongQuestions = questions.filter((q) => {
-        const answer = answers[`Level2Question${q.id}`];
-        return answer === "Wrong";
-      });
-      setReviewQuestions(wrongQuestions);
-      setReviewMode(true);
-      setReviewAnswered(JSON.parse(savedReviewAnswered));
-      setPage(1);
-      setSelectedQuestion(null);
-    }
-  }, [answers]);
-
   return (
     <BackgroundLayout>
       <div className="w-full h-screen flex flex-col overflow-hidden">
@@ -276,7 +309,7 @@ function Level2Questions() {
 
         {allAnswered && !reviewMode ? (
           <div className="flex-1 overflow-y-auto">
-            <LevelResultPreview
+            <Level2ResultPreview
               onReviewWrongQuestions={handleReviewWrongQuestions}
             />
           </div>
@@ -306,7 +339,6 @@ function Level2Questions() {
               </div>
             )}
 
-            {/* Wrong Questions Component */}
             {selectedQuestion ? (
               <div className="flex-1 overflow-auto">
                 {renderQuestionComponent(selectedQuestion)}
@@ -382,12 +414,30 @@ function Level2Questions() {
                         reviewAnswered.includes(q.id)
                       )
                     }
-                    onClick={() => {
+                    onClick={async () => {
+                      const userId = localStorage.getItem("linggoUserId");
+                      if (userId && reviewQuestions.length > 0) {
+                        const userRef = doc(db, "users", userId);
+                        const updates = {};
+
+                        // Ensure all questions are marked as answered
+                        reviewQuestions.forEach((q) => {
+                          updates[
+                            `WrongQuestionsAnsweredLevel2.Level2Question${q.id}`
+                          ] = true;
+                        });
+
+                        // Mark the entire review as completed
+                        updates["Level2ReviewCompleted"] = true;
+
+                        await updateDoc(userRef, updates);
+                      }
+
                       setReviewMode(false);
                       setReviewQuestions([]);
                       setReviewAnswered([]);
-                      localStorage.removeItem("reviewAnswered");
-                      navigate("/level2-finish");
+                      localStorage.removeItem("reviewAnsweredLevel2");
+                      navigate("/level1-finish");
                     }}
                   >
                     Sumunod

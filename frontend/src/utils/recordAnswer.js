@@ -29,7 +29,7 @@ export async function recordLevel2Answer(userId, questionId, isCorrect) {
   await setDoc(
     userRef,
     {
-      Level1Questions: {
+      Level2Questions: {
         [`Level2Question${questionId}`]: isCorrect ? "Correct" : "Wrong",
       },
     },
