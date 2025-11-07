@@ -303,7 +303,7 @@ const questions = [
     choices: null,
     correctAnswer: "ulam",
     image: null,
-    voice: "/assets/Voice/CebuanoWords/ulam.mp3",
+    voice: "/assets/Voice/Words/ulam.mp3",
   },
   {
     id: 20,
