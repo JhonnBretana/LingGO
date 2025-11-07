@@ -157,14 +157,14 @@ function SpeechMicWithVoice({
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <button onClick={handlePlay} disabled={!question?.voice}>
-            <Volume2 className="text-white" size={40} />
-          </button>
-          <p className="text-2xl sm:text-4xl font-semibold text-white">
-            {question?.question}
-          </p>
-        </div>
+       <div className="flex items-center gap-2 justify-center w-full">
+  <button onClick={handlePlay} disabled={!question?.voice} className="flex-shrink-0">
+    <Volume2 className="text-white" size={40} />
+  </button>
+  <p className="text-2xl sm:text-4xl font-semibold text-white text-center">
+    {question?.question}
+  </p>
+</div>
 
         <div className="flex flex-col items-center">
           <img

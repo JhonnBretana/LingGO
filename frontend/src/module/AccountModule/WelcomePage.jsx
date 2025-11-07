@@ -5,6 +5,7 @@ import { db } from "../../firebase";
 import BackgroundLayout from "../components/BackgroundLayout";
 import Logo from "../../assets/LingGO Logo.png";
 import TextBubble from "../../assets/Text Bubble.png";
+import questions from "../../constant/questions_data.js";
 
 function WelcomePage() {
   const navigate = useNavigate();
@@ -30,6 +31,52 @@ function WelcomePage() {
   const getDisplayName = () => {
     if (!user) return "JUAN";
     return user["Unang Pangalan"] || user.Username || "JUAN";
+  };
+
+  const handleContinue = async () => {
+    const userId = localStorage.getItem("linggoUserId");
+    
+    if (!userId) {
+      navigate("/choose-level");
+      return;
+    }
+
+    // Fetch fresh data from Firestore
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    
+    if (!userSnap.exists()) {
+      navigate("/choose-level");
+      return;
+    }
+
+    const data = userSnap.data();
+    const level1Questions = data.Level1Questions || {};
+    const level1ReviewCompleted = data.Level1ReviewCompleted || false;
+    
+    // Check if all questions are answered
+    const allQuestionsAnswered = questions.every((q) =>
+      ["Correct", "Wrong"].includes(level1Questions[`Level1Question${q.id}`])
+    );
+    
+    // If not all questions answered, go to choose-level
+    if (!allQuestionsAnswered) {
+      navigate("/choose-level");
+      return;
+    }
+    
+    // Find wrong questions
+    const wrongQuestions = questions.filter(
+      (q) => level1Questions[`Level1Question${q.id}`] === "Wrong"
+    );
+    
+    // If no wrong questions (all correct) OR review completed, proceed to finish-choice
+    if (wrongQuestions.length === 0 || level1ReviewCompleted) {
+      navigate("/level1-finish-choice");
+    } else {
+      // Still have wrong questions that need review
+      navigate("/choose-level");
+    }
   };
 
   return (
@@ -74,7 +121,7 @@ function WelcomePage() {
         </div>
         <div className="mt-5 pt-5">
           <button
-            onClick={() => navigate("/choose-level")}
+            onClick={handleContinue}
             className="w-40 bg-white text-black text-lg font-bold py-2 px-4 rounded-2xl border-2 border-black mt-5 hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
           >
             MAGPATULOY

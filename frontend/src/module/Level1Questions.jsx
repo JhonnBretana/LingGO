@@ -38,7 +38,9 @@ function Level1Questions() {
   const [answers, setAnswers] = useState({});
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewQuestions, setReviewQuestions] = useState([]);
+  const [reviewAnswered, setReviewAnswered] = useState([]);
   const navigate = useNavigate();
+
   // Use either all questions or only wrong ones in review mode
   const displayQuestions = reviewMode ? reviewQuestions : questions;
   const totalPages = Math.ceil(displayQuestions.length / QUESTIONS_PER_PAGE);
@@ -46,19 +48,43 @@ function Level1Questions() {
   const endIdx = startIdx + QUESTIONS_PER_PAGE;
   const paginatedQuestions = displayQuestions.slice(startIdx, endIdx);
   const questionRows = groupIntoRows(paginatedQuestions, 2);
-  const [reviewAnswered, setReviewAnswered] = useState([]);
 
+  // Initial load - fetch data from Firestore
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
     if (!userId) return;
-    const fetchAnswers = async () => {
+
+    const fetchData = async () => {
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
-        setAnswers(userSnap.data().Level1Questions || {});
+        const userData = userSnap.data();
+        const level1Answers = userData.Level1Questions || {};
+        const wrongAnswered = userData.WrongQuestionsAnswered || {};
+
+        setAnswers(level1Answers);
+
+        // Check if there are wrong questions to review
+        const wrongQuestions = questions.filter((q) => {
+          const answer = level1Answers[`Level1Question${q.id}`];
+          return answer === "Wrong";
+        });
+
+        if (wrongQuestions.length > 0) {
+          // Load which ones have already been answered in review
+          const alreadyAnswered = wrongQuestions
+            .filter((q) => wrongAnswered[`Level1Question${q.id}`] === true)
+            .map((q) => q.id);
+
+          setReviewQuestions(wrongQuestions);
+          setReviewAnswered(alreadyAnswered);
+          setReviewMode(true);
+          setPage(1);
+        }
       }
     };
-    fetchAnswers();
+
+    fetchData();
   }, []);
 
   async function fetchAnswers() {
@@ -67,7 +93,8 @@ function Level1Questions() {
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
-      setAnswers(userSnap.data().Level1Questions || {});
+      const userData = userSnap.data();
+      setAnswers(userData.Level1Questions || {});
     }
   }
 
@@ -83,20 +110,10 @@ function Level1Questions() {
     const userId = localStorage.getItem("linggoUserId");
     const showWrongOverlay = !reviewMode;
 
-    // const handleCorrectAnswer = () => {
-    //   if (reviewMode) {
-    //     setReviewAnswered((prev) => [...prev, question.id]);
-    //   } else if (userId) {
-    //     recordLevel1Answer(userId, question.id, true);
-    //     fetchAnswers();
-    //   }
-    //   setSelectedQuestion(null);
-    // };
-
     const handleCorrectAnswer = async () => {
       if (reviewMode) {
         setReviewAnswered((prev) => [...prev, question.id]);
-        // Only update WrongQuestionsAnswered, do NOT change Level1Questions answer
+        // Save progress immediately to Firestore
         if (userId) {
           const userRef = doc(db, "users", userId);
           await updateDoc(userRef, {
@@ -219,54 +236,41 @@ function Level1Questions() {
     ["Correct", "Wrong"].includes(answers[`Level1Question${q.id}`])
   );
 
+  // Add this useEffect after the allAnswered definition
+  useEffect(() => {
+  if (allAnswered && !reviewMode) {
+    // Calculate earned points (same as LevelResultPreview)
+    const earnedPoints = questions.reduce((sum, q) => {
+      const answer = answers[`Level1Question${q.id}`];
+      if (answer === "Correct") {
+        if (
+          q.type === "MatchingWordsWithWords" ||
+          q.type === "MatchingWordsWithImage"
+        ) {
+          return sum + q.correctAnswer.length;
+        }
+        return sum + 1;
+      }
+      return sum;
+    }, 0);
+
+    // Save to Firestore under Score.level1Score
+    const userId = localStorage.getItem("linggoUserId");
+    if (userId) {
+      const userRef = doc(db, "users", userId);
+      updateDoc(userRef, {
+        "Score.level1Score": earnedPoints,
+      });
+    }
+  }
+}, [allAnswered, reviewMode, answers, questions]);
+
   // In review mode, don't disable buttons
   function isAnswered(q) {
     if (reviewMode) return false;
     const answer = answers[`Level1Question${q.id}`];
     return answer === "Correct" || answer === "Wrong";
   }
-
-  // Save reviewAnswered to localStorage whenever it changes
-  useEffect(() => {
-    if (reviewMode) {
-      localStorage.setItem("reviewAnswered", JSON.stringify(reviewAnswered));
-    }
-  }, [reviewAnswered, reviewMode]);
-
-  useEffect(() => {
-    if (reviewMode) {
-      const saved = localStorage.getItem("reviewAnswered");
-      if (saved) setReviewAnswered(JSON.parse(saved));
-    }
-  }, [reviewMode]);
-
-  useEffect(() => {
-    // Only run when answers are loaded
-    const savedReviewAnswered = localStorage.getItem("reviewAnswered");
-    if (savedReviewAnswered && Object.keys(answers).length > 0) {
-      // Find all questions that were wrong
-      const wrongQuestions = questions.filter((q) => {
-        const answer = answers[`Level1Question${q.id}`];
-        return answer === "Wrong";
-      });
-      setReviewQuestions(wrongQuestions);
-      setReviewMode(true);
-      setReviewAnswered(JSON.parse(savedReviewAnswered));
-      setPage(1);
-      setSelectedQuestion(null);
-
-      // Set WrongQuestionsAnswered to false for all wrong questions
-      const userId = localStorage.getItem("linggoUserId");
-      if (userId && wrongQuestions.length > 0) {
-        const userRef = doc(db, "users", userId);
-        const updates = {};
-        wrongQuestions.forEach((q) => {
-          updates[`WrongQuestionsAnswered.Level1Question${q.id}`] = false;
-        });
-        updateDoc(userRef, updates);
-      }
-    }
-  }, [answers]);
 
   return (
     <BackgroundLayout>
@@ -305,7 +309,6 @@ function Level1Questions() {
               </div>
             )}
 
-            {/* Wrong Questions Component */}
             {selectedQuestion ? (
               <div className="flex-1 overflow-auto">
                 {renderQuestionComponent(selectedQuestion)}
@@ -382,18 +385,24 @@ function Level1Questions() {
                       )
                     }
                     onClick={async () => {
-                      // Set all reviewed wrong questions as answered in Firestore
                       const userId = localStorage.getItem("linggoUserId");
                       if (userId && reviewQuestions.length > 0) {
                         const userRef = doc(db, "users", userId);
                         const updates = {};
+
+                        // Ensure all questions are marked as answered
                         reviewQuestions.forEach((q) => {
                           updates[
                             `WrongQuestionsAnswered.Level1Question${q.id}`
                           ] = true;
                         });
+
+                        // Mark the entire review as completed
+                        updates["Level1ReviewCompleted"] = true;
+
                         await updateDoc(userRef, updates);
                       }
+
                       setReviewMode(false);
                       setReviewQuestions([]);
                       setReviewAnswered([]);

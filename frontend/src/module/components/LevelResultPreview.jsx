@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import questions from "../../constant/questions_data.js";
@@ -9,6 +10,7 @@ import BackgroundLayout from "../components/BackgroundLayout.jsx";
 function LevelResultPreview({ onReviewWrongQuestions }) {
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
@@ -57,6 +59,7 @@ function LevelResultPreview({ onReviewWrongQuestions }) {
   );
 
   const percentage = ((earnedPoints / totalPoints) * 100).toFixed(1);
+  const isPerfectScore = wrongQuestions.length === 0;
 
   return (
     <div className="overflow-hidden w-full h-screen flex flex-col">
@@ -79,15 +82,31 @@ function LevelResultPreview({ onReviewWrongQuestions }) {
               <p className="text-2xl shadow-black text-white text-shadow-2xl font-bold my-2">
                 Magaling kaibigan!
               </p>
-              <p className="text-xl shadow-black text-white text-shadow-2xl font-medium my-2">
-                Ngayon balikan natin ang ilang katanungan.  
-              </p>
-              <button
-                className="w-35 bg-white text-black text-lg font-bold mt-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
-                onClick={() => onReviewWrongQuestions(wrongQuestions)}
-              >
-                Magpatuloy
-              </button>
+              {isPerfectScore ? (
+                <>
+                  <p className="text-xl shadow-black text-white text-shadow-2xl font-medium my-2">
+                    Perfect ka! Tapos na ang Level 1!
+                  </p>
+                  <button
+                    className="w-35 bg-white text-black text-lg font-bold mt-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
+                    onClick={() => navigate("/level1-finish")}
+                  >
+                    Magpatuloy
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p className="text-xl shadow-black text-white text-shadow-2xl font-medium my-2">
+                    Ngayon balikan natin ang ilang katanungan.
+                  </p>
+                  <button
+                    className="w-35 bg-white text-black text-lg font-bold mt-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
+                    onClick={() => onReviewWrongQuestions(wrongQuestions)}
+                  >
+                    Magpatuloy
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

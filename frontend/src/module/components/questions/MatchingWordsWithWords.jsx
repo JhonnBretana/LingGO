@@ -17,7 +17,7 @@ function MatchingWordsWithWords({
   const [lives, setLives] = useState(3);
   const [showBombModal, setShowBombModal] = useState(false);
   const [showTryAgainModal, setShowTryAgainModal] = useState(false);
-  const [pendingSelection, setPendingSelection] = useState(null); // Track which column was clicked first
+  const [pendingSelection, setPendingSelection] = useState(null);
   const videoRef = useRef(null);
 
   const colors = [
@@ -29,7 +29,6 @@ function MatchingWordsWithWords({
     { bg: "bg-pink-400", border: "border-pink-600" },
   ];
 
-  // Play video when bomb modal opens
   useEffect(() => {
     if (showBombModal && videoRef.current) {
       videoRef.current.currentTime = 0;
@@ -54,25 +53,20 @@ function MatchingWordsWithWords({
   const handleClick = (word, side) => {
     const existingMatch = matches.find((m) => m[side] === word);
 
-    // If clicking on an already matched word
     if (existingMatch) {
-      // Only allow canceling if it's a pending selection (incomplete pair)
       if (pendingSelection && pendingSelection.match === existingMatch) {
         setMatches(matches.filter((m) => m !== existingMatch));
         setPendingSelection(null);
         return;
       }
 
-      // If it's a complete pair, check if it's correct
       if (existingMatch.left && existingMatch.right) {
         const isCorrect = checkPairCorrectness(existingMatch.left, existingMatch.right);
         
-        // Don't allow unselecting correct pairs
         if (isCorrect) {
           return;
         }
         
-        // Allow unselecting wrong pairs
         const updatedMatches = matches
           .map((m) => (m === existingMatch ? { ...m, [side]: null } : m))
           .filter((m) => m.left || m.right);
@@ -81,20 +75,16 @@ function MatchingWordsWithWords({
         return;
       }
 
-      // If it's an incomplete pair that's not pending, remove it
       setMatches(matches.filter((m) => m !== existingMatch));
       setPendingSelection(null);
       return;
     }
 
-    // Check if there's a pending selection
     if (pendingSelection) {
-      // Prevent clicking the same column twice
       if (pendingSelection.side === side) {
-        return; // Do nothing if clicking the same column
+        return;
       }
 
-      // Complete the match
       const updatedMatch = { 
         ...pendingSelection.match, 
         [side]: word 
@@ -106,14 +96,12 @@ function MatchingWordsWithWords({
       );
 
       if (isCorrectPair) {
-        // Correct pair - keep the color
         const updatedMatches = matches.map((m) =>
           m === pendingSelection.match ? updatedMatch : m
         );
         setMatches(updatedMatches);
         setPendingSelection(null);
 
-        // Check if all pairs are matched correctly
         const allMatched = updatedMatches.length === question.choices.length;
         if (allMatched) {
           setTimeout(() => {
@@ -121,12 +109,10 @@ function MatchingWordsWithWords({
           }, 500);
         }
       } else {
-        // Wrong pair - show bomb modal and reduce life
         setShowBombModal(true);
         const newLives = lives - 1;
         setLives(newLives);
 
-        // Keep the wrong match so user can try again
         const updatedMatches = matches.map((m) =>
           m === pendingSelection.match ? updatedMatch : m
         );
@@ -134,7 +120,6 @@ function MatchingWordsWithWords({
         setPendingSelection(null);
       }
     } else {
-      // Start a new match
       const usedColors = matches.length;
       const nextColor = colors[usedColors % colors.length];
       const newMatch = {
@@ -169,20 +154,16 @@ function MatchingWordsWithWords({
 
   const handleCloseBombModal = () => {
     setShowBombModal(false);
-    // If no lives left, show wrong answer modal
     if (lives === 0) {
       if (showWrongOverlay) {
         setShowWrong(true);
       } else {
-        // In review mode, show Try Again modal and DO NOT exit
         setShowTryAgainModal(true);
         setMatches([]);
         setLives(3);
         setPendingSelection(null);
-        // Do NOT call onWrongAnswer();
       }
     } else {
-      // Keep only correct pairs, remove wrong/incomplete matches
       const validMatches = matches.filter((m) => {
         if (m.left && m.right) {
           return checkPairCorrectness(m.left, m.right);
@@ -196,8 +177,10 @@ function MatchingWordsWithWords({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-start px-4 pt-2 gap-4 overflow-hidden h-full">
-        <div className="relative w-full max-w-[280px] sm:max-w-xs">
+      {/* CHANGED: Added overflow-y-auto, max-h-screen, and pb-6 for scrolling */}
+      <div className="flex flex-col items-center justify-start px-4 pt-2 gap-4 h-full max-h-screen overflow-y-auto pb-6">
+        {/* ADDED: flex-shrink-0 to prevent header from shrinking */}
+        <div className="relative w-full max-w-[280px] sm:max-w-xs flex-shrink-0">
           <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
           <div className="absolute inset-0 flex items-center justify-center px-2">
             <span className="text-base sm:text-xl font-semibold text-center">
@@ -206,8 +189,8 @@ function MatchingWordsWithWords({
           </div>
         </div>
 
-        {/* Lives Display */}
-        <div className="flex gap-2 items-center">
+        {/* ADDED: flex-shrink-0 to lives display */}
+        <div className="flex gap-2 items-center flex-shrink-0">
           {[1, 2, 3].map((lifeNum) => (
             <img
               key={lifeNum}
@@ -220,7 +203,8 @@ function MatchingWordsWithWords({
           ))}
         </div>
 
-        <div className="flex flex-row gap-4 sm:gap-6">
+        {/* ADDED: flex-shrink-0 to the columns container */}
+        <div className="flex flex-row gap-4 sm:gap-6 flex-shrink-0">
           {/* Column 1 with Indicator */}
           <div className="flex flex-col gap-2.5 items-center justify-center">
             <div className="mb-1 px-5 py-2 bg-gradient-to-br from-blue-500 via-blue-400 to-orange-300 text-white font-bold rounded-full text-sm sm:text-base shadow-lg border border-white/20">
@@ -233,7 +217,7 @@ function MatchingWordsWithWords({
               return (
                 <button
                   key={choice.word1}
-                  className={`w-36 sm:w-40 min-h-[56px] flex items-center justify-center text-center text-sm sm:text-base font-bold py-3 px-4 rounded-2xl border-4 shadow-lg transition-all duration-200 ${
+                  className={`w-36 sm:w-40 h-16 sm:h-20 flex items-center justify-center text-center text-sm sm:text-base font-bold py-3 px-4 rounded-2xl border-4 shadow-lg transition-all duration-200 leading-tight ${
                     color
                       ? `${color.bg} ${color.border} scale-105`
                       : "bg-white border-gray-200 hover:border-blue-400"
@@ -249,7 +233,7 @@ function MatchingWordsWithWords({
                   onClick={() => handleClick(choice.word1, "left")}
                   disabled={isDisabled && !isPending}
                 >
-                  {choice.word1}
+                  <span className="line-clamp-2">{choice.word1}</span>
                 </button>
               );
             })}
@@ -267,7 +251,7 @@ function MatchingWordsWithWords({
               return (
                 <button
                   key={choice.word2}
-                  className={`w-36 sm:w-40 min-h-[56px] text-center text-sm sm:text-base font-bold py-3 px-4 rounded-2xl border-4 shadow-lg transition-all duration-200 ${
+                  className={`w-36 sm:w-40 h-16 sm:h-20 flex items-center justify-center text-center text-sm sm:text-base font-bold py-3 px-4 rounded-2xl border-4 shadow-lg transition-all duration-200 leading-tight ${
                     color
                       ? `${color.bg} ${color.border} scale-105`
                       : "bg-white border-gray-200 hover:border-red-400"
@@ -283,7 +267,7 @@ function MatchingWordsWithWords({
                   onClick={() => handleClick(choice.word2, "right")}
                   disabled={isDisabled && !isPending}
                 >
-                  {choice.word2}
+                  <span className="line-clamp-2">{choice.word2}</span>
                 </button>
               );
             })}

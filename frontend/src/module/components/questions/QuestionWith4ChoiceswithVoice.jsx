@@ -78,9 +78,14 @@ function QuestionWith4ChoiceswithVoice({
     );
   };
 
+  // Function to determine if text is long (will likely wrap to 2 lines)
+  const isLongText = (text) => {
+    return text && text.length > 18; // Adjust threshold as needed
+  };
+
   return (
     <>
-      <div className="flex flex-col items-center justify-start h-screen overflow-hidden px-4 pt-4 gap-4">
+      <div className="flex flex-col items-center justify-start h-full max-h-screen overflow-y-auto px-4 pt-4 gap-4 pb-6">
         {/* Voice Button and Question Text */}
         <div className="flex items-center gap-2 sm:gap-4">
           <button
@@ -128,7 +133,20 @@ function QuestionWith4ChoiceswithVoice({
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                <div className="w-full text-center shrink-0 text-[10px] whitespace-nowrap overflow-hidden text-ellipsis px-1">
+                <div 
+                  className={`w-full text-center shrink-0 px-1 leading-tight ${
+                    isLongText(choice.value) 
+                      ? 'text-[8px]' 
+                      : 'text-[10px]'
+                  }`}
+                  style={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {choice.value}
                 </div>
               </button>
@@ -153,7 +171,20 @@ function QuestionWith4ChoiceswithVoice({
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                <div className="w-full text-center shrink-0 text-[10px] whitespace-nowrap overflow-hidden text-ellipsis px-1">
+                <div 
+                  className={`w-full text-center shrink-0 px-1 leading-tight ${
+                    isLongText(choice.value) 
+                      ? 'text-[9px]' 
+                      : 'text-[10px]'
+                  }`}
+                  style={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {choice.value}
                 </div>
               </button>

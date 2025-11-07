@@ -9,12 +9,12 @@ function AgeDetail() {
 
   const handleAgeChange = (e) => {
     const value = e.target.value;
-    
+
     // Only allow numbers
     if (value === "" || /^\d+$/.test(value)) {
       // Convert to number and check if it's a valid age (1-99)
       const numValue = parseInt(value);
-      
+
       if (value === "" || (numValue >= 1 && numValue <= 99)) {
         setAge(value);
       }
@@ -25,16 +25,16 @@ function AgeDetail() {
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
         <div className="mb-5 px-2">
-            <p
-              className="text-2xl sm:text-3xl text-white font-extrabold leading-relaxed"
-              style={{
-                textShadow:
-                  "2px 2px 0px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0, 0, 0, 0.4)",
-              }}
-            >
-              Ilang taon ka na?
-            </p>
-          </div>
+          <p
+            className="text-2xl sm:text-3xl text-white font-extrabold leading-relaxed"
+            style={{
+              textShadow:
+                "2px 2px 0px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0, 0, 0, 0.4)",
+            }}
+          >
+            Ilang taon ka na?
+          </p>
+        </div>
         <div>
           <img className="h-70 w-75" src={Bird} alt="LingGO Logo" />
         </div>
@@ -54,7 +54,15 @@ function AgeDetail() {
         <button
           onClick={() => {
             localStorage.setItem("age", age);
-            navigate("/gradesectiondetail");
+            const role = localStorage.getItem("linggoRole");
+            if (role === "Mag-aaral") {
+              navigate("/gradesectiondetail");
+            } else {
+              // Clear grade/section if not student
+              localStorage.removeItem("grade");
+              localStorage.removeItem("section");
+              navigate("/language-preference");
+            }
           }}
           disabled={!age}
           className="w-50 mt-5 bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"

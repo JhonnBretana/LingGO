@@ -9,11 +9,7 @@ function RoleSelection() {
 
   const handleSubmit = () => {
     localStorage.setItem("linggoRole", role); // Save role
-    if (role === "Student") {
-      navigate("/namedetail");
-    } else if (role === "Instructor" || role === "Researchers" || role === "Others") {
-      navigate("/level1");
-    }
+    navigate("/namedetail"); // Always go to Name Detail next
   };
 
   return (
@@ -21,7 +17,8 @@ function RoleSelection() {
       <div className="flex flex-col items-center text-center m-3 p-3">
         <div className="mb-5">
           <p className="text-2xl text-white text-shadow-lg font-extrabold">
-            Kumusta kaibigan! Ano ang ginagampanan mong bahagi sa pag-aaral ng wikang Cebuano?
+            Kumusta kaibigan! Ano ang ginagampanan mong bahagi sa pag-aaral ng
+            wikang Cebuano?
           </p>
         </div>
         <div>
