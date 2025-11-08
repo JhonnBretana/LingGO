@@ -8,10 +8,10 @@ const situational_questions2 = [
     characterName: "(name)",
     question: "Alin sa mga sumusunod ang 'Tagapagsalita'? Maayong ____________",
     choices: [
-      { value: "Unsa'y paliton po?", image: "/assets/ImageChoices/option1.png" },
-      { value: "Magkano po ito?", image: "/assets/ImageChoices/option2.png" },
-      { value: "Saan ang palengke?", image: "/assets/ImageChoices/option3.png" },
-      { value: "Marami pa po ba?", image: "/assets/ImageChoices/option4.png" }
+      { value: "Unsa'y paliton po?", image: "/assets/ImageChoices/Gabi.png" },
+      { value: "Magkano po ito?", image: "/assets/ImageChoices/Umaga.png" },
+      { value: "Saan ang palengke?", image: "/assets/ImageChoices/Tanghali.png" },
+      { value: "Marami pa po ba?", image: "/assets/ImageChoices/Hapon.png" }
     ],
     correctAnswer: "Unsa'y paliton po?",
   },
