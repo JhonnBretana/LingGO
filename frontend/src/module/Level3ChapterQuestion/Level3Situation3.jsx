@@ -6,6 +6,7 @@ import PageHeaderLayout from "../../module/components/PageHeaderLayout";
 import questions from "../../constant/Level3/SituationalQuestion3_data.js";
 
 import SituationalMatchTheSound from "../components/questions/SituationalMatchTheSound.jsx";
+import SituationalDragAndDrop from "../components/questions/SituationalDragAndDrop.jsx";
 
 import { recordLevel2Answer } from "../../utils/recordAnswer.js";
 import { doc, getDoc } from "firebase/firestore";
@@ -108,6 +109,21 @@ function Level3Situation3() {
             choices={question.choices}
             sounds={question.sounds}
             correctMatches={question.correctMatches}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+          />
+        );
+      case "SituationalDragAndDrop":
+        return (
+          <SituationalDragAndDrop
+            situation={question.situation}
+            instruction={instruction}
+            instructionSub={instructionSub}
+            characterName={characterName}
+            question={question.question}
+            choices={question.choices}
+            voice={question.voice}
+            answer={question.answer}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
           />

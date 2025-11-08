@@ -1,6 +1,6 @@
 import { KanbanIcon } from "lucide-react";
 
-const situational_questions2 = [
+const situational_questions3 = [
   {
     id: 8,
     type: "SituationalMatchTheSound",
@@ -14,11 +14,20 @@ const situational_questions2 = [
       "/assets/sounds/gabii.mp3",
     ],
     correctMatches: {
-      0: 0, // First sound matches to "udto"
-      1: 1, // Second sound matches to "buntag"
-      2: 2, // Third sound matches to "gabii"
+      0: 0,
+      1: 1,
+      2: 2,
     },
+  },
+  {
+    id: 9,
+    type: "SituationalDragAndDrop",
+    characterName: "(name)",
+    situation: "Sitwasyon 3 - Mga Oras ng Araw",
+    question: "Nasaan ka ngayon?",
+    choices: ["Asa", "karon?", "ka", "Pila", "unya"],
+    answer: "Asa ka karon?",
   },
 ];
 
-export default situational_questions2;
+export default situational_questions3;
