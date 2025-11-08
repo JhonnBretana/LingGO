@@ -24,6 +24,21 @@ const situational_questions2 = [
     voice: null,
     correctAnswer: "tulo",
   },
+  {
+    id: 5,
+    type: "Select4ChoicesWithVoice",
+    situation: "Sitwasyon 2 - Sa Palengke",
+    characterName: "(name)",
+    question: "Piliin ang iyong narinig.",
+    choices: [
+      { value: "Nalipay ko nga nakaila tika!", image: null },
+      { value: "Asa dapit ang tindahan?", image: null },
+      { value: "Pag-amping!", image: null },
+      { value: "Puwede mangutana?", image: null },
+    ],
+    voice: null,
+    correctAnswer: "Nalipay ko nga nakaila tika!",
+  },
 ];
 
 export default situational_questions2;
