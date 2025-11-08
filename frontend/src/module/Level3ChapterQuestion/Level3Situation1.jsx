@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../../module/components/BackgroundLayout.jsx";
 import QuestionsBar from "../../assets/clickbar.png";
 import PageHeaderLayout from "../../module/components/PageHeaderLayout";
-import questions from "../../constant/questions3_data.js";
+import questions from "../../constant/Level3/SituationalQuestion1_data.js";
 
 import QuestionWithTwoChoices from "../components/questions/QuestionWithTwoChoices.jsx";
 import Questionwith4ChoicesSituational from "../components/questions/Questionwith4ChoicesSituational.jsx";
@@ -31,7 +31,7 @@ function Level3Situation1() {
   const [answers, setAnswers] = useState({});
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewQuestions, setReviewQuestions] = useState([]);
-  const [userName, setUserName] = useState(""); // <-- Add this line
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
   // Use either all questions or only wrong ones in review mode
   const displayQuestions = reviewMode ? reviewQuestions : questions;
@@ -128,12 +128,10 @@ function Level3Situation1() {
             instruction={instruction}
             instructionSub={instructionSub}
             characterName={characterName}
-            question={question.question}
-            voice={question.voice}
+            question={question}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
             showWrongOverlay={showWrongOverlay}
-            correctAnswer={question.correctAnswer}
           />
         );
       default:
