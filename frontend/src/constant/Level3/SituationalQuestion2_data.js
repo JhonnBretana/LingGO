@@ -48,6 +48,16 @@ const situational_questions2 = [
     choices: ["naay", "Asa", "dapit", "tindahan", "utant?", "dirig", "Usa"],
     answer: "Asa dapit naay tindahan dirig utant?",
   },
+  {
+    id: 7,
+    type: "SituationalQuestionWithVoice",
+    situation: "Sitwasyon 2 - Sa Bahay",
+    characterImage: "/assets/ImageChoices/boyatthemarket1.png",
+    characterName: "(name)",
+    question: "Daghang Salamat!",
+    voice: "/assets/voices/question2.mp3",
+    correctAnswer: "Daghang Salamat",
+  },
 ];
 
 export default situational_questions2;

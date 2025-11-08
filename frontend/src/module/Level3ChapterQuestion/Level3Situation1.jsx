@@ -125,8 +125,7 @@ function Level3Situation1() {
         return (
           <SituationalQuestionWithVoice
             situation={question.situation}
-            instruction={instruction}
-            instructionSub={instructionSub}
+            characterImage={question.characterImage}
             characterName={characterName}
             question={question}
             onCorrectAnswer={handleCorrectAnswer}

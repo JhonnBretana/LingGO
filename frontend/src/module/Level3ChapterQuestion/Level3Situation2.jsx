@@ -9,6 +9,7 @@ import SituationalQuestionWithChoices from "../components/questions/SituationalQ
 import SituationalQuestionWithSlowSound from "../components/questions/SituationalQuestionWithSlowSound.jsx";
 import Select4ChoicesWithVoice from "../components/questions/Situational4QuestionWithVoice.jsx";
 import SituationalQuestionDragAndDrop from "../components/questions/SituationalQuestionDragAndDrop.jsx";
+import SituationalQuestionWithVoice from "../components/questions/SituationalQuestionWithVoice.jsx";
 
 import { recordLevel2Answer } from "../../utils/recordAnswer.js";
 import { doc, getDoc } from "firebase/firestore";
@@ -156,6 +157,18 @@ function Level3Situation2() {
             answer={question.answer}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+          />
+        );
+      case "SituationalQuestionWithVoice":
+        return (
+          <SituationalQuestionWithVoice
+            situation={question.situation}
+            characterImage={question.characterImage}
+            characterName={characterName}
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
 

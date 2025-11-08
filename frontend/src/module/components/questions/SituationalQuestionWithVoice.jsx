@@ -9,8 +9,7 @@ import GirlAtHouse from "/assets/ImageChoices/girlathouse.png";
 function SituationQuestionWithVoice({
   question,
   situation,
-  instruction,
-  instructionSub,
+  characterImage,
   characterName,
   onCorrectAnswer,
   onWrongAnswer,
@@ -174,13 +173,7 @@ function SituationQuestionWithVoice({
 
         <div className="flex flex-row items-center gap-2 w-full max-w-md">
           <div className="flex flex-col relative">
-            <div className="absolute top-[60px] right-[45px]  z-10 w-[150px]">
-              <span className="font-bold text-black text-base">
-                {instruction}
-              </span>
-              <div className="text-xs text-gray-500">{instructionSub}</div>
-            </div>
-            <img src={GirlAtHouse} alt="" />
+            <img src={characterImage} alt="" />
           </div>
         </div>
         <div

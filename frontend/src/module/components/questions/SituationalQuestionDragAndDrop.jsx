@@ -54,7 +54,7 @@ function DroppableZone({ id, children }) {
   });
 
   return (
-   <div
+    <div
       ref={setNodeRef}
       className={`flex flex-row flex-wrap gap-3 min-h-[56px] w-100 justify-center items-center p-4 transition ${
         isOver ? "bg-yellow-50" : ""
@@ -152,7 +152,7 @@ function SituationalQuestionDragAndDrop({
   };
 
   return (
-    <div className="flex flex-col items-center w-full px-2 pt-4 gap-3">
+    <div className="flex flex-col items-center w-full px-2 pt-2 gap-2">
       {/* Situation Bar */}
       {situation && (
         <div className="relative w-full max-w-80 mb-3">
@@ -175,6 +175,25 @@ function SituationalQuestionDragAndDrop({
         </div>
       )}
 
+      {characterName && (
+        <div
+          className="font-medium text-right text-xl text-white drop-shadow-[2px_3px_1px_black]  w-full max-w-md px-10"
+          style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: "bold" }}
+        >
+          {characterName}
+        </div>
+      )}
+      <div
+        className="px-5 py-3 bg-white rounded-lg w-100  border border-black flex flex-col text-center  justify-center"
+        style={{
+          fontFamily: "'Fredoka', sans-serif",
+          fontWeight: "bold",
+        }}
+      >
+        <span className="text-2xl">Puwede mangutana?</span>
+        <span className="text-blue-700">Puwede magtanong?</span>
+      </div>
+
       {/* Instruction Bubble */}
       <div className="flex flex-row items-center gap-2 w-full max-w-md">
         <div className="flex flex-col relative">
@@ -186,7 +205,7 @@ function SituationalQuestionDragAndDrop({
               <div className="text-xs text-gray-500">{instructionSub}</div>
             )}
           </div>
-          <img src={BoyAtTheMarket} alt="" />
+          <img src={BoyAtTheMarket} alt="" className="h-50" />
         </div>
       </div>
 
