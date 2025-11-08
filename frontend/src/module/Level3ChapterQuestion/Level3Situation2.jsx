@@ -8,6 +8,7 @@ import questions from "../../constant/Level3/SituationalQuestion2_data.js";
 import SituationalQuestionWithChoices from "../components/questions/SituationalQuestionWithChoices.jsx";
 import SituationalQuestionWithSlowSound from "../components/questions/SituationalQuestionWithSlowSound.jsx";
 import Select4ChoicesWithVoice from "../components/questions/Situational4QuestionWithVoice.jsx";
+import SituationalQuestionDragAndDrop from "../components/questions/SituationalQuestionDragAndDrop.jsx";
 
 import { recordLevel2Answer } from "../../utils/recordAnswer.js";
 import { doc, getDoc } from "firebase/firestore";
@@ -116,7 +117,7 @@ function Level3Situation2() {
             showWrongOverlay={showWrongOverlay}
           />
         );
-         case "SituationalQuestionWithSlowSound":
+      case "SituationalQuestionWithSlowSound":
         return (
           <SituationalQuestionWithSlowSound
             question={{
@@ -131,7 +132,7 @@ function Level3Situation2() {
             showWrongOverlay={showWrongOverlay}
           />
         );
-        case "Select4ChoicesWithVoice":
+      case "Select4ChoicesWithVoice":
         return (
           <Select4ChoicesWithVoice
             question={{
@@ -143,7 +144,20 @@ function Level3Situation2() {
             showWrongOverlay={showWrongOverlay}
           />
         );
-
+      case "SituationalQuestionDragAndDrop":
+        return (
+          <SituationalQuestionDragAndDrop
+            situation={question.situation}
+            instruction={instruction}
+            instructionSub={instructionSub}
+            characterName={characterName}
+            question={question.question}
+            choices={question.choices}
+            answer={question.answer}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+          />
+        );
 
       default:
         return <div>Unknown question type</div>;

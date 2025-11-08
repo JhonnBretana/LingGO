@@ -39,6 +39,15 @@ const situational_questions2 = [
     voice: null,
     correctAnswer: "Nalipay ko nga nakaila tika!",
   },
+  {
+    id: 6,
+    type: "SituationalQuestionDragAndDrop",
+    situation: "Sitwasyon 2 - Sa Palengke",
+    characterName: "(name)",
+    question: "Saan banda may bilihan ng gulay?",
+    choices: ["naay", "Asa", "dapit", "tindahan", "utant?", "dirig", "Usa"],
+    answer: "Asa dapit naay tindahan dirig utant?",
+  },
 ];
 
 export default situational_questions2;
