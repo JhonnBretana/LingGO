@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import QuestionsBar from "../../../assets/clickbar.png";
 import GirlAtHouse from "/assets/ImageChoices/girlathouse.png";
+import CorrectAnswerModal from "../../components/CorrectOverlay";
+import WrongAnswerModal from "../../components/WrongOverlay";
 import {
   DndContext,
   closestCenter,
@@ -71,12 +73,15 @@ const Questionwith4ChoicesSituational = ({
   question,
   choices = [],
   onSelect,
+  onCorrectAnswer,
+  onWrongAnswer,
   note,
   answer,
 }) => {
   const [bank, setBank] = useState(choices);
   const [answerArea, setAnswerArea] = useState([]);
-  const [feedback, setFeedback] = useState("");
+  const [showCorrect, setShowCorrect] = useState(false);
+  const [showWrong, setShowWrong] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const sensors = useSensors(
@@ -107,7 +112,6 @@ const Questionwith4ChoicesSituational = ({
     if (bank.includes(active.id) && over.id === "answer-dropzone") {
       setBank((prev) => prev.filter((item) => item !== active.id));
       setAnswerArea((prev) => [...prev, active.id]);
-      setFeedback("");
       return;
     }
 
@@ -115,7 +119,6 @@ const Questionwith4ChoicesSituational = ({
     if (answerArea.includes(active.id) && over.id === "bank-dropzone") {
       setAnswerArea((prev) => prev.filter((item) => item !== active.id));
       setBank((prev) => [...prev, active.id]);
-      setFeedback("");
       return;
     }
   };
@@ -124,17 +127,29 @@ const Questionwith4ChoicesSituational = ({
     const userAnswer = answerArea.join(" ");
 
     if (userAnswer === answer) {
-      setFeedback("✓ Tama!");
+      setShowCorrect(true);
       setSubmitted(true);
-      setTimeout(() => {
-        onSelect(userAnswer);
-      }, 1000);
     } else {
-      setFeedback("✗ Mali. Subukan ulit.");
+      setShowWrong(true);
       setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 2000);
+    }
+  };
+
+  const handleCloseCorrectModal = () => {
+    setShowCorrect(false);
+    setAnswerArea([]);
+    setBank(choices);
+    setSubmitted(false);
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
+  };
+
+  const handleCloseWrongModal = () => {
+    setShowWrong(false);
+    setSubmitted(false);
+    if (onWrongAnswer) {
+      onWrongAnswer();
     }
   };
 
@@ -236,21 +251,8 @@ const Questionwith4ChoicesSituational = ({
             </div>
           </DndContext>
 
-          {/* Feedback Message */}
-          {feedback && (
-            <div
-              className={`mt-4 px-4 py-2 rounded-lg font-bold text-lg transition ${
-                feedback.includes("Tama")
-                  ? "bg-green-200 text-green-800"
-                  : "bg-red-200 text-red-800"
-              }`}
-            >
-              {feedback}
-            </div>
-          )}
-
           <button
-            className="mt-6 px-6 py-2 bg-yellow-400 text-white font-bold rounded-lg hover:bg-yellow-500 transition disabled:opacity-50"
+            className="mt-6 px-6 py-2 bg-yellow-400 text-black font-bold rounded-lg hover:bg-yellow-500 transition disabled:opacity-50"
             onClick={handleSubmit}
             disabled={answerArea.length === 0 || submitted}
           >
@@ -258,6 +260,17 @@ const Questionwith4ChoicesSituational = ({
           </button>
         </div>
       )}
+
+      {/* Modals */}
+      <CorrectAnswerModal
+        isOpen={showCorrect}
+        onClose={handleCloseCorrectModal}
+      />
+      <WrongAnswerModal
+        isOpen={showWrong}
+        onClose={handleCloseWrongModal}
+        correctAnswer={answer}
+      />
     </div>
   );
 };
