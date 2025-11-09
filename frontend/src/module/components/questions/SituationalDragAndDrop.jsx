@@ -39,7 +39,7 @@ function SortableItem({ id, children }) {
       style={style}
       {...attributes}
       {...listeners}
-      className={`px-2 py-2 text-sm rounded-lg bg-blue-100 text-black font-bold border border-blue-400 transition text-center cursor-move select-none
+      className={`px-2 py-2 text-lg rounded-lg bg-blue-100 text-black font-bold border border-blue-400 transition text-center cursor-move select-none
         ${isDragging ? "bg-yellow-200 border-yellow-400" : ""}
       `}
     >
@@ -56,7 +56,7 @@ function DroppableZone({ id, children }) {
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-row flex-wrap gap-3 min-h-[56px] w-100 justify-center items-center p-4 transition ${
+      className={`flex flex-row flex-wrap gap-3 min-h-[56px] w-90 justify-center items-center p-4 transition ${
         isOver ? "bg-yellow-50" : ""
       } ${id === "answer-dropzone" ? "border-b-4 border-black" : ""}`}
     >
@@ -244,8 +244,8 @@ function SituationalDragAndDrop({
       )}
 
       <div className="flex flex-row items-center gap-2 w-full max-w-md mt-10">
-        <div className="flex flex-col relative items-center justify-center w-full">
-          <img src={Convo2} alt="Character" className="w-full h-auto" />
+        <div className="flex flex-col relative  w-full">
+          <img src={Convo2} alt="Character" className="w-95" />
         </div>
       </div>
       {/* Modals */}

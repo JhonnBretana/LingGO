@@ -57,6 +57,7 @@ const situational_questions2 = [
     question: "Daghang Salamat!",
     voice: "/assets/voices/question2.mp3",
     correctAnswer: "Daghang Salamat",
+    ConvoImage:null,
   },
 ];
 

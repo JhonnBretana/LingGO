@@ -7,6 +7,7 @@ import questions from "../../constant/Level3/SituationalQuestion3_data.js";
 
 import SituationalMatchTheSound from "../components/questions/SituationalMatchTheSound.jsx";
 import SituationalDragAndDrop from "../components/questions/SituationalDragAndDrop.jsx";
+import SituationalQuestionWithVoice from "../components/questions/SituationalQuestionWithVoice.jsx";
 
 import { recordLevel2Answer } from "../../utils/recordAnswer.js";
 import { doc, getDoc } from "firebase/firestore";
@@ -126,6 +127,18 @@ function Level3Situation3() {
             answer={question.answer}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+          />
+        );
+      case "SituationalQuestionWithVoice":
+        return (
+          <SituationalQuestionWithVoice
+            situation={question.situation}
+            characterName={characterName}
+            ConvoImage={question.ConvoImage}
+            question={question}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
 

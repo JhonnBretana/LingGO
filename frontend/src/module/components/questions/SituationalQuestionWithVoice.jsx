@@ -10,6 +10,7 @@ function SituationQuestionWithVoice({
   question,
   situation,
   characterImage,
+  ConvoImage,
   characterName,
   onCorrectAnswer,
   onWrongAnswer,
@@ -243,6 +244,12 @@ function SituationQuestionWithVoice({
             </span>
           </div>
         )}
+
+        <div className="flex flex-row items-center gap-2 w-full max-w-md">
+          <div className="flex flex-col relative">
+            <img src={ConvoImage} alt="" />
+          </div>
+        </div>
 
         {showSubmit && !isRecording && (
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">

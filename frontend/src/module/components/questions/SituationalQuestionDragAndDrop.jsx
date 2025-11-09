@@ -56,7 +56,7 @@ function DroppableZone({ id, children }) {
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-row flex-wrap gap-3 min-h-[56px] w-100 justify-center items-center p-4 transition ${
+      className={`flex flex-row flex-wrap gap-3 min-h-[56px] w-90 justify-center items-center p-4 transition ${
         isOver ? "bg-yellow-50" : ""
       } ${id === "answer-dropzone" ? "border-b-4 border-black" : ""}`}
     >
