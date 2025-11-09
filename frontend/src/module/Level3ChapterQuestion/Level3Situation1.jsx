@@ -5,7 +5,6 @@ import QuestionsBar from "../../assets/clickbar.png";
 import PageHeaderLayout from "../../module/components/PageHeaderLayout";
 import questions from "../../constant/Level3/SituationalQuestion1_data.js";
 
-import QuestionWithTwoChoices from "../components/questions/QuestionWithTwoChoices.jsx";
 import Questionwith4ChoicesSituational from "../components/questions/Questionwith4ChoicesSituational.jsx";
 import SituationalQuestionWithVoice from "../components/questions/SituationalQuestionWithVoice.jsx";
 
