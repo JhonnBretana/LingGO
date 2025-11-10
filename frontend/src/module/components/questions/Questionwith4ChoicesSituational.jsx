@@ -143,7 +143,6 @@ const Questionwith4ChoicesSituational = ({
     }
   };
 
-
   const handleCloseWrongModal = () => {
     setShowWrong(false);
     setSubmitted(false);
@@ -151,8 +150,6 @@ const Questionwith4ChoicesSituational = ({
       onWrongAnswer();
     }
   };
-
-  
 
   return (
     <div className="flex flex-col items-center w-full px-2 pt-4 gap-3">

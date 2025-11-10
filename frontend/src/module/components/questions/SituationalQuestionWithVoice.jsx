@@ -152,7 +152,7 @@ function SituationQuestionWithVoice({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-start px-4 pt-2 gap-4 overflow-hidden h-full">
+      <div className="flex flex-col items-center justify-start px-4 pt-2 gap-4 overflow-y-auto h-full">
         <div className="relative w-full max-w-80 mb-3">
           <img
             src={QuestionsBar}
@@ -252,7 +252,7 @@ function SituationQuestionWithVoice({
         </div>
 
         {showSubmit && !isRecording && (
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs mb-5">
             <button
               className="w-full px-6 py-2 sm:py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-base sm:text-lg shadow-lg active:scale-95 transition-transform"
               onClick={handleSubmit}

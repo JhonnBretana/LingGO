@@ -107,11 +107,14 @@ const SituationalMatchTheSound = ({
 
       {/* Main Question */}
       {question && (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center my-3">
           {characterName && (
             <div
               className="font-medium text-right text-xl text-white drop-shadow-[2px_3px_1px_black] w-full max-w-md px-6"
-              style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: "bold" }}
+              style={{
+                fontFamily: "'Fredoka', sans-serif",
+                fontWeight: "bold",
+              }}
             >
               {characterName}
             </div>
@@ -162,7 +165,7 @@ const SituationalMatchTheSound = ({
           </div>
 
           <button
-            className="mt-6 px-6 py-2 bg-yellow-400 text-black font-bold rounded-lg hover:bg-yellow-500 transition disabled:opacity-50"
+            className="my-6 px-6 py-2 bg-yellow-400 text-black font-bold rounded-lg hover:bg-yellow-500 transition disabled:opacity-50"
             onClick={handleSubmit}
             disabled={
               Object.keys(selectedMatches).length < choices.length * 2 ||

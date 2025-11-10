@@ -221,7 +221,7 @@ function SituationalQuestionDragAndDrop({
 
       {/* Main Question */}
       {question && (
-        <div className="w-[400px] max-w-md bg-white rounded-xl shadow-3xl px-4 py-4 mt-2 border border-gray-300 flex flex-col items-center">
+        <div className="w-[400px] max-w-md bg-white rounded-xl shadow-3xl px-4 py-4 my-2 mb-3 border border-gray-300 flex flex-col items-center">
           <div
             className="font-medium text-center text-xl text-black mb-6 px-2"
             style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: "bold" }}
