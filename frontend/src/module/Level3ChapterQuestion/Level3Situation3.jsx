@@ -196,9 +196,10 @@ function Level3Situation3() {
 
         {/* Show Level 3 result preview when all answered */}
         {allAnswered && !reviewMode ? (
-          <div className="flex-1 overflow-y-auto ">
+          <div className="flex-1 overflow-y-auto">
             <LevelResultPreview
               level={3}
+              questions={questions}
               onReviewWrongQuestions={handleReviewWrongQuestions}
             />
           </div>

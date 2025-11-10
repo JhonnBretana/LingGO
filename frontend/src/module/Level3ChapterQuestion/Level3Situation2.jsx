@@ -225,16 +225,12 @@ function Level3Situation2() {
 
         {/* FIX: Show continue button instead of result preview */}
         {allAnswered && !reviewMode ? (
-          <div className="flex flex-col items-center justify-center flex-1">
-            <h2 className="text-2xl font-bold mb-4 text-white">
-              Sitwasyon 2 Completed!
-            </h2>
-            <button
-              className="bg-yellow-400 text-black font-bold py-2 px-6 rounded-xl border-2 border-black hover:bg-yellow-500 transition"
-              onClick={() => navigate("/level3-situation3")}
-            >
-              Magpatuloy sa Sitwasyon 3
-            </button>
+          <div className="flex-1 overflow-y-auto">
+            <LevelResultPreview
+              level={3}
+              questions={questions}
+              onReviewWrongQuestions={handleReviewWrongQuestions}
+            />
           </div>
         ) : (
           <>
