@@ -9,14 +9,14 @@ const situational_questions3 = [
     question: "Ipares ang sagot sa tamang tunog. Maayong _________ Pinsan!",
     choices: ["udto", "buntag", "gabii"],
     sounds: [
-      "/assets/sounds/udto.mp3",
-      "/assets/sounds/buntag.mp3",
+      "/assets/Voice/CebuanoLevel2/buntag.mp3",
       "/assets/sounds/gabii.mp3",
+      "/assets/sounds/udto.mp3",
     ],
     correctMatches: {
-      0: 0,
-      1: 1,
-      2: 2,
+      0: 2,
+      1: 0,
+      2: 1,
     },
   },
   {
@@ -35,7 +35,7 @@ const situational_questions3 = [
     characterImage: null,
     characterName: "(name)",
     question: "Daghang Salamat!",
-    voice: "/assets/voices/question2.mp3",
+    voice: "/assets/Voice/CebuanoLevel2/daghangsalamat.mp3",
     correctAnswer: "Daghang Salamat",
     ConvoImage: "/assets/ImageChoices/convofooter2.png",
   },

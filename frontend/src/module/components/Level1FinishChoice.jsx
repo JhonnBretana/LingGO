@@ -8,6 +8,7 @@ import StarLocked3 from "/assets/ImageChoices/Starlocked3.png";
 import StarUnlocked2 from "/assets/ImageChoices/StarUnlocked2.png";
 import Star1Finished from "/assets/ImageChoices/level1finish.png";
 import Star2Finished from "/assets/ImageChoices/level2finish.png";
+import Star3 from "/assets/ImageChoices/star3.png";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase.js";
 import questions from "../../constant/questions_data.js";
@@ -98,8 +99,8 @@ function LevelSelection1Finished() {
     {
       number: 3,
       title: "DISKURSO",
-      locked: true,
-      starImage: StarLocked3,
+      locked: !level2Completed,
+      starImage: level2Completed ? Star3 : StarLocked3,
     },
   ];
 
@@ -116,6 +117,9 @@ function LevelSelection1Finished() {
           // If not completed, go to level 2 quiz
           navigate("/level-two");
         }
+      } else if (level.number === 3) {
+        // Redirect to level 3
+        navigate("/level3");
       }
     }
   };

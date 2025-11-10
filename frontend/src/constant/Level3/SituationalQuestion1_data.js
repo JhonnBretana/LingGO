@@ -1,6 +1,6 @@
 import { KanbanIcon } from "lucide-react";
 
-const questions3 = [
+const situational_questions1 = [
   {
     id: 1,
     type: "Questionwith4ChoicesSituational",
@@ -19,9 +19,9 @@ const questions3 = [
     characterImage: "/assets/ImageChoices/girlathouse2.png",
     characterName: "(name)",
     question: "Asa ang kwarta??",
-    voice: "/assets/voices/question2.mp3",
+    voice: "/assets/Voice/CebuanoNumber/asaangkwarta.mp3",
     correctAnswer: "Asa ang kwarta",
   },
 ];
 
-export default questions3;
+export default situational_questions1;

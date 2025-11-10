@@ -48,7 +48,7 @@ function SortableItem({ id, children }) {
   );
 }
 
-function DroppableZone({ id, children, isActive }) {
+function DroppableZone({ id, children }) {
   const { setNodeRef, isOver } = useDroppable({
     id,
   });
@@ -72,10 +72,8 @@ const Questionwith4ChoicesSituational = ({
   characterName,
   question,
   choices = [],
-  onSelect,
   onCorrectAnswer,
   onWrongAnswer,
-  note,
   answer,
 }) => {
   const [bank, setBank] = useState(choices);
@@ -145,6 +143,7 @@ const Questionwith4ChoicesSituational = ({
     }
   };
 
+
   const handleCloseWrongModal = () => {
     setShowWrong(false);
     setSubmitted(false);
@@ -152,6 +151,8 @@ const Questionwith4ChoicesSituational = ({
       onWrongAnswer();
     }
   };
+
+  
 
   return (
     <div className="flex flex-col items-center w-full px-2 pt-4 gap-3">

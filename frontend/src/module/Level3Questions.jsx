@@ -8,7 +8,7 @@ import questions from "../constant/questions3_data.js";
 import QuestionWithTwoChoices from "./components/questions/QuestionWithTwoChoices.jsx";
 import Questionwith4ChoicesSituational from "./components/questions/Questionwith4ChoicesSituational.jsx";
 
-import { recordLevel2Answer } from "../utils/recordAnswer.js";
+import { recordLevel3Answer } from "../utils/recordAnswer.js";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -142,13 +142,13 @@ function Level3Questions() {
   }
 
   const allAnswered = questions.every((q) =>
-    ["Correct", "Wrong"].includes(answers[`2Question${q.id}`])
+    ["Correct", "Wrong"].includes(answers[`Level3Question${q.id}`])
   );
 
   // In review mode, don't disable buttons
   function isAnswered(q) {
     if (reviewMode) return false;
-    const answer = answers[`Level2Question${q.id}`];
+    const answer = answers[`Level3Question${q.id}`];
     return answer === "Correct" || answer === "Wrong";
   }
 
@@ -172,7 +172,7 @@ function Level3Questions() {
     if (savedReviewAnswered && Object.keys(answers).length > 0) {
       // Find all questions that were wrong
       const wrongQuestions = questions.filter((q) => {
-        const answer = answers[`Level2Question${q.id}`];
+        const answer = answers[`Level3Question${q.id}`];
         return answer === "Wrong";
       });
       setReviewQuestions(wrongQuestions);
@@ -246,7 +246,7 @@ function Level3Questions() {
                       className="flex flex-row gap-2 sm:gap-3 items-center justify-center flex-wrap"
                     >
                       {row.map((q) => {
-                        const answer = answers[`Level2Question${q.id}`];
+                        const answer = answers[`Level3Question${q.id}`];
                         let btnColor = "bg-white";
                         let textColor = "text-black";
                         let opacity = "";

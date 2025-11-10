@@ -21,7 +21,7 @@ const situational_questions2 = [
     situation: "Sitwasyon 2 - Sa Palengke",
     characterName: "(name)",
     question: "I-type ang iyong narinig.",
-    voice: null,
+    voice: "/assets/Voice/CebuanoNumber/tulo.mp3",
     correctAnswer: "tulo",
   },
   {
@@ -36,7 +36,7 @@ const situational_questions2 = [
       { value: "Pag-amping!", image: null },
       { value: "Puwede mangutana?", image: null },
     ],
-    voice: null,
+    voice: "/assets/Voice/CebuanoLevel2/puwedemangutana.mp3",
     correctAnswer: "Nalipay ko nga nakaila tika!",
   },
   {
@@ -55,7 +55,7 @@ const situational_questions2 = [
     characterImage: "/assets/ImageChoices/boyatthemarket1.png",
     characterName: "(name)",
     question: "Daghang Salamat!",
-    voice: "/assets/voices/question2.mp3",
+    voice: "/assets/Voice/CebuanoLevel2/daghangsalamat.mp3",
     correctAnswer: "Daghang Salamat",
     ConvoImage:null,
   },
