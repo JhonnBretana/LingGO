@@ -6,7 +6,7 @@ const situational_questions2 = [
     type: "Questionwith4ChoicesSituational",
     situation: "Sitwasyon 2 - Sa Palengke",
     characterName: "(name)",
-    question: "Alin sa mga sumusunod ang 'Tagapagsalita'? Maayong ____________",
+    question: "Alin sa mga sumusunod ang 'Tanghali'? Maayong ____________",
     choices: [
       { value: "gabii", image: "/assets/ImageChoices/Gabi.png" },
       { value: "buntag", image: "/assets/ImageChoices/Umaga.png" },
@@ -37,7 +37,7 @@ const situational_questions2 = [
       { value: "Puwede mangutana?", image: null },
     ],
     voice: "/assets/Voice/CebuanoLevel2/puwedemangutana.mp3",
-    correctAnswer: "Nalipay ko nga nakaila tika!",
+    correctAnswer: "Puwede mangutana?",
   },
   {
     id: 6,
@@ -45,8 +45,8 @@ const situational_questions2 = [
     situation: "Sitwasyon 2 - Sa Palengke",
     characterName: "(name)",
     question: "Saan banda may bilihan ng gulay?",
-    choices: ["naay", "Asa", "dapit", "tindahan", "utant?", "dirig", "Usa"],
-    answer: "Asa dapit naay tindahan dirig utant?",
+    choices: ["naay", "Asa", "dapit", "tindahan", "utan?", "dirig", "Usa"],
+    answer: "Asa dapit naay tindahan dirig utan?",
   },
   {
     id: 7,
@@ -57,7 +57,7 @@ const situational_questions2 = [
     question: "Daghang Salamat!",
     voice: "/assets/Voice/CebuanoLevel2/daghangsalamat.mp3",
     correctAnswer: "Daghang Salamat",
-    ConvoImage:null,
+    ConvoImage: null,
   },
 ];
 

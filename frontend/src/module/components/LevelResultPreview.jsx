@@ -7,24 +7,38 @@ import Logo from "../../assets/LingGO Logo.png";
 import PageHeaderLayout from "../components/PageHeaderLayout.jsx";
 import BackgroundLayout from "../components/BackgroundLayout.jsx";
 
-function LevelResultPreview({ onReviewWrongQuestions }) {
+function LevelResultPreview({ level, onReviewWrongQuestions }) {
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
+  const [score, setScore] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
     if (!userId) return;
-    const fetchAnswers = async () => {
+    const fetchUser = async () => {
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
-        setAnswers(userSnap.data().Level1Questions || {});
+        let levelAnswers = {};
+        if (level === 1) levelAnswers = userSnap.data().Level1Questions || {};
+        else if (level === 2)
+          levelAnswers = userSnap.data().Level2Questions || {};
+        else if (level === 3)
+          levelAnswers = userSnap.data().Level3Questions || {};
+        setAnswers(levelAnswers);
+
+        // Calculate score
+        const total = Object.keys(levelAnswers).length;
+        const correct = Object.values(levelAnswers).filter(
+          (a) => a === "Correct"
+        ).length;
+        setScore(total ? Math.round((correct / total) * 100) : 0);
       }
       setLoading(false);
     };
-    fetchAnswers();
-  }, []);
+    fetchUser();
+  }, [level]);
 
   if (loading) return <div className="p-8 text-center">Loading...</div>;
 

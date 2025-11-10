@@ -8,7 +8,7 @@ import questions from "../../constant/Level3/SituationalQuestion1_data.js";
 import Questionwith4ChoicesSituational from "../components/questions/Questionwith4ChoicesSituational.jsx";
 import SituationalQuestionWithVoice from "../components/questions/SituationalQuestionWithVoice.jsx";
 
-import { recordLevel2Answer } from "../../utils/recordAnswer.js";
+import { recordLevel3Answer } from "../../utils/recordAnswer.js";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 
@@ -109,13 +109,8 @@ function Level3Situation1() {
             characterName={characterName}
             question={question.question}
             choices={question.choices}
-            onSelect={(choice) => {
-              if (choice === question.correctAnswer) {
-                handleCorrectAnswer();
-              } else {
-                handleWrongAnswer();
-              }
-            }}
+            onCorrectAnswer={handleCorrectAnswer}
+            onWrongAnswer={handleWrongAnswer}
             note={question.note}
             answer={question.correctAnswer}
           />
@@ -137,14 +132,13 @@ function Level3Situation1() {
     }
   }
 
-  const allAnswered = questions.every((q) =>
-    ["Correct", "Wrong"].includes(answers[`2Question${q.id}`])
+  const allAnswered = questions.every(
+    (q) => ["Correct", "Wrong"].includes(answers[`Level3Question${q.id}`]) // <-- FIXED
   );
 
-  // In review mode, don't disable buttons
   function isAnswered(q) {
     if (reviewMode) return false;
-    const answer = answers[`Level2Question${q.id}`];
+    const answer = answers[`Level3Question${q.id}`]; // <-- FIXED
     return answer === "Correct" || answer === "Wrong";
   }
 
@@ -168,7 +162,7 @@ function Level3Situation1() {
     if (savedReviewAnswered && Object.keys(answers).length > 0) {
       // Find all questions that were wrong
       const wrongQuestions = questions.filter((q) => {
-        const answer = answers[`Level2Question${q.id}`];
+        const answer = answers[`Level3Question${q.id}`]; // <-- FIXED
         return answer === "Wrong";
       });
       setReviewQuestions(wrongQuestions);
@@ -178,16 +172,23 @@ function Level3Situation1() {
       setSelectedQuestion(null);
     }
   }, [answers]);
+
   return (
     <BackgroundLayout>
       <div className="w-full h-screen flex flex-col overflow-hidden">
         <PageHeaderLayout />
 
         {allAnswered && !reviewMode ? (
-          <div className="flex-1 overflow-y-auto ">
-            <LevelResultPreview
-              onReviewWrongQuestions={handleReviewWrongQuestions}
-            />
+          <div className="flex flex-col items-center justify-center flex-1">
+            <h2 className="text-2xl font-bold mb-4 text-white">
+              Sitwasyon 1 Completed!
+            </h2>
+            <button
+              className="bg-yellow-400 text-black font-bold py-2 px-6 rounded-xl border-2 border-black hover:bg-yellow-500 transition"
+              onClick={() => navigate("/level3-situation2")}
+            >
+              Magpatuloy sa Sitwasyon 2
+            </button>
           </div>
         ) : (
           <>
@@ -261,7 +262,7 @@ function Level3Situation1() {
                       className="flex flex-row gap-10 sm:gap-3 items-center justify-center flex-wrap"
                     >
                       {row.map((q) => {
-                        const answer = answers[`Level2Question${q.id}`];
+                        const answer = answers[`Level3Question${q.id}`]; // <-- FIXED
                         let btnColor = "bg-white";
                         let textColor = "text-black";
                         let opacity = "";

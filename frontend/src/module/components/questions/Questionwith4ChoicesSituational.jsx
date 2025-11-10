@@ -123,13 +123,18 @@ const Questionwith4ChoicesSituational = ({
 
   const handleSubmit = () => {
     const userAnswer = answerArea.join(" ");
-
     if (userAnswer === answer) {
       setShowCorrect(true);
       setSubmitted(true);
+      if (onCorrectAnswer) {
+        onCorrectAnswer(); // <-- Record immediately!
+      }
     } else {
       setShowWrong(true);
       setSubmitted(true);
+      if (onWrongAnswer) {
+        onWrongAnswer();
+      }
     }
   };
 
@@ -138,9 +143,9 @@ const Questionwith4ChoicesSituational = ({
     setAnswerArea([]);
     setBank(choices);
     setSubmitted(false);
-    if (onCorrectAnswer) {
-      onCorrectAnswer();
-    }
+    // if (onCorrectAnswer) {
+    //   onCorrectAnswer();
+    // }
   };
 
   const handleCloseWrongModal = () => {

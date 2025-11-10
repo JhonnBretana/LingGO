@@ -76,7 +76,7 @@ function SituationalQuestionWithChoices({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-start h-screen overflow-hidden px-4 pt-4">
+      <div className="flex flex-col items-center justify-start h-screen overflow-y-auto px-4 pt-4 my-3">
         <div className="relative w-full max-w-80 mb-3">
           <img
             src={QuestionsBar}
@@ -183,7 +183,7 @@ function SituationalQuestionWithChoices({
 
           <button
             type="submit"
-            className="w-full max-w-40 mt-3 px-4 py-2 bg-[#f2d919] border-2 border-black rounded-xl font-bold"
+            className="w-full max-w-40 my-3 px-4 py-2 bg-[#f2d919] border-2 border-black rounded-xl font-bold"
             disabled={!selected}
           >
             Ipasa

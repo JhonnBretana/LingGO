@@ -38,18 +38,16 @@ export async function recordLevel2Answer(userId, questionId, isCorrect) {
 }
 
 export async function recordLevel3Answer(userId, questionId, isCorrect) {
-  const questionField = `Level3Questions.Level3Question${questionId}`; 
+  const questionField = `Level3Questions.Level3Question${questionId}`;
   const userRef = doc(db, "users", userId);
 
   await setDoc(
     userRef,
     {
-      Level3Questions: { 
-        [`Level3Question${questionId}`]: isCorrect ? "Correct" : "Wrong", 
+      Level3Questions: {
+        [`Level3Question${questionId}`]: isCorrect ? "Correct" : "Wrong",
       },
     },
     { merge: true }
   );
 }
-
-

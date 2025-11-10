@@ -9,7 +9,7 @@ import SituationalMatchTheSound from "../components/questions/SituationalMatchTh
 import SituationalDragAndDrop from "../components/questions/SituationalDragAndDrop.jsx";
 import SituationalQuestionWithVoice from "../components/questions/SituationalQuestionWithVoice.jsx";
 
-import { recordLevel2Answer } from "../../utils/recordAnswer.js";
+import { recordLevel3Answer } from "../../utils/recordAnswer.js";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 
@@ -147,14 +147,14 @@ function Level3Situation3() {
     }
   }
 
+  // FIX: Use Level3Question key for answers
   const allAnswered = questions.every((q) =>
-    ["Correct", "Wrong"].includes(answers[`2Question${q.id}`])
+    ["Correct", "Wrong"].includes(answers[`Level3Question${q.id}`])
   );
 
-  // In review mode, don't disable buttons
   function isAnswered(q) {
     if (reviewMode) return false;
-    const answer = answers[`Level2Question${q.id}`];
+    const answer = answers[`Level3Question${q.id}`];
     return answer === "Correct" || answer === "Wrong";
   }
 
@@ -178,7 +178,7 @@ function Level3Situation3() {
     if (savedReviewAnswered && Object.keys(answers).length > 0) {
       // Find all questions that were wrong
       const wrongQuestions = questions.filter((q) => {
-        const answer = answers[`Level2Question${q.id}`];
+        const answer = answers[`Level3Question${q.id}`];
         return answer === "Wrong";
       });
       setReviewQuestions(wrongQuestions);
@@ -188,14 +188,17 @@ function Level3Situation3() {
       setSelectedQuestion(null);
     }
   }, [answers]);
+
   return (
     <BackgroundLayout>
       <div className="w-full h-screen flex flex-col overflow-hidden">
         <PageHeaderLayout />
 
+        {/* Show Level 3 result preview when all answered */}
         {allAnswered && !reviewMode ? (
           <div className="flex-1 overflow-y-auto ">
             <LevelResultPreview
+              level={3}
               onReviewWrongQuestions={handleReviewWrongQuestions}
             />
           </div>
@@ -271,7 +274,7 @@ function Level3Situation3() {
                       className="flex flex-row gap-10 sm:gap-3 items-center justify-center flex-wrap"
                     >
                       {row.map((q) => {
-                        const answer = answers[`Level2Question${q.id}`];
+                        const answer = answers[`Level3Question${q.id}`];
                         let btnColor = "bg-white";
                         let textColor = "text-black";
                         let opacity = "";
@@ -326,7 +329,7 @@ function Level3Situation3() {
                       setReviewQuestions([]);
                       setReviewAnswered([]);
                       localStorage.removeItem("reviewAnswered");
-                      navigate("/level2-finish");
+                      navigate("/level3-finish"); // FIX route
                     }}
                   >
                     Sumunod

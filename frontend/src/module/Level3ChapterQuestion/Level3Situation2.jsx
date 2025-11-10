@@ -11,7 +11,7 @@ import Select4ChoicesWithVoice from "../components/questions/Situational4Questio
 import SituationalQuestionDragAndDrop from "../components/questions/SituationalQuestionDragAndDrop.jsx";
 import SituationalQuestionWithVoice from "../components/questions/SituationalQuestionWithVoice.jsx";
 
-import { recordLevel2Answer } from "../../utils/recordAnswer.js";
+import { recordLevel3Answer } from "../../utils/recordAnswer.js";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 
@@ -52,7 +52,7 @@ function Level3Situation2() {
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         setAnswers(userSnap.data().Level3Questions || {});
-        setUserName(userSnap.data().Name || userSnap.data().name || ""); // <-- Fetch actual user name from backend
+        setUserName(userSnap.data().Name || userSnap.data().name || "");
       }
     };
     fetchUser();
@@ -177,14 +177,14 @@ function Level3Situation2() {
     }
   }
 
+  // FIX: Use Level3Question key for answers
   const allAnswered = questions.every((q) =>
-    ["Correct", "Wrong"].includes(answers[`2Question${q.id}`])
+    ["Correct", "Wrong"].includes(answers[`Level3Question${q.id}`])
   );
 
-  // In review mode, don't disable buttons
   function isAnswered(q) {
     if (reviewMode) return false;
-    const answer = answers[`Level2Question${q.id}`];
+    const answer = answers[`Level3Question${q.id}`];
     return answer === "Correct" || answer === "Wrong";
   }
 
@@ -223,11 +223,18 @@ function Level3Situation2() {
       <div className="w-full h-screen flex flex-col overflow-hidden">
         <PageHeaderLayout />
 
+        {/* FIX: Show continue button instead of result preview */}
         {allAnswered && !reviewMode ? (
-          <div className="flex-1 overflow-y-auto ">
-            <LevelResultPreview
-              onReviewWrongQuestions={handleReviewWrongQuestions}
-            />
+          <div className="flex flex-col items-center justify-center flex-1">
+            <h2 className="text-2xl font-bold mb-4 text-white">
+              Sitwasyon 2 Completed!
+            </h2>
+            <button
+              className="bg-yellow-400 text-black font-bold py-2 px-6 rounded-xl border-2 border-black hover:bg-yellow-500 transition"
+              onClick={() => navigate("/level3-situation3")}
+            >
+              Magpatuloy sa Sitwasyon 3
+            </button>
           </div>
         ) : (
           <>
@@ -301,7 +308,7 @@ function Level3Situation2() {
                       className="flex flex-row gap-10 sm:gap-3 items-center justify-center flex-wrap"
                     >
                       {row.map((q) => {
-                        const answer = answers[`Level2Question${q.id}`];
+                        const answer = answers[`Level3Question${q.id}`];
                         let btnColor = "bg-white";
                         let textColor = "text-black";
                         let opacity = "";
@@ -318,7 +325,6 @@ function Level3Situation2() {
                             opacity = "opacity-50";
                           }
                         } else {
-                          // In review mode, make button green if answered
                           if (reviewAnswered.includes(q.id)) {
                             btnColor = "bg-green-400";
                             textColor = "text-white";
