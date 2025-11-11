@@ -7,6 +7,9 @@ import Logo from "../../assets/LingGO Logo.png";
 import PageHeaderLayout from "../components/PageHeaderLayout";
 import questions from "../../constant/questions_data.js";
 import questionsLevel2 from "../../constant/questionsl2_data.js";
+import situational_questions1 from "../../constant/Level3/SituationalQuestion1_data.js";
+import situational_questions2 from "../../constant/Level3/SituationalQuestion2_data.js";
+import situational_questions3 from "../../constant/Level3/SituationalQuestion3_data.js";
 
 function Level1Finish() {
   const navigate = useNavigate();
@@ -17,6 +20,13 @@ function Level1Finish() {
   
   // Get which level to display from navigation state or default to level 1
   const currentLevel = location.state?.level || 1;
+
+  // Combine all Level 3 questions
+  const questionsLevel3 = [
+    ...situational_questions1,
+    ...situational_questions2,
+    ...situational_questions3,
+  ];
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -33,6 +43,8 @@ function Level1Finish() {
               setAnswers(userData.Level1Questions || {});
             } else if (currentLevel === 2) {
               setAnswers(userData.Level2Questions || {});
+            } else if (currentLevel === 3) {
+              setAnswers(userData.Level3Questions || {});
             }
           }
         } catch (error) {
@@ -53,38 +65,74 @@ function Level1Finish() {
   }, []);
 
   // Select questions and prefix based on current level
-  const questionsArray = currentLevel === 1 ? questions : questionsLevel2;
-  const questionPrefix = currentLevel === 1 ? "Level1" : "Level2";
+  const questionsArray = 
+    currentLevel === 1 ? questions : 
+    currentLevel === 2 ? questionsLevel2 : 
+    questionsLevel3;
+  
+  const questionPrefix = 
+    currentLevel === 1 ? "Level1" : 
+    currentLevel === 2 ? "Level2" : 
+    "Level3";
 
   const totalPoints = questionsArray.reduce((sum, q) => {
-    if (
-      q.type === "MatchingWordsWithWords" ||
-      q.type === "MatchingWordsWithImage"
-    ) {
-      return sum + q.correctAnswer.length;
-    }
-    return sum + 1;
-  }, 0);
-
-  const earnedPoints = questionsArray.reduce((sum, q) => {
-    const answer = answers[`${questionPrefix}Question${q.id}`];
-    if (answer === "Correct") {
-      if (
-        q.type === "MatchingWordsWithWords" ||
-        q.type === "MatchingWordsWithImage"
-      ) {
-        return sum + q.correctAnswer.length;
+  switch (currentLevel) {
+    case 1:
+      if (q.type === "MatchingWordsWithWords" || q.type === "MatchingWordsWithImage") {
+        return sum + q.correctAnswer.length; 
       }
-      return sum + 1;
-    }
-    return sum;
-  }, 0);
+      return sum + 1; 
+    case 2:
+      if (q.type === "MatchingWordsWithWords" || q.type === "MatchingWordsWithImage") {
+        return sum + q.correctAnswer.length; // 1 point per pair (or *2 for 2 points per pair)
+      } else if (q.type === "SpeechMicWithVoice") {
+        return sum + 2;
+      }
+      return sum + 1; 
+    case 3:
+      return sum + 2; 
+    default:
+      return sum;
+  }
+}, 0);
 
-  const percentage = ((earnedPoints / totalPoints) * 100).toFixed(1);
+const earnedPoints = questionsArray.reduce((sum, q) => {
+  const answer = answers[`${questionPrefix}Question${q.id}`];
+  if (answer === "Correct") {
+    switch (currentLevel) {
+      case 1:
+        if (q.type === "MatchingWordsWithWords" || q.type === "MatchingWordsWithImage") {
+          return sum + q.correctAnswer.length;
+        }
+        return sum + 1;
+      case 2:
+        if (q.type === "MatchingWordsWithWords" || q.type === "MatchingWordsWithImage") {
+          return sum + q.correctAnswer.length;
+        } else if (q.type === "SpeechMicWithVoice") {
+          return sum + 2;
+        }
+        return sum + 1;
+      case 3:
+        return sum + 2;
+      default:
+        return sum;
+    }
+  }
+  return sum;
+}, 0);
+
+const percentage = ((earnedPoints / totalPoints) * 100).toFixed(1);
 
   // Dynamic title and subtitle based on level
-  const levelTitle = currentLevel === 1 ? "Unang Antas" : "Ikalawang Antas";
-  const levelSubtitle = currentLevel === 1 ? "MGA SALITA" : "MGA PARIRALA";
+  const levelTitle = 
+    currentLevel === 1 ? "Unang Antas" : 
+    currentLevel === 2 ? "Ikalawang Antas" : 
+    "Ikatlong Antas";
+  
+  const levelSubtitle = 
+    currentLevel === 1 ? "MGA SALITA" : 
+    currentLevel === 2 ? "MGA PARIRALA" : 
+    "DISKURSO";
 
   const handleLogout = () => {
     localStorage.clear();

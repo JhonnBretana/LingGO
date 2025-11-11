@@ -58,6 +58,7 @@ import Level3 from "./module/AccountModule/LevelThreeChapter.jsx";
 import Level3Situation1 from "./module/Level3ChapterQuestion/Level3Situation1.jsx";
 import Level3Situation2 from "./module/Level3ChapterQuestion/Level3Situation2.jsx";
 import Level3Situation3 from "./module/Level3ChapterQuestion/Level3Situation3.jsx";
+import Level3ResultPreview from "./module/components/Level3ResultPreview.jsx";
 
 
 import LevelTwo from "./module/AccountModule/LevelTwo.jsx";
@@ -176,6 +177,9 @@ function App() {
         <Route path="/level1-finish" element={<Level1Finish />} />
         <Route path="/level1-finish-choice" element={<Level1FinishChoice />} />
         <Route path="/level1-return" element={<Level1Return />} />
+        <Route path="/level3-result-preview" element={<Level3ResultPreview />} />
+
+
       </Routes>
     </div>
   );

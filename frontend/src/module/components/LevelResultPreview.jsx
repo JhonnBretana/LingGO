@@ -4,64 +4,72 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import Logo from "../../assets/LingGO Logo.png";
 
-function LevelResultPreview({ level, questions, onReviewWrongQuestions }) {
+function LevelResultPreview({ level = 1, questions = [], onReviewWrongQuestions = () => {} }) {
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
-    if (!userId) return;
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
     const fetchUser = async () => {
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         let levelAnswers = {};
         if (level === 1) levelAnswers = userSnap.data().Level1Questions || {};
-        else if (level === 2)
-          levelAnswers = userSnap.data().Level2Questions || {};
-        else if (level === 3)
-          levelAnswers = userSnap.data().Level3Questions || {};
+        else if (level === 2) levelAnswers = userSnap.data().Level2Questions || {};
+        else if (level === 3) levelAnswers = userSnap.data().Level3Questions || {};
         setAnswers(levelAnswers);
       }
       setLoading(false);
     };
+
     fetchUser();
   }, [level]);
 
   if (loading) return <div className="p-8 text-center">Loading...</div>;
 
-  // Calculate total possible points
-  const totalPoints = questions.reduce((sum, q) => {
-    if (
-      q.type === "MatchingWordsWithWords" ||
-      q.type === "MatchingWordsWithImage"
-    ) {
-      return sum + (q.correctAnswer?.length || 1);
+  const safeQuestions = Array.isArray(questions) ? questions : [];
+
+  // Calculate total points
+  const totalPoints = safeQuestions.reduce((sum, q) => {
+    if (!q) return sum;
+
+    // Matching questions can have multiple correct answers
+    if (q.type === "MatchingWordsWithWords" || q.type === "MatchingWordsWithImage") {
+      return sum + (Array.isArray(q.correctAnswer) ? q.correctAnswer.length : 1);
     }
+
+    // Other types are single point per question
     return sum + 1;
   }, 0);
 
   // Calculate earned points
-  const earnedPoints = questions.reduce((sum, q) => {
+  const earnedPoints = safeQuestions.reduce((sum, q) => {
+    if (!q) return sum;
+
     const answer = answers[`Level${level}Question${q.id}`];
+
     if (answer === "Correct") {
-      if (
-        q.type === "MatchingWordsWithWords" ||
-        q.type === "MatchingWordsWithImage"
-      ) {
-        return sum + (q.correctAnswer?.length || 1);
+      if (q.type === "MatchingWordsWithWords" || q.type === "MatchingWordsWithImage") {
+        return sum + (Array.isArray(q.correctAnswer) ? q.correctAnswer.length : 1);
       }
-      return sum + 1;
+      return sum + 1; // Single point for other question types
     }
+
     return sum;
   }, 0);
 
-  const wrongQuestions = questions.filter(
+  const wrongQuestions = safeQuestions.filter(
     (q) => answers[`Level${level}Question${q.id}`] === "Wrong"
   );
 
-  const percentage = ((earnedPoints / totalPoints) * 100).toFixed(1);
+  const percentage = totalPoints === 0 ? "0.0" : ((earnedPoints / totalPoints) * 100).toFixed(1);
   const isPerfectScore = wrongQuestions.length === 0;
 
   return (

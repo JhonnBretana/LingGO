@@ -273,13 +273,13 @@ function Level2Questions() {
       const earnedPoints = questions.reduce((sum, q) => {
         const answer = answers[`Level2Question${q.id}`];
         if (answer === "Correct") {
-          if (
-            q.type === "MatchingWordsWithWords" ||
-            q.type === "MatchingWordsWithImage"
-          ) {
-            return sum + q.correctAnswer.length;
+          if (q.type === "MatchingWordsWithWords" || q.type === "MatchingWordsWithImage") {
+            return sum + q.correctAnswer.length; // 1 point per pair
+          } else if (q.type === "SpeechMicWithVoice") {
+            return sum + 2; // SpeechMicWithVoice = 2 points
+          } else {
+            return sum + 1; // normal question = 1 point
           }
-          return sum + 1;
         }
         return sum;
       }, 0);

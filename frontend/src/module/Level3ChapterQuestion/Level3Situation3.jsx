@@ -4,13 +4,15 @@ import BackgroundLayout from "../../module/components/BackgroundLayout.jsx";
 import QuestionsBar from "../../assets/clickbar.png";
 import PageHeaderLayout from "../../module/components/PageHeaderLayout";
 import questions from "../../constant/Level3/SituationalQuestion3_data.js";
+import situational_questions1 from "../../constant/Level3/SituationalQuestion1_data.js";
+import situational_questions2 from "../../constant/Level3/SituationalQuestion2_data.js";
 
 import SituationalMatchTheSound from "../components/questions/SituationalMatchTheSound.jsx";
 import SituationalDragAndDrop from "../components/questions/SituationalDragAndDrop.jsx";
 import SituationalQuestionWithVoice from "../components/questions/SituationalQuestionWithVoice.jsx";
 
 import { recordLevel3Answer } from "../../utils/recordAnswer.js";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 
 import LevelResultPreview from "../components/LevelResultPreview.jsx";
@@ -33,7 +35,6 @@ function Level3Situation3() {
   const [reviewQuestions, setReviewQuestions] = useState([]);
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
-  // Use either all questions or only wrong ones in review mode
   const displayQuestions = reviewMode ? reviewQuestions : questions;
   const totalPages = Math.ceil(displayQuestions.length / QUESTIONS_PER_PAGE);
   const startIdx = (page - 1) * QUESTIONS_PER_PAGE;
@@ -42,18 +43,47 @@ function Level3Situation3() {
   const questionRows = groupIntoRows(paginatedQuestions, 2);
   const [reviewAnswered, setReviewAnswered] = useState([]);
 
+  // Combine all Level 3 questions
+  const allLevel3Questions = [
+    ...situational_questions1,
+    ...situational_questions2,
+    ...questions, 
+  ];
+
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
     if (!userId) return;
-    const fetchUser = async () => {
+    
+    const fetchData = async () => {
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
-        setAnswers(userSnap.data().Level3Questions || {});
-        setUserName(userSnap.data().Name || userSnap.data().name || ""); // <-- Fetch actual user name from backend
+        const userData = userSnap.data();
+        const level3Answers = userData.Level3Questions || {};
+        const wrongAnswered = userData.WrongQuestionsAnsweredLevel3Situation3 || {};
+
+        setAnswers(level3Answers);
+        setUserName(userData.Name || userData.name || "");
+
+        const wrongQuestions = questions.filter((q) => {
+          const answer = level3Answers[`Level3Question${q.id}`];
+          return answer === "Wrong";
+        });
+
+        if (wrongQuestions.length > 0) {
+          const alreadyAnswered = wrongQuestions
+            .filter((q) => wrongAnswered[`Level3Question${q.id}`] === true)
+            .map((q) => q.id);
+
+          setReviewQuestions(wrongQuestions);
+          setReviewAnswered(alreadyAnswered);
+          setReviewMode(true);
+          setPage(1);
+        }
       }
     };
-    fetchUser();
+
+    fetchData();
   }, []);
 
   async function fetchAnswers() {
@@ -82,19 +112,35 @@ function Level3Situation3() {
     const instructionSub = question.instructionSub?.replace("(name)", userName);
     const characterName = question.characterName?.replace("(name)", userName);
 
-    const handleCorrectAnswer = () => {
-      if (reviewMode) {
-        setReviewAnswered((prev) => [...prev, question.id]);
-      } else if (userId) {
-        recordLevel3Answer(userId, question.id, true);
-        fetchAnswers();
+    const handleCorrectAnswer = async () => {
+  console.log('🎯 Correct answer clicked! Question:', question.id);
+  
+  try {
+    if (reviewMode) {
+      setReviewAnswered((prev) => [...prev, question.id]);
+      if (userId) {
+        const userRef = doc(db, "users", userId);
+        await updateDoc(userRef, {
+          [`WrongQuestionsAnsweredLevel3Situation1.Level3Question${question.id}`]: true,
+        });
+        await fetchAnswers();
       }
-      setSelectedQuestion(null);
-    };
+    } else if (userId) {
+      console.log('📝 Calling recordLevel3Answer...', userId, question.id);
+      await recordLevel3Answer(userId, question.id, true, 2);
+      console.log('✅ recordLevel3Answer completed');
+      await fetchAnswers();
+    }
+    setSelectedQuestion(null);
+  } catch (error) {
+    console.error('❌ Error in handleCorrectAnswer:', error);
+    alert('Failed to save answer. Please try again.');
+  }
+};
 
-    const handleWrongAnswer = () => {
+    const handleWrongAnswer = async () => {
       if (!reviewMode && userId) {
-        recordLevel3Answer(userId, question.id, false);
+        await recordLevel3Answer(userId, question.id, false);
         fetchAnswers();
       }
       setSelectedQuestion(null);
@@ -147,7 +193,6 @@ function Level3Situation3() {
     }
   }
 
-  // FIX: Use Level3Question key for answers
   const allAnswered = questions.every((q) =>
     ["Correct", "Wrong"].includes(answers[`Level3Question${q.id}`])
   );
@@ -158,50 +203,22 @@ function Level3Situation3() {
     return answer === "Correct" || answer === "Wrong";
   }
 
-  // Save reviewAnswered to localStorage whenever it changes
-  useEffect(() => {
-    if (reviewMode) {
-      localStorage.setItem("reviewAnswered", JSON.stringify(reviewAnswered));
-    }
-  }, [reviewAnswered, reviewMode]);
-
-  useEffect(() => {
-    if (reviewMode) {
-      const saved = localStorage.getItem("reviewAnswered");
-      if (saved) setReviewAnswered(JSON.parse(saved));
-    }
-  }, [reviewMode]);
-
-  useEffect(() => {
-    // Only run when answers are loaded
-    const savedReviewAnswered = localStorage.getItem("reviewAnswered");
-    if (savedReviewAnswered && Object.keys(answers).length > 0) {
-      // Find all questions that were wrong
-      const wrongQuestions = questions.filter((q) => {
-        const answer = answers[`Level3Question${q.id}`];
-        return answer === "Wrong";
-      });
-      setReviewQuestions(wrongQuestions);
-      setReviewMode(true);
-      setReviewAnswered(JSON.parse(savedReviewAnswered));
-      setPage(1);
-      setSelectedQuestion(null);
-    }
-  }, [answers]);
-
   return (
     <BackgroundLayout>
       <div className="w-full h-screen flex flex-col overflow-hidden">
         <PageHeaderLayout />
 
-        {/* Show Level 3 result preview when all answered */}
         {allAnswered && !reviewMode ? (
-          <div className="flex-1 overflow-y-auto">
-            <LevelResultPreview
-              level={3}
-              questions={questions}
-              onReviewWrongQuestions={handleReviewWrongQuestions}
-            />
+          <div className="flex flex-col items-center justify-center flex-1">
+            <h2 className="text-2xl font-bold mb-4 text-white">
+              Sitwasyon 3 Completed!
+            </h2>
+            <button
+              className="bg-yellow-400 text-black font-bold py-2 px-6 rounded-xl border-2 border-black hover:bg-yellow-500 transition"
+              onClick={() => navigate("/level3-result-preview")}
+            >
+              Tingnan ang Resulta
+            </button>
           </div>
         ) : (
           <>
@@ -229,7 +246,6 @@ function Level3Situation3() {
               </div>
             )}
 
-            {/* Wrong Questions Component */}
             {selectedQuestion ? (
               <div className="flex-1 overflow-auto">
                 {renderQuestionComponent(selectedQuestion)}
@@ -292,7 +308,6 @@ function Level3Situation3() {
                             opacity = "opacity-50";
                           }
                         } else {
-                          // In review mode, make button green if answered
                           if (reviewAnswered.includes(q.id)) {
                             btnColor = "bg-green-400";
                             textColor = "text-white";
@@ -325,12 +340,30 @@ function Level3Situation3() {
                         reviewAnswered.includes(q.id)
                       )
                     }
-                    onClick={() => {
+                    onClick={async () => {
+                      const userId = localStorage.getItem("linggoUserId");
+                      if (userId && reviewQuestions.length > 0) {
+                        const userRef = doc(db, "users", userId);
+                        const updates = {};
+
+                        reviewQuestions.forEach((q) => {
+                          updates[
+                            `WrongQuestionsAnsweredLevel3Situation3.Level3Question${q.id}`
+                          ] = true;
+                        });
+
+                        updates["Level3Situation3ReviewCompleted"] = true;
+
+                        await updateDoc(userRef, updates);
+                      }
+
                       setReviewMode(false);
                       setReviewQuestions([]);
                       setReviewAnswered([]);
                       localStorage.removeItem("reviewAnswered");
-                      navigate("/level3-finish"); // FIX route
+                      
+                      // Situation 3 is the last one, so always go to finish
+                      navigate("/level1-finish");
                     }}
                   >
                     Sumunod

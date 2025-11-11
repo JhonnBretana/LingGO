@@ -75,6 +75,7 @@ const Questionwith4ChoicesSituational = ({
   onCorrectAnswer,
   onWrongAnswer,
   answer,
+  showWrongOverlay = true,
 }) => {
   const [bank, setBank] = useState(choices);
   const [answerArea, setAnswerArea] = useState([]);
@@ -123,17 +124,22 @@ const Questionwith4ChoicesSituational = ({
 
   const handleSubmit = () => {
     const userAnswer = answerArea.join(" ");
+    
     if (userAnswer === answer) {
       setShowCorrect(true);
       setSubmitted(true);
-      if (onCorrectAnswer) {
-        onCorrectAnswer(); // <-- Record immediately!
-      }
     } else {
-      setShowWrong(true);
-      setSubmitted(true);
-      if (onWrongAnswer) {
-        onWrongAnswer();
+      if (showWrongOverlay) {
+        setShowWrong(true);
+        setSubmitted(true);
+      } else {
+        // Review mode - don't show modal, just reset and call callback
+        setAnswerArea([]);
+        setBank(choices);
+        setSubmitted(false);
+        if (onWrongAnswer) {
+          onWrongAnswer();
+        }
       }
     }
   };
@@ -143,13 +149,15 @@ const Questionwith4ChoicesSituational = ({
     setAnswerArea([]);
     setBank(choices);
     setSubmitted(false);
-    // if (onCorrectAnswer) {
-    //   onCorrectAnswer();
-    // }
+    if (onCorrectAnswer) {
+      onCorrectAnswer();
+    }
   };
 
   const handleCloseWrongModal = () => {
     setShowWrong(false);
+    setAnswerArea([]);
+    setBank(choices);
     setSubmitted(false);
     if (onWrongAnswer) {
       onWrongAnswer();
@@ -168,7 +176,7 @@ const Questionwith4ChoicesSituational = ({
           />
           <div className="absolute inset-0 flex items-center justify-center">
             <p
-              className="font-medium text-center text-xl text-black drop-shadow-[2px_2px_0px_white]  w-full max-w-md px-10"
+              className="font-medium text-center text-xl text-black drop-shadow-[2px_2px_0px_white] w-full max-w-md px-10"
               style={{
                 fontFamily: "'Fredoka', sans-serif",
                 fontWeight: "bold",
@@ -183,7 +191,7 @@ const Questionwith4ChoicesSituational = ({
       {/* Instruction Bubble */}
       <div className="flex flex-row items-center gap-2 w-full max-w-md">
         <div className="flex flex-col relative">
-          <div className="absolute top-[50px] right-[40px]  z-10 w-[150px]">
+          <div className="absolute top-[50px] right-[40px] z-10 w-[150px]">
             <span className="font-bold text-black text-base">
               {instruction}
             </span>
@@ -198,7 +206,7 @@ const Questionwith4ChoicesSituational = ({
       {/* Character Name */}
       {characterName && (
         <div
-          className="font-medium text-right text-xl text-white drop-shadow-[2px_3px_1px_black]  w-full max-w-md px-10"
+          className="font-medium text-right text-xl text-white drop-shadow-[2px_3px_1px_black] w-full max-w-md px-10"
           style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: "bold" }}
         >
           {characterName}
@@ -220,7 +228,7 @@ const Questionwith4ChoicesSituational = ({
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
-            <div className="flex flex-col gap-6 w-full items-center ">
+            <div className="flex flex-col gap-6 w-full items-center">
               {/* Answer Dropzone */}
               <SortableContext
                 items={answerArea}

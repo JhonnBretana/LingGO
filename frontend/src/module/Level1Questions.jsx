@@ -280,6 +280,7 @@ function Level1Questions() {
         {allAnswered && !reviewMode ? (
           <div className="flex-1 overflow-y-auto">
             <LevelResultPreview
+            questions={questions}
               onReviewWrongQuestions={handleReviewWrongQuestions}
             />
           </div>

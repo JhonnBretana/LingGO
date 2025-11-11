@@ -122,18 +122,45 @@ function SituationalDragAndDrop({
   };
 
   const handleSubmit = () => {
-    const userAnswer = answerArea.join(" ");
+    console.log("Submit clicked!"); // DEBUG
+    const normalize = (s) =>
+      s
+        .replace(/['']/g, "'") // convert smart quotes
+        .replace(/\s+/g, " ") // collapse extra spaces
+        .trim()
+        .toLowerCase();
 
-    if (userAnswer === answer) {
+    const userAnswer = normalize(answerArea.join(" "));
+    const correctAnswer = normalize(answer);
+
+    console.log("User answer:", userAnswer); // DEBUG
+    console.log("Correct answer:", correctAnswer); // DEBUG
+    console.log("Match:", userAnswer === correctAnswer); // DEBUG
+
+    if (userAnswer === correctAnswer) {
+      console.log("CORRECT! Showing modal..."); // DEBUG
       setShowCorrect(true);
       setSubmitted(true);
     } else {
-      setShowWrong(true);
+      console.log("WRONG! showWrongOverlay:", showWrongOverlay); // DEBUG
+      if (showWrongOverlay) {
+        setShowWrong(true);
+      } else {
+        // Review mode - just call callback without modal
+        setAnswerArea([]);
+        setBank(choices);
+        setSubmitted(false);
+        if (onWrongAnswer) {
+          onWrongAnswer();
+        }
+        return;
+      }
       setSubmitted(true);
     }
   };
 
   const handleCloseCorrectModal = () => {
+    console.log("Closing correct modal"); // DEBUG
     setShowCorrect(false);
     setAnswerArea([]);
     setBank(choices);
@@ -144,12 +171,17 @@ function SituationalDragAndDrop({
   };
 
   const handleCloseWrongModal = () => {
+    console.log("Closing wrong modal"); // DEBUG
     setShowWrong(false);
+    setAnswerArea([]);
+    setBank(choices);
     setSubmitted(false);
     if (onWrongAnswer) {
       onWrongAnswer();
     }
   };
+
+  console.log("Render - showCorrect:", showCorrect, "showWrong:", showWrong); // DEBUG
 
   return (
     <div className="flex flex-col items-center w-full px-2 pt-2 gap-2">
@@ -163,7 +195,7 @@ function SituationalDragAndDrop({
           />
           <div className="absolute inset-0 flex items-center justify-center">
             <p
-              className="font-medium text-center text-xl text-black drop-shadow-[2px_2px_0px_white]  w-full max-w-md px-10"
+              className="font-medium text-center text-xl text-black drop-shadow-[2px_2px_0px_white] w-full max-w-md px-10"
               style={{
                 fontFamily: "'Fredoka', sans-serif",
                 fontWeight: "bold",
@@ -177,7 +209,7 @@ function SituationalDragAndDrop({
 
       {characterName && (
         <div
-          className="font-medium text-right text-xl text-white drop-shadow-[2px_3px_1px_black]  w-full max-w-md px-10"
+          className="font-medium text-right text-xl text-white drop-shadow-[2px_3px_1px_black] w-full max-w-md px-10"
           style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: "bold" }}
         >
           {characterName}
@@ -199,7 +231,7 @@ function SituationalDragAndDrop({
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
-            <div className="flex flex-col gap-6 w-full items-center ">
+            <div className="flex flex-col gap-6 w-full items-center">
               {/* Answer Dropzone */}
               <SortableContext
                 items={answerArea}
@@ -244,11 +276,12 @@ function SituationalDragAndDrop({
       )}
 
       <div className="flex flex-row items-center gap-2 w-full max-w-md mt-10">
-        <div className="flex flex-col relative  w-full">
+        <div className="flex flex-col relative w-full">
           <img src={Convo2} alt="Character" className="w-95" />
         </div>
       </div>
-      {/* Modals */}
+
+      {/* Modals - Always render them */}
       <CorrectAnswerModal
         isOpen={showCorrect}
         onClose={handleCloseCorrectModal}
