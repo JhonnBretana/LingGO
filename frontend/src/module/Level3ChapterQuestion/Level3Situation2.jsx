@@ -271,12 +271,13 @@ function Level3Situation2() {
             {renderQuestionComponent(selectedQuestion)}
           </div>
         ) : (
-          <div className="flex flex-col items-center flex-1 py-4 overflow-y-auto mt-20">
-            <div className="relative w-85 max-w-full px-4 my-5">
+          <div className="flex flex-col items-center flex-1 py-2 sm:py-4 overflow-y-auto mt-12 sm:mt-16 md:mt-20">
+            {/* Questions Bar - Responsive sizing */}
+            <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl px-2 xs:px-3 sm:px-4 my-2 sm:my-3 md:my-5">
               <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center px-2 xs:px-4 sm:px-6">
                 <span
-                  className="font-medium text-center text-xl text-black drop-shadow-[2px_2px_0px_white]  w-full max-w-md px-10"
+                  className="font-medium text-center text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl text-black drop-shadow-[1px_1px_0px_white] sm:drop-shadow-[2px_2px_0px_white] w-full"
                   style={{
                     fontFamily: "'Fredoka', sans-serif",
                     fontWeight: "bold",
@@ -287,9 +288,10 @@ function Level3Situation2() {
               </div>
             </div>
 
-            <div className="relative w-85 max-w-full px-4 my-5 flex justify-center">
+            {/* Description Text - Responsive sizing */}
+            <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl px-2 xs:px-3 sm:px-4 my-2 sm:my-3 md:my-5 flex justify-center">
               <span
-                className="font-medium text-center text-2xl text-white drop-shadow-[2px_2px_0px_black]"
+                className="font-medium text-center text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-white drop-shadow-[1px_1px_0px_black] sm:drop-shadow-[2px_2px_0px_black] leading-tight sm:leading-normal"
                 style={{
                   fontFamily: "'Fredoka', sans-serif",
                   fontWeight: "bold",
@@ -300,11 +302,12 @@ function Level3Situation2() {
               </span>
             </div>
 
-            <div className="flex flex-col gap-2 sm:gap-3 w-full max-w-full px-2 sm:px-4 my-4">
+            {/* Question Buttons Grid - Responsive layout */}
+            <div className="flex flex-col gap-2 xs:gap-2.5 sm:gap-3 md:gap-4 w-full max-w-[300px] xs:max-w-[340px] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-3xl px-2 xs:px-3 sm:px-4 my-2 sm:my-3 md:my-4">
               {questionRows.map((row, rowIdx) => (
                 <div
                   key={rowIdx}
-                  className="flex flex-row gap-10 sm:gap-3 items-center justify-center flex-wrap"
+                  className="flex flex-row gap-2 xs:gap-3 sm:gap-4 md:gap-6 lg:gap-8 xl:gap-10 items-center justify-center flex-wrap"
                 >
                   {row.map((q) => {
                     const answer = answers[`Level3Question${q.id}`];
@@ -335,7 +338,7 @@ function Level3Situation2() {
                     return (
                       <button
                         key={q.id}
-                        className={`w-[140px] h-[100px] sm:w-40 max-w-[calc(50%-0.25rem)] text-center ${btnColor} ${textColor} ${opacity} text-5xl sm:text-lg font-bold py-3 px-2 sm:px-4 rounded-3xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
+                        className={`w-[120px] h-[80px] sm:w-[140px] sm:h-[100px] md:w-[160px] md:h-[110px] lg:w-40 lg:h-[100px] max-w-[calc(50%-0.5rem)] text-center ${btnColor} ${textColor} ${opacity} text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text font-bold py-2 sm:py-3 px-2 sm:px-4 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
                         style={{ fontFamily: "'Fredoka', sans-serif" }}
                         onClick={() => !disabled && setSelectedQuestion(q)}
                         disabled={disabled}
@@ -348,9 +351,23 @@ function Level3Situation2() {
               ))}
             </div>
 
+            {/* Review Mode Button - Responsive sizing */}
             {reviewMode && (
               <button
-                className="w-40 bg-white text-black text-lg font-bold my-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="
+                  w-32 xs:w-36 sm:w-40 md:w-44 lg:w-48
+                  bg-white text-black 
+                  text-sm xs:text-base sm:text-lg md:text-xl 
+                  font-bold 
+                  my-3 sm:my-4 md:my-5 
+                  py-1.5 xs:py-2 sm:py-2.5 md:py-3 
+                  px-3 xs:px-4 sm:px-5 md:px-6 
+                  rounded-xl sm:rounded-2xl 
+                  border-2 border-black 
+                  hover:bg-[#f2d919] active:bg-[#f2d919] 
+                  transition-colors duration-200 
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                "
                 disabled={
                   !reviewQuestions.every((q) => reviewAnswered.includes(q.id))
                 }
