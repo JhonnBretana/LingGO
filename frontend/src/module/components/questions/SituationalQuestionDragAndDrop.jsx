@@ -3,67 +3,6 @@ import QuestionsBar from "../../../assets/clickbar.png";
 import BoyAtTheMarket from "/assets/ImageChoices/boyatthemarket.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  rectSortingStrategy,
-} from "@dnd-kit/sortable";
-import { useDroppable } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
-
-function SortableItem({ id, children }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    zIndex: isDragging ? 10 : "auto",
-  };
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className={`px-2 py-2 text-sm rounded-lg bg-blue-100 text-black font-bold border border-blue-400 transition text-center cursor-move select-none
-        ${isDragging ? "bg-yellow-200 border-yellow-400" : ""}
-      `}
-    >
-      {children}
-    </div>
-  );
-}
-
-function DroppableZone({ id, children }) {
-  const { setNodeRef, isOver } = useDroppable({
-    id,
-  });
-
-  return (
-    <div
-      ref={setNodeRef}
-      className={`flex flex-row flex-wrap gap-3 min-h-[56px] w-90 justify-center items-center p-4 transition ${
-        isOver ? "bg-yellow-50" : ""
-      } ${id === "answer-dropzone" ? "border-b-4 border-black" : ""}`}
-    >
-      {children}
-    </div>
-  );
-}
 
 function SituationalQuestionDragAndDrop({
   situation,
@@ -82,43 +21,22 @@ function SituationalQuestionDragAndDrop({
   const [showWrong, setShowWrong] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    })
-  );
-
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (!over) return;
-
-    // Reorder within answer area
-    if (
-      answerArea.includes(active.id) &&
-      answerArea.includes(over.id) &&
-      active.id !== over.id
-    ) {
-      const oldIndex = answerArea.indexOf(active.id);
-      const newIndex = answerArea.indexOf(over.id);
-      setAnswerArea((items) => arrayMove(items, oldIndex, newIndex));
-      return;
+  const handleChoiceClick = (choice) => {
+    if (submitted) return;
+    
+    if (bank.includes(choice)) {
+      // Move from bank to answer area
+      setBank((prev) => prev.filter((item) => item !== choice));
+      setAnswerArea((prev) => [...prev, choice]);
     }
+  };
 
-    // From bank to answer area
-    if (bank.includes(active.id) && over.id === "answer-dropzone") {
-      setBank((prev) => prev.filter((item) => item !== active.id));
-      setAnswerArea((prev) => [...prev, active.id]);
-      return;
-    }
-
-    // From answer area back to bank
-    if (answerArea.includes(active.id) && over.id === "bank-dropzone") {
-      setAnswerArea((prev) => prev.filter((item) => item !== active.id));
-      setBank((prev) => [...prev, active.id]);
-      return;
-    }
+  const handleAnswerClick = (choice) => {
+    if (submitted) return;
+    
+    // Move from answer area back to bank
+    setAnswerArea((prev) => prev.filter((item) => item !== choice));
+    setBank((prev) => [...prev, choice]);
   };
 
   const handleSubmit = () => {
@@ -229,44 +147,41 @@ function SituationalQuestionDragAndDrop({
             {question}
           </div>
 
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <div className="flex flex-col gap-6 w-full items-center ">
-              {/* Answer Dropzone */}
-              <SortableContext
-                items={answerArea}
-                strategy={rectSortingStrategy}
-              >
-                <DroppableZone id="answer-dropzone">
-                  {answerArea.length === 0 ? (
-                    <span className="text-gray-400 italic">
-                      I-drag dito ang sagot
-                    </span>
-                  ) : (
-                    answerArea.map((choice) => (
-                      <SortableItem key={choice} id={choice}>
-                        {choice}
-                      </SortableItem>
-                    ))
-                  )}
-                </DroppableZone>
-              </SortableContext>
-
-              {/* Choices Bank */}
-              <SortableContext items={bank} strategy={rectSortingStrategy}>
-                <DroppableZone id="bank-dropzone">
-                  {bank.map((choice) => (
-                    <SortableItem key={choice} id={choice}>
-                      {choice}
-                    </SortableItem>
-                  ))}
-                </DroppableZone>
-              </SortableContext>
+          <div className="flex flex-col gap-6 w-full items-center">
+            {/* Answer Area */}
+            <div className="flex flex-row flex-wrap gap-3 min-h-[56px] w-90 justify-center items-center p-4 border-b-4 border-black">
+              {answerArea.length === 0 ? (
+                <span className="text-gray-400 italic">
+                  I-click ang mga salita
+                </span>
+              ) : (
+                answerArea.map((choice, index) => (
+                  <button
+                    key={`${choice}-${index}`}
+                    onClick={() => handleAnswerClick(choice)}
+                    disabled={submitted}
+                    className="px-4 py-2 text-lg rounded-lg bg-green-100 text-black font-bold border border-green-400 hover:bg-green-200 transition text-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {choice}
+                  </button>
+                ))
+              )}
             </div>
-          </DndContext>
+
+            {/* Choices Bank */}
+            <div className="flex flex-row flex-wrap gap-3 min-h-[56px] w-90 justify-center items-center p-4">
+              {bank.map((choice, index) => (
+                <button
+                  key={`${choice}-${index}`}
+                  onClick={() => handleChoiceClick(choice)}
+                  disabled={submitted}
+                  className="px-2 py-2 text-sm rounded-lg bg-blue-100 text-black font-bold border border-blue-400 hover:bg-blue-200 transition text-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {choice}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <button
             className="mt-6 px-6 py-2 bg-yellow-400 text-black font-bold rounded-lg hover:bg-yellow-500 transition disabled:opacity-50"
