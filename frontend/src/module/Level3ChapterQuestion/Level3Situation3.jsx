@@ -47,20 +47,21 @@ function Level3Situation3() {
   const allLevel3Questions = [
     ...situational_questions1,
     ...situational_questions2,
-    ...questions, 
+    ...questions,
   ];
 
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
     if (!userId) return;
-    
+
     const fetchData = async () => {
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         const userData = userSnap.data();
         const level3Answers = userData.Level3Questions || {};
-        const wrongAnswered = userData.WrongQuestionsAnsweredLevel3Situation3 || {};
+        const wrongAnswered =
+          userData.WrongQuestionsAnsweredLevel3Situation3 || {};
 
         setAnswers(level3Answers);
         setUserName(userData.Name || userData.name || "");
@@ -113,30 +114,30 @@ function Level3Situation3() {
     const characterName = question.characterName?.replace("(name)", userName);
 
     const handleCorrectAnswer = async () => {
-  console.log('🎯 Correct answer clicked! Question:', question.id);
-  
-  try {
-    if (reviewMode) {
-      setReviewAnswered((prev) => [...prev, question.id]);
-      if (userId) {
-        const userRef = doc(db, "users", userId);
-        await updateDoc(userRef, {
-          [`WrongQuestionsAnsweredLevel3Situation1.Level3Question${question.id}`]: true,
-        });
-        await fetchAnswers();
+      console.log("🎯 Correct answer clicked! Question:", question.id);
+
+      try {
+        if (reviewMode) {
+          setReviewAnswered((prev) => [...prev, question.id]);
+          if (userId) {
+            const userRef = doc(db, "users", userId);
+            await updateDoc(userRef, {
+              [`WrongQuestionsAnsweredLevel3Situation1.Level3Question${question.id}`]: true,
+            });
+            await fetchAnswers();
+          }
+        } else if (userId) {
+          console.log("📝 Calling recordLevel3Answer...", userId, question.id);
+          await recordLevel3Answer(userId, question.id, true, 2);
+          console.log("✅ recordLevel3Answer completed");
+          await fetchAnswers();
+        }
+        setSelectedQuestion(null);
+      } catch (error) {
+        console.error("❌ Error in handleCorrectAnswer:", error);
+        alert("Failed to save answer. Please try again.");
       }
-    } else if (userId) {
-      console.log('📝 Calling recordLevel3Answer...', userId, question.id);
-      await recordLevel3Answer(userId, question.id, true, 2);
-      console.log('✅ recordLevel3Answer completed');
-      await fetchAnswers();
-    }
-    setSelectedQuestion(null);
-  } catch (error) {
-    console.error('❌ Error in handleCorrectAnswer:', error);
-    alert('Failed to save answer. Please try again.');
-  }
-};
+    };
 
     const handleWrongAnswer = async () => {
       if (!reviewMode && userId) {
@@ -361,7 +362,7 @@ function Level3Situation3() {
                       setReviewQuestions([]);
                       setReviewAnswered([]);
                       localStorage.removeItem("reviewAnswered");
-                      
+
                       // Situation 3 is the last one, so always go to finish
                       navigate("/level1-finish");
                     }}

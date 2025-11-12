@@ -32,7 +32,7 @@ function Level3Situation1() {
   const [reviewQuestions, setReviewQuestions] = useState([]);
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
-  
+
   const displayQuestions = reviewMode ? reviewQuestions : questions;
   const totalPages = Math.ceil(displayQuestions.length / QUESTIONS_PER_PAGE);
   const startIdx = (page - 1) * QUESTIONS_PER_PAGE;
@@ -44,14 +44,15 @@ function Level3Situation1() {
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
     if (!userId) return;
-    
+
     const fetchData = async () => {
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         const userData = userSnap.data();
         const level3Answers = userData.Level3Questions || {};
-        const wrongAnswered = userData.WrongQuestionsAnsweredLevel3Situation1 || {};
+        const wrongAnswered =
+          userData.WrongQuestionsAnsweredLevel3Situation1 || {};
 
         setAnswers(level3Answers);
         setUserName(userData.Name || userData.name || "");
@@ -97,30 +98,30 @@ function Level3Situation1() {
     const characterName = question.characterName?.replace("(name)", userName);
 
     const handleCorrectAnswer = async () => {
-  console.log('🎯 Correct answer clicked! Question:', question.id);
-  
-  try {
-    if (reviewMode) {
-      setReviewAnswered((prev) => [...prev, question.id]);
-      if (userId) {
-        const userRef = doc(db, "users", userId);
-        await updateDoc(userRef, {
-          [`WrongQuestionsAnsweredLevel3Situation1.Level3Question${question.id}`]: true,
-        });
-        await fetchAnswers();
+      console.log("🎯 Correct answer clicked! Question:", question.id);
+
+      try {
+        if (reviewMode) {
+          setReviewAnswered((prev) => [...prev, question.id]);
+          if (userId) {
+            const userRef = doc(db, "users", userId);
+            await updateDoc(userRef, {
+              [`WrongQuestionsAnsweredLevel3Situation1.Level3Question${question.id}`]: true,
+            });
+            await fetchAnswers();
+          }
+        } else if (userId) {
+          console.log("📝 Calling recordLevel3Answer...", userId, question.id);
+          await recordLevel3Answer(userId, question.id, true, 2);
+          console.log("✅ recordLevel3Answer completed");
+          await fetchAnswers();
+        }
+        setSelectedQuestion(null);
+      } catch (error) {
+        console.error("❌ Error in handleCorrectAnswer:", error);
+        alert("Failed to save answer. Please try again.");
       }
-    } else if (userId) {
-      console.log('📝 Calling recordLevel3Answer...', userId, question.id);
-      await recordLevel3Answer(userId, question.id, true, 2);
-      console.log('✅ recordLevel3Answer completed');
-      await fetchAnswers();
-    }
-    setSelectedQuestion(null);
-  } catch (error) {
-    console.error('❌ Error in handleCorrectAnswer:', error);
-    alert('Failed to save answer. Please try again.');
-  }
-};
+    };
 
     const handleWrongAnswer = async () => {
       if (!reviewMode && userId) {
@@ -186,7 +187,9 @@ function Level3Situation1() {
       return answer === "Wrong";
     });
 
-    return situation2WrongQuestions.length > 0 || situation3WrongQuestions.length > 0;
+    return (
+      situation2WrongQuestions.length > 0 || situation3WrongQuestions.length > 0
+    );
   };
 
   return (
@@ -333,18 +336,14 @@ function Level3Situation1() {
                         const updates = {};
 
                         reviewQuestions.forEach((q) => {
-  updates[
-    `WrongQuestionsAnsweredLevel3Situation2.Level3Question${q.id}`
-  ] = true;
-});
-
-updates["Level3Situation2ReviewCompleted"] = true;
+                          updates[
+                            `WrongQuestionsAnsweredLevel3Situation1.Level3Question${q.id}`
+                          ] = true;
+                        });
 
                         updates["Level3Situation1ReviewCompleted"] = true;
 
                         await updateDoc(userRef, updates);
-                        
-                        // Refresh answers to check other situations
                         await fetchAnswers();
                       }
 
@@ -352,27 +351,41 @@ updates["Level3Situation2ReviewCompleted"] = true;
                       setReviewQuestions([]);
                       setReviewAnswered([]);
                       localStorage.removeItem("reviewAnswered");
-                      
+
+                      // Check for more reviews in situation 2 or 3
                       const userId2 = localStorage.getItem("linggoUserId");
-  if (userId2) {
-    const userRef2 = doc(db, "users", userId2);
-    const userSnap2 = await getDoc(userRef2);
-    const userData2 = userSnap2.exists() ? userSnap2.data() : {};
+                      if (userId2) {
+                        const userRef2 = doc(db, "users", userId2);
+                        const userSnap2 = await getDoc(userRef2);
+                        const userData2 = userSnap2.exists()
+                          ? userSnap2.data()
+                          : {};
 
-    const level3Answers = userData2.Level3Questions || {};
-    const situation2Wrong = situation2Questions.some((q) => level3Answers[`Level3Question${q.id}`] === "Wrong");
-    const situation3Wrong = situation3Questions.some((q) => level3Answers[`Level3Question${q.id}`] === "Wrong");
+                        const level3Answers = userData2.Level3Questions || {};
+                        const situation2Wrong = situation2Questions.some(
+                          (q) =>
+                            level3Answers[`Level3Question${q.id}`] === "Wrong"
+                        );
+                        const situation3Wrong = situation3Questions.some(
+                          (q) =>
+                            level3Answers[`Level3Question${q.id}`] === "Wrong"
+                        );
 
-    if (situation2Wrong || situation3Wrong) {
-      navigate("/level3-situation2", { state: { review: true } });
-    } else {
-      // No more Level 3 reviews — go back to level finish
-      navigate("/level1-finish");
-    }
-  } else {
-    navigate("/level1-finish");
-  }
-}}
+                        if (situation2Wrong) {
+                          navigate("/level3-situation2", {
+                            state: { review: true },
+                          });
+                        } else if (situation3Wrong) {
+                          navigate("/level3-situation3", {
+                            state: { review: true },
+                          });
+                        } else {
+                          navigate("/level1-finish");
+                        }
+                      } else {
+                        navigate("/level1-finish");
+                      }
+                    }}
                   >
                     Sumunod
                   </button>
