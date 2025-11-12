@@ -8,16 +8,30 @@ import StarLocked3 from "/assets/ImageChoices/Starlocked3.png";
 import StarUnlocked2 from "/assets/ImageChoices/StarUnlocked2.png";
 import Star1Finished from "/assets/ImageChoices/level1finish.png";
 import Star2Finished from "/assets/ImageChoices/level2finish.png";
+import Star3Finished from "/assets/ImageChoices/level3finish.png";
+import Star3 from "/assets/ImageChoices/star3.png";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase.js";
 import questions from "../../constant/questions_data.js";
 import questionsLevel2 from "../../constant/questionsl2_data.js";
+import situational_questions1 from "../../constant/Level3/SituationalQuestion1_data.js";
+import situational_questions2 from "../../constant/Level3/SituationalQuestion2_data.js";
+import situational_questions3 from "../../constant/Level3/SituationalQuestion3_data.js";
 
 function LevelSelection1Finished() {
   const navigate = useNavigate();
   const [level1Completed, setLevel1Completed] = useState(false);
   const [level2Unlocked, setLevel2Unlocked] = useState(false);
   const [level2Completed, setLevel2Completed] = useState(false);
+  const [level3Unlocked, setLevel3Unlocked] = useState(false);
+  const [level3Completed, setLevel3Completed] = useState(false);
+
+  // Combine all Level 3 questions
+  const questionsLevel3 = [
+    ...situational_questions1,
+    ...situational_questions2,
+    ...situational_questions3,
+  ];
 
   useEffect(() => {
     const checkLevelCompletion = async () => {
@@ -33,6 +47,10 @@ function LevelSelection1Finished() {
       const level1ReviewCompleted = data.Level1ReviewCompleted || false;
       const level2Questions = data.Level2Questions || {};
       const level2ReviewCompleted = data.Level2ReviewCompleted || false;
+      const level3Questions = data.Level3Questions || {};
+      const situation1ReviewCompleted = data.Level3Situation1ReviewCompleted || false;
+      const situation2ReviewCompleted = data.Level3Situation2ReviewCompleted || false;
+      const situation3ReviewCompleted = data.Level3Situation3ReviewCompleted || false;
       
       // Check Level 1 completion
       const allLevel1QuestionsAnswered = questions.every((q) =>
@@ -43,6 +61,8 @@ function LevelSelection1Finished() {
         setLevel1Completed(false);
         setLevel2Unlocked(false);
         setLevel2Completed(false);
+        setLevel3Unlocked(false);
+        setLevel3Completed(false);
         return;
       }
       
@@ -71,11 +91,46 @@ function LevelSelection1Finished() {
           // Mark Level 2 as completed if all correct or review completed
           if (wrongQuestionsLevel2.length === 0 || level2ReviewCompleted) {
             setLevel2Completed(true);
+            setLevel3Unlocked(true);
+            
+            // Check Level 3 completion
+            const allLevel3QuestionsAnswered = questionsLevel3.every((q) =>
+              ["Correct", "Wrong"].includes(level3Questions[`Level3Question${q.id}`])
+            );
+            
+            if (allLevel3QuestionsAnswered) {
+              const wrongQuestionsLevel3 = questionsLevel3.every((q) => 
+                level3Questions[`Level3Question${q.id}`] === "Correct"
+              );
+              
+              // Check if all situations with wrong answers have been reviewed
+              const wrongInSituation1 = situational_questions1.some((q) => 
+                level3Questions[`Level3Question${q.id}`] === "Wrong"
+              );
+              const wrongInSituation2 = situational_questions2.some((q) => 
+                level3Questions[`Level3Question${q.id}`] === "Wrong"
+              );
+              const wrongInSituation3 = situational_questions3.some((q) => 
+                level3Questions[`Level3Question${q.id}`] === "Wrong"
+              );
+              
+              const allReviewsCompleted = 
+                (!wrongInSituation1 || situation1ReviewCompleted) &&
+                (!wrongInSituation2 || situation2ReviewCompleted) &&
+                (!wrongInSituation3 || situation3ReviewCompleted);
+              
+              // Mark Level 3 as completed if all correct or all reviews completed
+              if (wrongQuestionsLevel3 || allReviewsCompleted) {
+                setLevel3Completed(true);
+              }
+            }
           }
         }
       } else {
         setLevel2Unlocked(false);
         setLevel2Completed(false);
+        setLevel3Unlocked(false);
+        setLevel3Completed(false);
       }
     };
     
@@ -98,8 +153,8 @@ function LevelSelection1Finished() {
     {
       number: 3,
       title: "DISKURSO",
-      locked: true,
-      starImage: StarLocked3,
+      locked: !level3Unlocked,
+      starImage: level3Completed ? Star3Finished : (level3Unlocked ? Star3 : StarLocked3),
     },
   ];
 
@@ -115,6 +170,14 @@ function LevelSelection1Finished() {
         } else {
           // If not completed, go to level 2 quiz
           navigate("/level-two");
+        }
+      } else if (level.number === 3) {
+        // If Level 3 is completed, go to see score with level 3 info
+        if (level3Completed) {
+          navigate("/level1-return", { state: { level: 3 } });
+        } else {
+          // If not completed, redirect to level 3
+          navigate("/level3");
         }
       }
     }

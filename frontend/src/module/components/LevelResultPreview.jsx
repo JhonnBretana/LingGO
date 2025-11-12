@@ -2,70 +2,81 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import questions from "../../constant/questions_data.js";
 import Logo from "../../assets/LingGO Logo.png";
-import PageHeaderLayout from "../components/PageHeaderLayout.jsx";
-import BackgroundLayout from "../components/BackgroundLayout.jsx";
 
-function LevelResultPreview({ onReviewWrongQuestions }) {
+function LevelResultPreview({ level = 1, questions = [], onReviewWrongQuestions = () => {} }) {
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
-    if (!userId) return;
-    const fetchAnswers = async () => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchUser = async () => {
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
-        setAnswers(userSnap.data().Level1Questions || {});
+        let levelAnswers = {};
+        if (level === 1) levelAnswers = userSnap.data().Level1Questions || {};
+        else if (level === 2) levelAnswers = userSnap.data().Level2Questions || {};
+        else if (level === 3) levelAnswers = userSnap.data().Level3Questions || {};
+        setAnswers(levelAnswers);
       }
       setLoading(false);
     };
-    fetchAnswers();
-  }, []);
+
+    fetchUser();
+  }, [level]);
 
   if (loading) return <div className="p-8 text-center">Loading...</div>;
 
-  // Calculate total possible points
-  const totalPoints = questions.reduce((sum, q) => {
-    if (
-      q.type === "MatchingWordsWithWords" ||
-      q.type === "MatchingWordsWithImage"
-    ) {
-      return sum + q.correctAnswer.length;
+  const safeQuestions = Array.isArray(questions) ? questions : [];
+
+  // Calculate total points
+  const totalPoints = safeQuestions.reduce((sum, q) => {
+    if (!q) return sum;
+
+    // Matching questions can have multiple correct answers
+    if (q.type === "MatchingWordsWithWords" || q.type === "MatchingWordsWithImage") {
+      return sum + (Array.isArray(q.correctAnswer) ? q.correctAnswer.length : 1);
     }
+
+    // Other types are single point per question
     return sum + 1;
   }, 0);
 
   // Calculate earned points
-  const earnedPoints = questions.reduce((sum, q) => {
-    const answer = answers[`Level1Question${q.id}`];
+  const earnedPoints = safeQuestions.reduce((sum, q) => {
+    if (!q) return sum;
+
+    const answer = answers[`Level${level}Question${q.id}`];
+
     if (answer === "Correct") {
-      if (
-        q.type === "MatchingWordsWithWords" ||
-        q.type === "MatchingWordsWithImage"
-      ) {
-        return sum + q.correctAnswer.length;
+      if (q.type === "MatchingWordsWithWords" || q.type === "MatchingWordsWithImage") {
+        return sum + (Array.isArray(q.correctAnswer) ? q.correctAnswer.length : 1);
       }
-      return sum + 1;
+      return sum + 1; // Single point for other question types
     }
+
     return sum;
   }, 0);
 
-  const wrongQuestions = questions.filter(
-    (q) => answers[`Level1Question${q.id}`] === "Wrong"
+  const wrongQuestions = safeQuestions.filter(
+    (q) => answers[`Level${level}Question${q.id}`] === "Wrong"
   );
 
-  const percentage = ((earnedPoints / totalPoints) * 100).toFixed(1);
+  const percentage = totalPoints === 0 ? "0.0" : ((earnedPoints / totalPoints) * 100).toFixed(1);
   const isPerfectScore = wrongQuestions.length === 0;
 
   return (
     <div className="overflow-hidden w-full h-screen flex flex-col">
       <div className="max-w-2xl mx-auto p-6">
         <h2 className="text-2xl text-white shadow-black text-shadow-2xl font-bold mb-4 text-center">
-          Level 1 Results
+          Level {level} Results
         </h2>
 
         <div className="mb-6 p-4 bg-white border-2 border-black rounded-lg text-center">
@@ -85,11 +96,11 @@ function LevelResultPreview({ onReviewWrongQuestions }) {
               {isPerfectScore ? (
                 <>
                   <p className="text-xl shadow-black text-white text-shadow-2xl font-medium my-2">
-                    Perfect ka! Tapos na ang Level 1!
+                    Perfect ka! Tapos na ang Level {level}!
                   </p>
                   <button
                     className="w-35 bg-white text-black text-lg font-bold mt-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
-                    onClick={() => navigate("/level1-finish")}
+                    onClick={() => navigate(`/level${level}-finish`)}
                   >
                     Magpatuloy
                   </button>

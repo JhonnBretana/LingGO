@@ -53,7 +53,16 @@ import Voice_Character from "./module/GamePlayLvl1Module/Voice_Character.jsx";
 import Level1 from "./module/Level1Questions.jsx";
 import Level2 from "./module/Level2.Questions.jsx";
 
+import Level3 from "./module/AccountModule/LevelThreeChapter.jsx";
+
+import Level3Situation1 from "./module/Level3ChapterQuestion/Level3Situation1.jsx";
+import Level3Situation2 from "./module/Level3ChapterQuestion/Level3Situation2.jsx";
+import Level3Situation3 from "./module/Level3ChapterQuestion/Level3Situation3.jsx";
+import Level3ResultPreview from "./module/components/Level3ResultPreview.jsx";
+
+
 import LevelTwo from "./module/AccountModule/LevelTwo.jsx";
+import LevelThree from "./module/AccountModule/LevelThree.jsx";
 
 import Result from "./module/components/LevelResultPreview.jsx";
 
@@ -88,6 +97,12 @@ function App() {
         <Route path="/level-one" element={<LevelOne />} />
         <Route path="/level2" element={<Level2 />} />
         <Route path="/level-two" element={<LevelTwo />} />
+        <Route path="/level3" element={<Level3 />} />
+        <Route path="/level-three" element={<LevelThree />} />
+
+        <Route path="/level3-situation1" element={<Level3Situation1 />} />
+        <Route path="/level3-situation2" element={<Level3Situation2 />} />
+        <Route path="/level3-situation3" element={<Level3Situation3 />} />
 
         {/*intro module*/}
         <Route path="/startpage1" element={<StartPage1 />} />
@@ -162,6 +177,9 @@ function App() {
         <Route path="/level1-finish" element={<Level1Finish />} />
         <Route path="/level1-finish-choice" element={<Level1FinishChoice />} />
         <Route path="/level1-return" element={<Level1Return />} />
+        <Route path="/level3-result-preview" element={<Level3ResultPreview />} />
+
+
       </Routes>
     </div>
   );

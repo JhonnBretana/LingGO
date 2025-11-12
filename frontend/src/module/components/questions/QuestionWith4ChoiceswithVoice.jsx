@@ -133,18 +133,16 @@ function QuestionWith4ChoiceswithVoice({
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                <div 
+                <div
                   className={`w-full text-center shrink-0 px-1 leading-tight ${
-                    isLongText(choice.value) 
-                      ? 'text-[8px]' 
-                      : 'text-[10px]'
+                    isLongText(choice.value) ? "text-[8px]" : "text-[10px]"
                   }`}
                   style={{
-                    display: '-webkit-box',
+                    display: "-webkit-box",
                     WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                 >
                   {choice.value}
@@ -171,18 +169,16 @@ function QuestionWith4ChoiceswithVoice({
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                <div 
+                <div
                   className={`w-full text-center shrink-0 px-1 leading-tight ${
-                    isLongText(choice.value) 
-                      ? 'text-[9px]' 
-                      : 'text-[10px]'
+                    isLongText(choice.value) ? "text-[9px]" : "text-[10px]"
                   }`}
                   style={{
-                    display: '-webkit-box',
+                    display: "-webkit-box",
                     WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                 >
                   {choice.value}
