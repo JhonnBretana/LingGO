@@ -98,7 +98,6 @@ function Level3Situation1() {
     const characterName = question.characterName?.replace("(name)", userName);
 
     const handleCorrectAnswer = async () => {
-      console.log("🎯 Correct answer clicked! Question:", question.id);
 
       try {
         if (reviewMode) {
@@ -111,14 +110,11 @@ function Level3Situation1() {
             await fetchAnswers();
           }
         } else if (userId) {
-          console.log("📝 Calling recordLevel3Answer...", userId, question.id);
           await recordLevel3Answer(userId, question.id, true, 2);
-          console.log("✅ recordLevel3Answer completed");
           await fetchAnswers();
         }
         setSelectedQuestion(null);
       } catch (error) {
-        console.error("❌ Error in handleCorrectAnswer:", error);
         alert("Failed to save answer. Please try again.");
       }
     };

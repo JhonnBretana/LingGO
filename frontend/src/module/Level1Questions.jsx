@@ -64,22 +64,32 @@ function Level1Questions() {
 
         setAnswers(level1Answers);
 
-        // Check if there are wrong questions to review
-        const wrongQuestions = questions.filter((q) => {
-          const answer = level1Answers[`Level1Question${q.id}`];
-          return answer === "Wrong";
-        });
+        // Check if ALL questions have been answered first
+        const allAnswered = questions.every((q) =>
+          ["Correct", "Wrong"].includes(level1Answers[`Level1Question${q.id}`])
+        );
 
-        if (wrongQuestions.length > 0) {
-          // Load which ones have already been answered in review
-          const alreadyAnswered = wrongQuestions
-            .filter((q) => wrongAnswered[`Level1Question${q.id}`] === true)
-            .map((q) => q.id);
+        // Only check for review mode if all questions are answered
+        if (allAnswered) {
+          // Check if there are wrong questions to review AND review hasn't been completed
+          const wrongQuestions = questions.filter((q) => {
+            const answer = level1Answers[`Level1Question${q.id}`];
+            return answer === "Wrong";
+          });
 
-          setReviewQuestions(wrongQuestions);
-          setReviewAnswered(alreadyAnswered);
-          setReviewMode(true);
-          setPage(1);
+          const reviewCompleted = userData.Level1ReviewCompleted || false;
+
+          if (wrongQuestions.length > 0 && !reviewCompleted) {
+            // Load which ones have already been answered in review
+            const alreadyAnswered = wrongQuestions
+              .filter((q) => wrongAnswered[`Level1Question${q.id}`] === true)
+              .map((q) => q.id);
+
+            setReviewQuestions(wrongQuestions);
+            setReviewAnswered(alreadyAnswered);
+            setReviewMode(true);
+            setPage(1);
+          }
         }
       }
     };
@@ -419,16 +429,6 @@ function Level1Questions() {
                   <button
                     className="px-4 sm:px-6 py-2 bg-white text-black font-bold rounded-xl border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-x-0 disabled:hover:translate-y-0 transition-all duration-150 text-sm sm:text-base"
                     onClick={() => setPage(page - 1)}
-                    disabled={page === 1}
-                  >
-                    Prev
-                  </button>
-                  <span className="text-base sm:text-xl font-black">
-                    Page {page} of {totalPages}
-                  </span>
-                  <button
-                    className="px-4 sm:px-6 py-2 bg-white text-black font-bold rounded-xl border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-x-0 disabled:hover:translate-y-0 transition-all duration-150 text-sm sm:text-base"
-                    onClick={() => setPage(page + 1)}
                     disabled={page === totalPages}
                   >
                     Next

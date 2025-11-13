@@ -55,6 +55,7 @@ function AgeDetail() {
           onClick={() => {
             localStorage.setItem("age", age);
             const role = localStorage.getItem("linggoRole");
+            console.log("Role from localStorage:", `"${role}"`);
             if (role === "Mag-aaral") {
               navigate("/gradesectiondetail");
             } else {

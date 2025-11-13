@@ -33,10 +33,10 @@ function RoleSelection() {
             <option value="" disabled>
               Pumili
             </option>
-            <option value="Student">Mag-aaral</option>
-            <option value="Instructor">Guro</option>
-            <option value="Researchers">Mananaliksik</option>
-            <option value="Others">Iba pa</option>
+            <option value="Mag-aaral">Mag-aaral</option>
+            <option value="Guro">Guro</option>
+            <option value="Mananaliksik">Mananaliksik</option>
+            <option value="Iba pa">Iba pa</option>
           </select>
         </div>
         <button

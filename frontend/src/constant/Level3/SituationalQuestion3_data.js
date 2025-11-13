@@ -10,13 +10,13 @@ const situational_questions3 = [
     choices: ["udto", "buntag", "gabii"],
     sounds: [
       "/assets/Voice/CebuanoLevel2/buntag.mp3",
-      "/assets/sounds/gabii.mp3",
-      "/assets/sounds/udto.mp3",
+      "/assets/Voice/CebuanoLevel2/gabii.mp3",
+      "/assets/Voice/CebuanoLevel2/udto.mp3",
     ],
     correctMatches: {
-      0: 2,
-      1: 0,
-      2: 1,
+      0: 1,  
+      1: 2,  
+      2: 0,  
     },
   },
   {

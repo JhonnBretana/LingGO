@@ -122,7 +122,7 @@ function Level3Situation3() {
           if (userId) {
             const userRef = doc(db, "users", userId);
             await updateDoc(userRef, {
-              [`WrongQuestionsAnsweredLevel3Situation1.Level3Question${question.id}`]: true,
+              [`WrongQuestionsAnsweredLevel3Situation3.Level3Question${question.id}`]: true,
             });
             await fetchAnswers();
           }
@@ -159,21 +159,23 @@ function Level3Situation3() {
             correctMatches={question.correctMatches}
             onCorrectAnswer={handleCorrectAnswer}
             onWrongAnswer={handleWrongAnswer}
+            showWrongOverlay={showWrongOverlay}
           />
         );
       case "SituationalDragAndDrop":
         return (
-          <SituationalDragAndDrop
-            situation={question.situation}
-            instruction={instruction}
-            instructionSub={instructionSub}
-            characterName={characterName}
-            question={question.question}
-            choices={question.choices}
-            voice={question.voice}
-            answer={question.answer}
-            onCorrectAnswer={handleCorrectAnswer}
-            onWrongAnswer={handleWrongAnswer}
+    <SituationalDragAndDrop
+      situation={question.situation}
+      instruction={instruction}
+      instructionSub={instructionSub}
+      characterName={characterName}
+      question={question.question}
+      choices={question.choices}
+      voice={question.voice}
+      answer={question.answer}
+      onCorrectAnswer={handleCorrectAnswer}
+      onWrongAnswer={handleWrongAnswer}
+      showWrongOverlay={showWrongOverlay}
           />
         );
       case "SituationalQuestionWithVoice":

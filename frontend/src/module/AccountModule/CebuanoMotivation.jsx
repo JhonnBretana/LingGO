@@ -13,48 +13,42 @@ function CebuanoMotivation() {
   const [loading, setLoading] = useState(false);
 
   const saveUserToFirestore = async () => {
-    const role = localStorage.getItem("linggoRole");
-    const roleMap = {
-      Student: "Mag-aaral",
-      Instructor: "Guro",
-      Researchers: "Mananaliksik",
-      Others: "Iba pa",
-    };
-    const translatedRole = roleMap[role] || role;
+  const role = localStorage.getItem("linggoRole"); // Already in Filipino
+  const firstName = localStorage.getItem("firstName");
+  const lastName = localStorage.getItem("lastName");
+  const age = localStorage.getItem("age");
 
-    const firstName = localStorage.getItem("firstName");
-    const lastName = localStorage.getItem("lastName");
-    const age = localStorage.getItem("age");
-    const grade = role === "Student" ? localStorage.getItem("grade") : null;
-    const section = role === "Student" ? localStorage.getItem("section") : null;
-    const username = firstName;
-    const password = `${lastName}${grade || ""}${section || ""}`;
-    const languageLearning = localStorage.getItem("languageLearning");
-    const proficiency = localStorage.getItem("proficiency");
-    const reason = localStorage.getItem("reason");
+  // Only get grade/section if role is Mag-aaral
+  const grade = role === "Mag-aaral" ? localStorage.getItem("grade") : null;
+  const section = role === "Mag-aaral" ? localStorage.getItem("section") : null;
 
-    try {
-      const docRef = await addDoc(collection(db, "users"), {
-        Role: translatedRole,
-        Name: `${firstName} ${lastName}`,
-        FirstName: firstName,
-        LastName: lastName,
-        Username: username,
-        Password: password,
-        Age: age,
-        Grade: grade,
-        Section: section,
-        LanguageLearning: languageLearning,
-        Proficiency: proficiency,
-        Reason: reason,
-      });
-      localStorage.setItem("linggoUserId", docRef.id);
-      // Optionally clear localStorage or navigate to next page
-      // navigate("/next-page");
-    } catch (error) {
-      alert("Error saving user: " + error.message);
-    }
-  };
+  const username = firstName;
+  const password = `${lastName}${grade || ""}${section || ""}`;
+  const languageLearning = localStorage.getItem("languageLearning");
+  const proficiency = localStorage.getItem("proficiency");
+  const reason = localStorage.getItem("reason");
+
+  try {
+    const docRef = await addDoc(collection(db, "users"), {
+      Role: role,
+      Name: `${firstName} ${lastName}`,
+      FirstName: firstName,
+      LastName: lastName,
+      Username: username,
+      Password: password,
+      Age: age,
+      Grade: grade,
+      Section: section,
+      LanguageLearning: languageLearning,
+      Proficiency: proficiency,
+      Reason: reason,
+    });
+    localStorage.setItem("linggoUserId", docRef.id);
+  } catch (error) {
+    alert("Error saving user: " + error.message);
+  }
+};
+
 
   const handleCardClick = async (motivation) => {
     if (loading) return; // Prevent double click
@@ -154,7 +148,7 @@ function CebuanoMotivation() {
             </div>
             {loading && (
               <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60">
-                <span className="text-black font-bold">Saving...</span>
+                <span className="text-black font-bold">Sine-save ang account...</span>
               </div>
             )}
           </button>
@@ -188,7 +182,7 @@ function CebuanoMotivation() {
             </div>
             {loading && (
               <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-60">
-                <span className="text-black font-bold">Saving...</span>
+                <span className="text-black font-bold">Sine-save ang account...</span>
               </div>
             )}
           </button>
