@@ -67,6 +67,7 @@ function Level3Situation2() {
         setAnswers(level3Answers);
         setUserName(userData.Name || userData.name || "");
 
+        // Always check for wrong answers
         const wrongQuestions = questions.filter((q) => {
           const answer = level3Answers[`Level3Question${q.id}`];
           return answer === "Wrong";
@@ -86,6 +87,11 @@ function Level3Situation2() {
           if (fromReviewIntent) {
             localStorage.removeItem("enterReviewLevel3");
           }
+        } else {
+          // If no wrong questions, make sure review mode is off
+          setReviewMode(false);
+          setReviewQuestions([]);
+          setReviewAnswered([]);
         }
       }
     };
@@ -130,8 +136,7 @@ function Level3Situation2() {
             const userRef = doc(db, "users", userId);
             // FIXED: write to Situation2 review key (was Situation1)
             await updateDoc(userRef, {
-              [`WrongQuestionsAnsweredLevel3Situation2.Level3Question${question.id}`]:
-                true,
+              [`WrongQuestionsAnsweredLevel3Situation2.Level3Question${question.id}`]: true,
             });
             await fetchAnswers();
           }
@@ -261,152 +266,143 @@ function Level3Situation2() {
       <div className="w-full h-screen flex flex-col overflow-hidden">
         <PageHeaderLayout />
 
-        {!reviewMode ? (
-          <>
-            {selectedQuestion && (
-              <div className="flex justify-start w-full px-4">
-                <button
-                  onClick={() => setSelectedQuestion(null)}
-                  className="flex items-center justify-center p-2 rounded-lg bg-[#FFD43B] hover:bg-[#FFB84D] shadow-md transition-all duration-200 border-2 border-black"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={3}
-                    stroke="black"
-                    className="w-5 h-5 sm:w-6 sm:h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 19.5L8.25 12l7.5-7.5"
-                    />
-                  </svg>
-                </button>
-              </div>
-            )}
-
-            {selectedQuestion ? (
-              <div className="flex-1 overflow-auto">
-                {renderQuestionComponent(selectedQuestion)}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center flex-1 py-4 overflow-y-auto mt-20">
-                <div className="relative w-85 max-w-full px-4 my-5">
-                  <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span
-                      className="font-medium text-center text-xl text-black drop-shadow-[2px_2px_0px_white]  w-full max-w-md px-10"
-                      style={{
-                        fontFamily: "'Fredoka', sans-serif",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Sitwasyon 2 - Sa Palengke
-                    </span>
-                  </div>
-                </div>
-
-                <div className="relative w-85 max-w-full px-4 my-5 flex justify-center">
-                  <span
-                    className="font-medium text-center text-2xl text-white drop-shadow-[2px_2px_0px_black]"
-                    style={{
-                      fontFamily: "'Fredoka', sans-serif",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Pagdating mo sa palengke, sinalubong ka agad ng bati ng mga
-                    tinderang nag-aalok.
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-2 sm:gap-3 w-full max-w-full px-2 sm:px-4 my-4">
-                  {questionRows.map((row, rowIdx) => (
-                    <div
-                      key={rowIdx}
-                      className="flex flex-row gap-10 sm:gap-3 items-center justify-center flex-wrap"
-                    >
-                      {row.map((q) => {
-                        const answer = answers[`Level3Question${q.id}`];
-                        let btnColor = "bg-white";
-                        let textColor = "text-black";
-                        let opacity = "";
-                        let disabled = isAnswered(q);
-
-                        if (!reviewMode) {
-                          if (answer === "Correct") {
-                            btnColor = "bg-green-400";
-                            textColor = "text-white";
-                            opacity = "opacity-50";
-                          } else if (answer === "Wrong") {
-                            btnColor = "bg-red-400";
-                            textColor = "text-white";
-                            opacity = "opacity-50";
-                          }
-                        } else {
-                          if (reviewAnswered.includes(q.id)) {
-                            btnColor = "bg-green-400";
-                            textColor = "text-white";
-                            opacity = "";
-                            disabled = true;
-                          }
-                        }
-
-                        return (
-                          <button
-                            key={q.id}
-                            className={`w-[140px] h-[100px] sm:w-40 max-w-[calc(50%-0.25rem)] text-center ${btnColor} ${textColor} ${opacity} text-5xl sm:text-lg font-bold py-3 px-2 sm:px-4 rounded-3xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
-                            style={{ fontFamily: "'Fredoka', sans-serif" }}
-                            onClick={() => !disabled && setSelectedQuestion(q)}
-                            disabled={disabled}
-                          >
-                            {q.id}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
+        {selectedQuestion ? (
+          <div className="flex-1 overflow-auto">
+            {renderQuestionComponent(selectedQuestion)}
+          </div>
         ) : (
-          <div className="flex flex-col items-center flex-1 py-4 overflow-y-auto mt-20">
-            <button
-              className="w-40 bg-white text-black text-lg font-bold my-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!reviewQuestions.every((q) => reviewAnswered.includes(q.id))}
-              onClick={async () => {
-                const userId = localStorage.getItem("linggoUserId");
-                if (userId && reviewQuestions.length > 0) {
-                  const userRef = doc(db, "users", userId);
-                  const updates = {};
+          <div className="flex flex-col items-center flex-1 py-2 sm:py-4 overflow-y-auto mt-12 sm:mt-16 md:mt-20">
+            {/* Questions Bar - Responsive sizing */}
+            <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl px-2 xs:px-3 sm:px-4 my-2 sm:my-3 md:my-5">
+              <img src={QuestionsBar} alt="Questions Bar" className="w-full" />
+              <div className="absolute inset-0 flex items-center justify-center px-2 xs:px-4 sm:px-6">
+                <span
+                  className="font-medium text-center text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl text-black drop-shadow-[1px_1px_0px_white] sm:drop-shadow-[2px_2px_0px_white] w-full"
+                  style={{
+                    fontFamily: "'Fredoka', sans-serif",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Sitwasyon 2 - Sa Palengke
+                </span>
+              </div>
+            </div>
 
-                  reviewQuestions.forEach((q) => {
-                    updates[
-                      `WrongQuestionsAnsweredLevel3Situation2.Level3Question${q.id}`
-                    ] = true;
-                  });
+            {/* Description Text - Responsive sizing */}
+            <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl px-2 xs:px-3 sm:px-4 my-2 sm:my-3 md:my-5 flex justify-center">
+              <span
+                className="font-medium text-center text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-white drop-shadow-[1px_1px_0px_black] sm:drop-shadow-[2px_2px_0px_black] leading-tight sm:leading-normal"
+                style={{
+                  fontFamily: "'Fredoka', sans-serif",
+                  fontWeight: "bold",
+                }}
+              >
+                Pagdating mo sa palengke, sinalubong ka agad ng bati ng mga
+                tinderang nag-aalok.
+              </span>
+            </div>
 
-                  updates["Level3Situation2ReviewCompleted"] = true;
-                  await updateDoc(userRef, updates);
-                  await fetchAnswers();
+            {/* Question Buttons Grid - Responsive layout */}
+            <div className="flex flex-col gap-2 xs:gap-2.5 sm:gap-3 md:gap-4 w-full max-w-[300px] xs:max-w-[340px] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-3xl px-2 xs:px-3 sm:px-4 my-2 sm:my-3 md:my-4">
+              {questionRows.map((row, rowIdx) => (
+                <div
+                  key={rowIdx}
+                  className="flex flex-row gap-2 xs:gap-3 sm:gap-4 md:gap-6 lg:gap-8 xl:gap-10 items-center justify-center flex-wrap"
+                >
+                  {row.map((q) => {
+                    const answer = answers[`Level3Question${q.id}`];
+                    let btnColor = "bg-white";
+                    let textColor = "text-black";
+                    let opacity = "";
+                    let disabled = isAnswered(q);
+
+                    if (!reviewMode) {
+                      if (answer === "Correct") {
+                        btnColor = "bg-green-400";
+                        textColor = "text-white";
+                        opacity = "opacity-50";
+                      } else if (answer === "Wrong") {
+                        btnColor = "bg-red-400";
+                        textColor = "text-white";
+                        opacity = "opacity-50";
+                      }
+                    } else {
+                      if (reviewAnswered.includes(q.id)) {
+                        btnColor = "bg-green-400";
+                        textColor = "text-white";
+                        opacity = "";
+                        disabled = true;
+                      }
+                    }
+
+                    return (
+                      <button
+                        key={q.id}
+                        className={`w-[120px] h-[80px] sm:w-[140px] sm:h-[100px] md:w-[160px] md:h-[110px] lg:w-40 lg:h-[100px] max-w-[calc(50%-0.5rem)] text-center ${btnColor} ${textColor} ${opacity} text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text font-bold py-2 sm:py-3 px-2 sm:px-4 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
+                        style={{ fontFamily: "'Fredoka', sans-serif" }}
+                        onClick={() => !disabled && setSelectedQuestion(q)}
+                        disabled={disabled}
+                      >
+                        {q.id}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+
+            {/* Review Mode Button - Responsive sizing */}
+            {reviewMode && (
+              <button
+                className="
+                  w-32 xs:w-36 sm:w-40 md:w-44 lg:w-48
+                  bg-white text-black 
+                  text-sm xs:text-base sm:text-lg md:text-xl 
+                  font-bold 
+                  my-3 sm:my-4 md:my-5 
+                  py-1.5 xs:py-2 sm:py-2.5 md:py-3 
+                  px-3 xs:px-4 sm:px-5 md:px-6 
+                  rounded-xl sm:rounded-2xl 
+                  border-2 border-black 
+                  hover:bg-[#f2d919] active:bg-[#f2d919] 
+                  transition-colors duration-200 
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                "
+                disabled={
+                  !reviewQuestions.every((q) => reviewAnswered.includes(q.id))
                 }
+                onClick={async () => {
+                  const userId = localStorage.getItem("linggoUserId");
+                  if (userId && reviewQuestions.length > 0) {
+                    const userRef = doc(db, "users", userId);
+                    const updates = {};
 
-                setReviewMode(false);
-                setReviewQuestions([]);
-                setReviewAnswered([]);
-                localStorage.removeItem("reviewAnswered");
+                    reviewQuestions.forEach((q) => {
+                      updates[
+                        `WrongQuestionsAnsweredLevel3Situation2.Level3Question${q.id}`
+                      ] = true;
+                    });
 
-                if (checkForMoreReviews()) {
-                  navigate("/level3-situation3");
-                } else {
-                  navigate("/level1-finish");
-                }
-              }}
-            >
-              Sumunod
-            </button>
+                    updates["Level3Situation2ReviewCompleted"] = true;
+                    await updateDoc(userRef, updates);
+                    await fetchAnswers();
+                  }
+
+                  setReviewMode(false);
+                  setReviewQuestions([]);
+                  setReviewAnswered([]);
+                  localStorage.removeItem("reviewAnswered");
+
+                  if (checkForMoreReviews()) {
+                    navigate("/level3-situation3");
+                  } else {
+                    navigate("/level1-finish");
+                  }
+                }}
+              >
+                Sumunod
+              </button>
+            )}
           </div>
         )}
       </div>

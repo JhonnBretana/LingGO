@@ -42,9 +42,9 @@ function Level3ResultPreview({ onReviewWrongQuestions }) {
 
   // Calculate earned points
   const earnedPoints = questions.reduce((sum, q) => {
-  const answer = answers[`Level3Question${q.id}`];
-  return sum + (answer === "Correct" ? 2 : 0);
-}, 0);
+    const answer = answers[`Level3Question${q.id}`];
+    return sum + (answer === "Correct" ? 2 : 0);
+  }, 0);
 
   const wrongQuestions = questions.filter(
     (q) => answers[`Level3Question${q.id}`] === "Wrong"
@@ -56,19 +56,25 @@ function Level3ResultPreview({ onReviewWrongQuestions }) {
   // Handle reviewing wrong questions
   const handleReviewWrongQuestions = () => {
     if (wrongQuestions.length === 0) return;
-    
+
     // Store review flag in localStorage
     localStorage.setItem("reviewAnswered", JSON.stringify([]));
-    
+
     // Determine which situation has wrong questions and navigate there
-    const situation1Ids = situational_questions1.map(q => q.id);
-    const situation2Ids = situational_questions2.map(q => q.id);
-    const situation3Ids = situational_questions3.map(q => q.id);
-    
-    const hasWrongInSituation1 = wrongQuestions.some(q => situation1Ids.includes(q.id));
-    const hasWrongInSituation2 = wrongQuestions.some(q => situation2Ids.includes(q.id));
-    const hasWrongInSituation3 = wrongQuestions.some(q => situation3Ids.includes(q.id));
-    
+    const situation1Ids = situational_questions1.map((q) => q.id);
+    const situation2Ids = situational_questions2.map((q) => q.id);
+    const situation3Ids = situational_questions3.map((q) => q.id);
+
+    const hasWrongInSituation1 = wrongQuestions.some((q) =>
+      situation1Ids.includes(q.id)
+    );
+    const hasWrongInSituation2 = wrongQuestions.some((q) =>
+      situation2Ids.includes(q.id)
+    );
+    const hasWrongInSituation3 = wrongQuestions.some((q) =>
+      situation3Ids.includes(q.id)
+    );
+
     // Navigate to the first situation with wrong questions
     if (hasWrongInSituation1) {
       navigate("/level3-situation1");
@@ -110,7 +116,7 @@ function Level3ResultPreview({ onReviewWrongQuestions }) {
                       </p>
                       <button
                         className="w-35 bg-white text-black text-lg font-bold mt-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
-                        onClick={() => navigate("/level1-finish")}
+                        onClick={() => navigate("/level3")}
                       >
                         Magpatuloy
                       </button>

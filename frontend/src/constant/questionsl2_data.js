@@ -91,16 +91,16 @@ const questionsl2 = [
   {
     id: 8,
     type: "QuestionWith4ChoiceswithVoice",
-    question: "Walang Anuman",
+    question: "Walay Sapayan",
     choices: [
-      { image: "/assets/ImageChoices/glassesboy3.png", value: "Pasayloa" },
-      { image: "/assets/ImageChoices/glassesboy1.png", value: "Daghang Salamat" },
-      { image: "/assets/ImageChoices/glassesboy4.png", value: "Palihog" },
-      { image: "/assets/ImageChoices/glassesboy2.png", value: "Walay Sapayan" },
+      { image: "/assets/ImageChoices/glassesboy3.png", value: "Patawad" },
+      { image: "/assets/ImageChoices/glassesboy1.png", value: "Maraming Salamat" },
+      { image: "/assets/ImageChoices/glassesboy4.png", value: "Pakiusap" },
+      { image: "/assets/ImageChoices/glassesboy2.png", value: "Walang Anuman" },
     ],
-    correctAnswer: "Walay Sapayan",
+    correctAnswer: "Walang Anuman",
     image: null,
-    voice: "/assets/Voice/TagalogLevel2/walanganuman.mp3",
+    voice: "/assets/Voice/CebuanoLevel2/walaysapayan.mp3",
   },
   {
     id: 9,
@@ -224,11 +224,11 @@ const questionsl2 = [
   {
     id: 20,
     type: "SpeechMicWithVoice",
-    question: "Asa ka muadto?",
+    question: "Palihog",
     choices: null,
-    correctAnswer: "Asa ka muadto",
+    correctAnswer: "Palihog",
     image: null,
-    voice: "/assets/Voice/CebuanoLevel2/muadto.mp3",
+    voice: "/assets/Voice/CebuanoLevel2/palihog.mp3",
   },
   {
     id: 21,

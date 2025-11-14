@@ -74,7 +74,7 @@ function Level1Finish() {
 
   <div className="mt-5 pt-5">
     <button
-      onClick={() => navigate("/level1-finish-choice")}
+      onClick={() => navigate("/")}
       className="w-48 bg-white text-black text-lg font-bold py-2 px-4 rounded-2xl border-2 border-black mt-5 hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
     >
       MAGPATULOY

@@ -27,30 +27,21 @@ function Level2ResultPreview({ onReviewWrongQuestions }) {
   if (loading) return <div className="p-8 text-center">Loading...</div>;
 
   // Calculate total possible points
-  const totalPoints = questions.reduce((sum, q) => {
-    if (
-      q.type === "MatchingWordsWithWords" ||
-      q.type === "MatchingWordsWithImage"
-    ) {
-      return sum + q.correctAnswer.length;
-    }
-    return sum + 1;
-  }, 0);
+  const totalPoints = 35;
 
   // Calculate earned points
   const earnedPoints = questions.reduce((sum, q) => {
-    const answer = answers[`Level2Question${q.id}`];
-    if (answer === "Correct") {
-      if (
-        q.type === "MatchingWordsWithWords" ||
-        q.type === "MatchingWordsWithImage"
-      ) {
-        return sum + q.correctAnswer.length;
-      }
-      return sum + 1;
+  const answer = answers[`Level2Question${q.id}`];
+  if (answer === "Correct") {
+    if (q.type === "MatchingWordsWithWords" || q.type === "MatchingWordsWithImage") {
+      return sum + q.correctAnswer.length;
+    } else if (q.type === "SpeechMicWithVoice") {
+      return sum + 2;
     }
-    return sum;
-  }, 0);
+    return sum + 1;
+  }
+  return sum;
+}, 0);
 
   const wrongQuestions = questions.filter(
     (q) => answers[`Level2Question${q.id}`] === "Wrong"

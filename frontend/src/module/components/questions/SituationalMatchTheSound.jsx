@@ -6,6 +6,14 @@ import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 import Convo from "/assets/ImageChoices/convofooter.png";
 
+const COLORS = [
+  { bg: "bg-red-400", border: "border-red-600", hover: "hover:bg-red-300" },
+  { bg: "bg-blue-400", border: "border-blue-600", hover: "hover:bg-blue-300" },
+  { bg: "bg-green-400", border: "border-green-600", hover: "hover:bg-green-300" },
+  { bg: "bg-purple-400", border: "border-purple-600", hover: "hover:bg-purple-300" },
+  { bg: "bg-orange-400", border: "border-orange-600", hover: "hover:bg-orange-300" },
+];
+
 const SituationalMatchTheSound = ({
   situation,
   question,
@@ -15,39 +23,108 @@ const SituationalMatchTheSound = ({
   correctMatches = {},
   onCorrectAnswer,
   onWrongAnswer,
+  showWrongOverlay = true, // If false (review mode), show try again instead
 }) => {
-  const [selectedMatches, setSelectedMatches] = useState({});
+  const [matches, setMatches] = useState({}); // { wordIndex: soundIndex }
+  const [pendingWord, setPendingWord] = useState(null); // Currently selected word waiting for sound
+  const [pendingSound, setPendingSound] = useState(null); // Currently selected sound waiting for word
   const [submitted, setSubmitted] = useState(false);
   const [showCorrect, setShowCorrect] = useState(false);
   const [showWrong, setShowWrong] = useState(false);
 
   const handleWordClick = (wordIndex) => {
-    setSelectedMatches((prev) => ({
-      ...prev,
-      [`word-${wordIndex}`]: true,
-    }));
+    if (submitted) return;
+
+    // If this word is already matched, remove the match
+    if (matches[wordIndex] !== undefined) {
+      const newMatches = { ...matches };
+      delete newMatches[wordIndex];
+      setMatches(newMatches);
+      return;
+    }
+
+    // If this word is already pending, cancel it
+    if (pendingWord === wordIndex) {
+      setPendingWord(null);
+      return;
+    }
+
+    // If there's a pending sound, create a match
+    if (pendingSound !== null) {
+      setMatches({ ...matches, [wordIndex]: pendingSound });
+      setPendingSound(null);
+      setPendingWord(null);
+    } else {
+      // Set this word as pending
+      setPendingWord(wordIndex);
+      setPendingSound(null);
+    }
   };
 
-  const handleEarClick = (earIndex) => {
-    playSound(earIndex);
-    setSelectedMatches((prev) => ({
-      ...prev,
-      [`ear-${earIndex}`]: true,
-    }));
-  };
+  const handleEarClick = (soundIndex) => {
+  if (submitted) return;
+
+  // Play the sound
+  playSound(soundIndex);
+
+  // Check if this sound is already matched
+  const matchedWordIndex = Object.keys(matches).find(
+    (key) => matches[key] === soundIndex
+  );
+
+  if (matchedWordIndex !== undefined) {
+    // Remove the match but keep the word as pending
+    const newMatches = { ...matches };
+    delete newMatches[matchedWordIndex];
+    setMatches(newMatches);
+    setPendingWord(parseInt(matchedWordIndex)); // Keep word selected
+    setPendingSound(null);
+    return;
+  }
+
+  // If this sound is already pending, cancel it
+  if (pendingSound === soundIndex) {
+    setPendingSound(null);
+    return;
+  }
+
+  // If there's a pending word, create a match
+  if (pendingWord !== null) {
+    setMatches({ ...matches, [pendingWord]: soundIndex });
+    setPendingWord(null);
+    setPendingSound(null);
+  } else {
+    // Set this sound as pending
+    setPendingSound(soundIndex);
+    setPendingWord(null);
+  }
+};
 
   const handleSubmit = () => {
+    // Check if all matches are correct
     let isCorrect = true;
 
-    // Check if all matches are correct
-    for (let soundIndex in correctMatches) {
-      const wordSelected =
-        selectedMatches[`word-${correctMatches[soundIndex]}`];
-      const earSelected = selectedMatches[`ear-${soundIndex}`];
+    // Must have correct number of matches
+    if (Object.keys(matches).length !== choices.length) {
+      isCorrect = false;
+    } else {
+      // Check each match
+      for (let wordIndex in matches) {
+        const soundIndex = matches[wordIndex];
+        
+        // Find which sound should match this word
+        let correctSoundIndex = null;
+        for (let sIdx in correctMatches) {
+          if (correctMatches[sIdx] === parseInt(wordIndex)) {
+            correctSoundIndex = parseInt(sIdx);
+            break;
+          }
+        }
 
-      if (!wordSelected || !earSelected) {
-        isCorrect = false;
-        break;
+        if (soundIndex !== correctSoundIndex) {
+          isCorrect = false;
+          break;
+        }
       }
     }
 
@@ -61,7 +138,9 @@ const SituationalMatchTheSound = ({
 
   const handleCloseCorrectModal = () => {
     setShowCorrect(false);
-    setSelectedMatches({});
+    setMatches({});
+    setPendingWord(null);
+    setPendingSound(null);
     setSubmitted(false);
     if (onCorrectAnswer) {
       onCorrectAnswer();
@@ -71,14 +150,60 @@ const SituationalMatchTheSound = ({
   const handleCloseWrongModal = () => {
     setShowWrong(false);
     setSubmitted(false);
-    if (onWrongAnswer) {
-      onWrongAnswer();
+    
+    // In review mode (showWrongOverlay = false), reset and try again
+    if (!showWrongOverlay) {
+      setMatches({});
+      setPendingWord(null);
+      setPendingSound(null);
+    } else {
+      // In normal mode, call onWrongAnswer to close question
+      setMatches({});
+      setPendingWord(null);
+      setPendingSound(null);
+      if (onWrongAnswer) {
+        onWrongAnswer();
+      }
     }
   };
 
   const playSound = (soundIndex) => {
     const audio = new Audio(sounds[soundIndex]);
     audio.play();
+  };
+
+  // Get color for matched pair or pending selection
+  const getWordColor = (wordIndex) => {
+    if (matches[wordIndex] !== undefined) {
+      // Get match number (0, 1, 2...)
+      const matchNumber = Object.keys(matches)
+        .sort()
+        .indexOf(wordIndex.toString());
+      return COLORS[matchNumber % COLORS.length];
+    }
+    if (pendingWord === wordIndex) {
+      return { bg: "bg-yellow-400", border: "border-yellow-600", hover: "hover:bg-yellow-300" };
+    }
+    return { bg: "bg-white", border: "border-gray-400", hover: "hover:bg-gray-100" };
+  };
+
+  const getSoundColor = (soundIndex) => {
+    // Check if this sound is matched
+    const matchedWordIndex = Object.keys(matches).find(
+      (key) => matches[key] === soundIndex
+    );
+
+    if (matchedWordIndex !== undefined) {
+      // Get match number
+      const matchNumber = Object.keys(matches)
+        .sort()
+        .indexOf(matchedWordIndex);
+      return COLORS[matchNumber % COLORS.length];
+    }
+    if (pendingSound === soundIndex) {
+      return { bg: "bg-yellow-400", border: "border-yellow-600", hover: "hover:bg-yellow-300" };
+    }
+    return { bg: "bg-white", border: "border-gray-400", hover: "hover:bg-gray-100" };
   };
 
   return (
@@ -127,35 +252,39 @@ const SituationalMatchTheSound = ({
             <div className="mt-2">{question}</div>
           </div>
 
+          {/* Instruction Text */}
+          <p className="text-white text-sm text-center mb-4 px-4 font-bold">
+            I-click ang salita at tunog para ipares. Magkakapareho ng kulay ang mga tama!
+          </p>
+
           {/* Grid Layout 2x2 */}
           <div className="grid grid-cols-2 gap-4 w-full max-w-xs">
-            {choices.map((choice, choiceIndex) => (
-              <React.Fragment key={choiceIndex}>
-                {/* Word Button */}
-                <button
-                  onClick={() => handleWordClick(choiceIndex)}
-                  className={`px-4 py-3 text-sm rounded-lg font-bold border-2 transition ${
-                    selectedMatches[`word-${choiceIndex}`]
-                      ? "bg-yellow-400 border-yellow-600 text-black"
-                      : "bg-white border-gray-400 text-black hover:bg-gray-100"
-                  }`}
-                >
-                  {choice}
-                </button>
+            {choices.map((choice, choiceIndex) => {
+              const wordColor = getWordColor(choiceIndex);
+              const soundColor = getSoundColor(choiceIndex);
+              
+              return (
+                <React.Fragment key={choiceIndex}>
+                  {/* Word Button */}
+                  <button
+                    onClick={() => handleWordClick(choiceIndex)}
+                    className={`px-4 py-3 text-sm rounded-lg font-bold border-2 transition ${wordColor.bg} ${wordColor.border} ${wordColor.hover} text-black`}
+                    disabled={submitted}
+                  >
+                    {choice}
+                  </button>
 
-                {/* Ear Icon Button */}
-                <button
-                  onClick={() => handleEarClick(choiceIndex)}
-                  className={`p-2 h-25 rounded-lg border-2 transition flex items-center justify-center ${
-                    selectedMatches[`ear-${choiceIndex}`]
-                      ? "bg-yellow-400 border-yellow-600"
-                      : "bg-white border-gray-400 hover:bg-gray-100"
-                  }`}
-                >
-                  <img src={EarIcon} alt="Play sound" className="w-20 h-20" />
-                </button>
-              </React.Fragment>
-            ))}
+                  {/* Ear Icon Button */}
+                  <button
+                    onClick={() => handleEarClick(choiceIndex)}
+                    className={`p-2 h-25 rounded-lg border-2 transition flex items-center justify-center ${soundColor.bg} ${soundColor.border} ${soundColor.hover}`}
+                    disabled={submitted}
+                  >
+                    <img src={EarIcon} alt="Play sound" className="w-20 h-20" />
+                  </button>
+                </React.Fragment>
+              );
+            })}
           </div>
 
           <div className="flex flex-row items-center gap-2 w-full max-w-md mt-10">
@@ -167,10 +296,7 @@ const SituationalMatchTheSound = ({
           <button
             className="my-6 px-6 py-2 bg-yellow-400 text-black font-bold rounded-lg hover:bg-yellow-500 transition disabled:opacity-50"
             onClick={handleSubmit}
-            disabled={
-              Object.keys(selectedMatches).length < choices.length * 2 ||
-              submitted
-            }
+            disabled={Object.keys(matches).length !== choices.length || submitted}
           >
             Submit
           </button>
@@ -183,10 +309,11 @@ const SituationalMatchTheSound = ({
         onClose={handleCloseCorrectModal}
       />
       <WrongAnswerModal
-        isOpen={showWrong}
-        onClose={handleCloseWrongModal}
-        correctAnswer="Match all sounds to words"
-      />
+  isOpen={showWrong}
+  onClose={handleCloseWrongModal}
+  correctAnswer={showWrongOverlay ? "I-tugma ang salita sa tunog na narinig." : null}
+  isTryAgain={!showWrongOverlay}
+/>
     </div>
   );
 };

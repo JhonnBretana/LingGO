@@ -67,22 +67,32 @@ function Level2Questions() {
 
         setAnswers(level2Answers);
 
-        // Check if there are wrong questions to review
-        const wrongQuestions = questions.filter((q) => {
-          const answer = level2Answers[`Level2Question${q.id}`];
-          return answer === "Wrong";
-        });
+        // Check if ALL questions have been answered first
+        const allAnswered = questions.every((q) =>
+          ["Correct", "Wrong"].includes(level2Answers[`Level2Question${q.id}`])
+        );
 
-        if (wrongQuestions.length > 0) {
-          // Load which ones have already been answered in review
-          const alreadyAnswered = wrongQuestions
-            .filter((q) => wrongAnswered[`Level2Question${q.id}`] === true)
-            .map((q) => q.id);
+        // Only check for review mode if all questions are answered
+        if (allAnswered) {
+          // Check if there are wrong questions to review AND review hasn't been completed
+          const wrongQuestions = questions.filter((q) => {
+            const answer = level2Answers[`Level2Question${q.id}`];
+            return answer === "Wrong";
+          });
 
-          setReviewQuestions(wrongQuestions);
-          setReviewAnswered(alreadyAnswered);
-          setReviewMode(true);
-          setPage(1);
+          const reviewCompleted = userData.Level2ReviewCompleted || false;
+
+          if (wrongQuestions.length > 0 && !reviewCompleted) {
+            // Load which ones have already been answered in review
+            const alreadyAnswered = wrongQuestions
+              .filter((q) => wrongAnswered[`Level2Question${q.id}`] === true)
+              .map((q) => q.id);
+
+            setReviewQuestions(wrongQuestions);
+            setReviewAnswered(alreadyAnswered);
+            setReviewMode(true);
+            setPage(1);
+          }
         }
       }
     };
