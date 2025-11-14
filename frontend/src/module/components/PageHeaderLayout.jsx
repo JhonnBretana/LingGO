@@ -3,17 +3,18 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import Logo from "../../assets/LingGO Logo.png";
 import Star from "../../assets/star.png";
-import { useNavigate } from "react-router-dom";
-import useBackgroundMusic from "../../hooks/useBackgroundMusic";
+import Star2 from "../../assets/StarLevelTwo.png";
+import Star3 from "../../assets/StarLevelThree.png";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function PageHeaderLayout() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [musicOn, setMusicOn] = useState(false);
+  const [currentStar, setCurrentStar] = useState(Star);
   const navigate = useNavigate();
+  const location = useLocation();
   const role = localStorage.getItem("linggoRole");
-  const { playMusic, stopMusic } = useBackgroundMusic();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,60 +36,34 @@ function PageHeaderLayout() {
   }, []);
 
   useEffect(() => {
-    if (musicOn) {
-      // Only create if not already playing
-      if (!window._bgMusicAudio) {
-        window._bgMusicAudio = new Audio("/assets/AppSounds/BgMusicLingGo.mp3");
-        window._bgMusicAudio.loop = true;
-        window._bgMusicAudio.volume = 1;
-        window._bgMusicAudio.addEventListener("ended", () => {
-          window._bgMusicAudio.currentTime = 0;
-          window._bgMusicAudio.play();
-        });
-      }
-      window._bgMusicAudio.play().catch(() => {});
-    } else {
-      // Always pause and reset if exists
-      if (window._bgMusicAudio) {
-        window._bgMusicAudio.pause();
-        window._bgMusicAudio.currentTime = 0;
+    const path = location.pathname;
+
+    if (path.includes("/level-one")) {
+      setCurrentStar(Star);
+      localStorage.setItem("linggoCurrentStar", "star1");
+    } else if (path.includes("/level-two")) {
+      setCurrentStar(Star2);
+      localStorage.setItem("linggoCurrentStar", "star2");
+    } else if (path.includes("/level-three")) {
+      setCurrentStar(Star3);
+      localStorage.setItem("linggoCurrentStar", "star3");
+    } else if (path.includes("/level1-finish-choice")) {
+      const savedStar = localStorage.getItem("linggoCurrentStar");
+      if (savedStar === "star2") {
+        setCurrentStar(Star2);
+      } else if (savedStar === "star3") {
+        setCurrentStar(Star3);
+      } else {
+        setCurrentStar(Star);
       }
     }
-  }, [musicOn]);
-
-  // Patch playMusic to store audio ref globally
-  function patchedPlayMusic() {
-    if (!window._bgMusicAudio) {
-      window._bgMusicAudio = new Audio("/assets/AppSounds/BgMusicLingGo.mp3");
-      window._bgMusicAudio.loop = true;
-      window._bgMusicAudio.volume = 1;
-      window._bgMusicAudio.addEventListener("ended", () => {
-        window._bgMusicAudio.currentTime = 0;
-        window._bgMusicAudio.play();
-      });
-    }
-    window._bgMusicAudio.play().catch(() => {});
-  }
-
-  // Use patchedPlayMusic instead of hook for global control
-  useEffect(() => {
-    if (musicOn) playMusic();
-    else stopMusic();
-    // do not recreate audio here
-  }, [musicOn, playMusic, stopMusic]);
-
-  useEffect(() => {
-    return () => {
-      // ensure audio is stopped when header unmounts (optional)
-      stopMusic();
-    };
-  }, [stopMusic]);
+  }, [location.pathname]);
 
   const gradeDisplay =
     user && user.Role === "Mag-aaral"
       ? `${user.Grade || ""}${user.Section ? "-" + user.Section : ""}`
       : user
-      ? user.Role // Directly show the role for non-students
+      ? user.Role
       : "Bisita";
 
   const getFullName = () => {
@@ -115,7 +90,7 @@ function PageHeaderLayout() {
 
   const handleClearRecords = async () => {
     await clearLevel1Questions();
-    window.location.reload(); // or re-fetch user data
+    window.location.reload();
   };
 
   return (
@@ -146,7 +121,7 @@ function PageHeaderLayout() {
 
       <div className="flex flex-col items-center flex-shrink-0">
         <img
-          src={Star}
+          src={currentStar}
           alt="Star"
           className="h-12 w-auto object-contain sm:h-14 md:h-16 lg:h-20"
         />
@@ -186,15 +161,6 @@ function PageHeaderLayout() {
                 onClick={handleLogout}
               >
                 Logout
-              </button>
-              {/* Music Toggle Button */}
-              <button
-                className={`my-1 px-4 py-2 rounded ${
-                  musicOn ? "bg-green-500" : "bg-gray-400"
-                } text-white font-bold`}
-                onClick={() => setMusicOn((prev) => !prev)}
-              >
-                {musicOn ? "Patayin ang Musika" : "Buksan ang Musika"}
               </button>
             </div>
           </div>
