@@ -400,6 +400,16 @@ function Level1Questions() {
                 <div className="flex gap-3 sm:gap-4 mt-3 items-center">
                   <button
                     className="px-4 sm:px-6 py-2 bg-white text-black font-bold rounded-xl border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-x-0 disabled:hover:translate-y-0 transition-all duration-150 text-sm sm:text-base"
+                    onClick={() => setPage(page - 1)}
+                    disabled={page === 1}
+                  >
+                    Prev
+                  </button>
+                  <span className="text-base sm:text-xl font-black">
+                    Page {page} of {totalPages}
+                  </span>
+                  <button
+                    className="px-4 sm:px-6 py-2 bg-white text-black font-bold rounded-xl border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-x-0 disabled:hover:translate-y-0 transition-all duration-150 text-sm sm:text-base"
                     onClick={() => setPage(page + 1)}
                     disabled={page === totalPages}
                   >
