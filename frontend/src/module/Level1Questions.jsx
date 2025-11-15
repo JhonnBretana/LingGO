@@ -248,32 +248,32 @@ function Level1Questions() {
 
   // Add this useEffect after the allAnswered definition
   useEffect(() => {
-  if (allAnswered && !reviewMode) {
-    // Calculate earned points (same as LevelResultPreview)
-    const earnedPoints = questions.reduce((sum, q) => {
-      const answer = answers[`Level1Question${q.id}`];
-      if (answer === "Correct") {
-        if (
-          q.type === "MatchingWordsWithWords" ||
-          q.type === "MatchingWordsWithImage"
-        ) {
-          return sum + q.correctAnswer.length;
+    if (allAnswered && !reviewMode) {
+      // Calculate earned points (same as LevelResultPreview)
+      const earnedPoints = questions.reduce((sum, q) => {
+        const answer = answers[`Level1Question${q.id}`];
+        if (answer === "Correct") {
+          if (
+            q.type === "MatchingWordsWithWords" ||
+            q.type === "MatchingWordsWithImage"
+          ) {
+            return sum + q.correctAnswer.length;
+          }
+          return sum + 1;
         }
-        return sum + 1;
-      }
-      return sum;
-    }, 0);
+        return sum;
+      }, 0);
 
-    // Save to Firestore under Score.level1Score
-    const userId = localStorage.getItem("linggoUserId");
-    if (userId) {
-      const userRef = doc(db, "users", userId);
-      updateDoc(userRef, {
-        "Score.level1Score": earnedPoints,
-      });
+      // Save to Firestore under Score.level1Score
+      const userId = localStorage.getItem("linggoUserId");
+      if (userId) {
+        const userRef = doc(db, "users", userId);
+        updateDoc(userRef, {
+          "Score.level1Score": earnedPoints,
+        });
+      }
     }
-  }
-}, [allAnswered, reviewMode, answers, questions]);
+  }, [allAnswered, reviewMode, answers, questions]);
 
   // In review mode, don't disable buttons
   function isAnswered(q) {
@@ -290,7 +290,7 @@ function Level1Questions() {
         {allAnswered && !reviewMode ? (
           <div className="flex-1 overflow-y-auto">
             <LevelResultPreview
-            questions={questions}
+              questions={questions}
               onReviewWrongQuestions={handleReviewWrongQuestions}
             />
           </div>
@@ -429,6 +429,16 @@ function Level1Questions() {
                   <button
                     className="px-4 sm:px-6 py-2 bg-white text-black font-bold rounded-xl border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-x-0 disabled:hover:translate-y-0 transition-all duration-150 text-sm sm:text-base"
                     onClick={() => setPage(page - 1)}
+                    disabled={page === 1}
+                  >
+                    Prev
+                  </button>
+                  <span className="text-base sm:text-xl font-black">
+                    Page {page} of {totalPages}
+                  </span>
+                  <button
+                    className="px-4 sm:px-6 py-2 bg-white text-black font-bold rounded-xl border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-x-0 disabled:hover:translate-y-0 transition-all duration-150 text-sm sm:text-base"
+                    onClick={() => setPage(page + 1)}
                     disabled={page === totalPages}
                   >
                     Next

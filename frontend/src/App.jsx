@@ -114,6 +114,7 @@ function App() {
         <Route path="/signup-details" element={<SignUpDetails />} />
         <Route path="/signin" element={<SigninPage />} />
         <Route path="/choose-level" element={<ChooseLevel />} />
+        <Route path="/level1" element={<Level1 />} />
         <Route path="/level-one" element={<LevelOne />} />
         <Route path="/level2" element={<Level2 />} />
         <Route path="/level-two" element={<LevelTwo />} />
@@ -188,7 +189,6 @@ function App() {
         <Route path="/correct_overlay" element={<CorrectOverlay />} />
 
         {/*levels*/}
-        <Route path="/level1" element={<Level1 />} />
 
         <Route path="/result" element={<Result />} />
 
