@@ -2,20 +2,18 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import BackgroundLayout from "../module/components/BackgroundLayout";
 import Logo from "../assets/LingGO Logo.png";
-import useBackgroundMusic from "../hooks/useBackgroundMusic";
+import useBackgroundMusic from "../hooks/useBackgroundMusic.js";
 
 function DefaultPage() {
   const navigate = useNavigate();
   const { playMusic } = useBackgroundMusic();
 
   const handleStart = () => {
+    // Start music when user clicks the button (guaranteed user interaction)
     playMusic();
-    // Set background music volume to 20% so it doesn't overpower sound effects
-    if (window._bgMusicAudio) {
-      window._bgMusicAudio.volume = 0.2;
-    }
     navigate("/landing");
   };
+
   return (
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
