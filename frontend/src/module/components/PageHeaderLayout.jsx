@@ -5,6 +5,7 @@ import Logo from "../../assets/LingGO Logo.png";
 import Star from "../../assets/star.png";
 import Star2 from "../../assets/StarLevelTwo.png";
 import Star3 from "../../assets/StarLevelThree.png";
+import BlankStar from "../../assets/blankStar.png";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function PageHeaderLayout() {
@@ -38,16 +39,29 @@ function PageHeaderLayout() {
   useEffect(() => {
     const path = location.pathname;
 
-    if (path.includes("/level-one")) {
+    // Level 1 routes
+    if (path.includes("/level1") || path.includes("/level-one")) {
       setCurrentStar(Star);
       localStorage.setItem("linggoCurrentStar", "star1");
-    } else if (path.includes("/level-two")) {
+    }
+    // Level 2 routes
+    else if (path.includes("/level2") || path.includes("/level-two")) {
       setCurrentStar(Star2);
       localStorage.setItem("linggoCurrentStar", "star2");
-    } else if (path.includes("/level-three")) {
+    }
+    // Level 3 routes
+    else if (
+      path.includes("/level3") ||
+      path.includes("/level-three") ||
+      path.includes("/level3-situation1") ||
+      path.includes("/level3-situation2") ||
+      path.includes("/level3-situation3")
+    ) {
       setCurrentStar(Star3);
       localStorage.setItem("linggoCurrentStar", "star3");
-    } else if (path.includes("/level1-finish-choice")) {
+    }
+    // Special case for level1-finish-choice to maintain previous star
+    else if (path.includes("/level1-finish-choice")) {
       const savedStar = localStorage.getItem("linggoCurrentStar");
       if (savedStar === "star2") {
         setCurrentStar(Star2);
@@ -56,6 +70,11 @@ function PageHeaderLayout() {
       } else {
         setCurrentStar(Star);
       }
+    }
+    // Default case - show blank star for routes not related to levels
+    else {
+      setCurrentStar(BlankStar);
+      localStorage.removeItem("linggoCurrentStar");
     }
   }, [location.pathname]);
 

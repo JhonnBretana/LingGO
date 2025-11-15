@@ -1,52 +1,42 @@
-// ...existing code...
-import { useEffect } from "react";
-
-const MUSIC_SRC = "/assets/AppSounds/BgMusicLingGo.mp3";
-
-function initGlobalAudio() {
-  if (!window._linggo_bg_audio) {
-    const audio = new Audio(MUSIC_SRC);
-    audio.loop = true;
-    audio.volume = 1;
-    const onEnded = () => {
-      audio.currentTime = 0;
-      audio.play().catch(() => {});
-    };
-    audio.addEventListener("ended", onEnded);
-    // store both audio and listener so we can clean up if needed
-    window._linggo_bg_audio = { audio, onEnded };
-  }
-  return window._linggo_bg_audio.audio;
-}
-
 export default function useBackgroundMusic() {
   const playMusic = () => {
-    const audio = initGlobalAudio();
-    audio.play().catch(() => {});
-  };
+    const audioObj = window._linggo_bg_audio;
+    if (audioObj && audioObj.audio) {
+      // Check if audio is actually playing, not just the flag
+      const isActuallyPlaying = !audioObj.audio.paused && !audioObj.audio.ended;
 
-  const stopMusic = () => {
-    const obj = window._linggo_bg_audio;
-    if (obj && obj.audio) {
-      try {
-        obj.audio.pause();
-        obj.audio.currentTime = 0;
-      } catch (e) {}
+      if (!isActuallyPlaying) {
+        audioObj.audio
+          .play()
+          .then(() => {
+            audioObj.isPlaying = true;
+            localStorage.setItem("linggo_music_enabled", "true");
+          })
+          .catch((error) => {
+            // If autoplay is prevented and user hasn't interacted yet
+            if (!audioObj.hasUserInteracted) {
+              console.log("Music will start on first user interaction");
+            } else {
+              console.log("Could not play audio:", error);
+            }
+          });
+      }
     }
   };
 
-  useEffect(() => {
-    return () => {
-      // optional: keep audio between routes. If you want to fully remove on unmount uncomment:
-      // const obj = window._linggo_bg_audio;
-      // if (obj) {
-      //   obj.audio.pause();
-      //   obj.audio.currentTime = 0;
-      //   obj.audio.removeEventListener("ended", obj.onEnded);
-      //   delete window._linggo_bg_audio;
-      // }
-    };
-  }, []);
+  const stopMusic = () => {
+    const audioObj = window._linggo_bg_audio;
+    if (audioObj && audioObj.audio) {
+      try {
+        audioObj.audio.pause();
+        audioObj.audio.currentTime = 0;
+        audioObj.isPlaying = false;
+        localStorage.setItem("linggo_music_enabled", "false");
+      } catch (e) {
+        console.log("Error stopping music:", e);
+      }
+    }
+  };
 
   return { playMusic, stopMusic };
 }

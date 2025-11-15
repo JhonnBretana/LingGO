@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import DefaultPage from "./module/DefaultPage.jsx";
 import LandingPage from "./module/AccountModule/LandingPage.jsx";
@@ -60,7 +60,6 @@ import Level3Situation2 from "./module/Level3ChapterQuestion/Level3Situation2.js
 import Level3Situation3 from "./module/Level3ChapterQuestion/Level3Situation3.jsx";
 import Level3ResultPreview from "./module/components/Level3ResultPreview.jsx";
 
-
 import LevelTwo from "./module/AccountModule/LevelTwo.jsx";
 import LevelThree from "./module/AccountModule/LevelThree.jsx";
 
@@ -76,12 +75,33 @@ import Level1Return from "./module/components/Level1Return.jsx";
 import useBackgroundMusic from "./hooks/useBackgroundMusic.js";
 
 function App() {
-  const playMusic = useBackgroundMusic();
+  const { playMusic, stopMusic } = useBackgroundMusic();
+
+  useEffect(() => {
+    // Handle visibility change (when user switches tabs)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        // Page is visible again - only try to play if user has interacted
+        const shouldPlay = localStorage.getItem("linggo_music_enabled");
+        const audioObj = window._linggo_bg_audio;
+
+        if (shouldPlay === "true" && audioObj && audioObj.hasUserInteracted) {
+          playMusic();
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [playMusic]);
 
   return (
     <div>
       <Routes>
-        <Route path="/" element={<DefaultPage playMusic={playMusic} />} />
+        <Route path="/" element={<DefaultPage />} />
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/welcome" element={<WelcomePage />} />
 
@@ -94,6 +114,7 @@ function App() {
         <Route path="/signup-details" element={<SignUpDetails />} />
         <Route path="/signin" element={<SigninPage />} />
         <Route path="/choose-level" element={<ChooseLevel />} />
+        <Route path="/level1" element={<Level1 />} />
         <Route path="/level-one" element={<LevelOne />} />
         <Route path="/level2" element={<Level2 />} />
         <Route path="/level-two" element={<LevelTwo />} />
@@ -168,7 +189,6 @@ function App() {
         <Route path="/correct_overlay" element={<CorrectOverlay />} />
 
         {/*levels*/}
-        <Route path="/level1" element={<Level1 />} />
 
         <Route path="/result" element={<Result />} />
 
@@ -177,9 +197,10 @@ function App() {
         <Route path="/level1-finish" element={<Level1Finish />} />
         <Route path="/level1-finish-choice" element={<Level1FinishChoice />} />
         <Route path="/level1-return" element={<Level1Return />} />
-        <Route path="/level3-result-preview" element={<Level3ResultPreview />} />
-
-
+        <Route
+          path="/level3-result-preview"
+          element={<Level3ResultPreview />}
+        />
       </Routes>
     </div>
   );
