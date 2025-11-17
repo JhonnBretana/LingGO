@@ -35,7 +35,7 @@ function WelcomePage() {
 
   const handleContinue = async () => {
     const userId = localStorage.getItem("linggoUserId");
-    
+
     if (!userId) {
       navigate("/choose-level");
       return;
@@ -44,7 +44,7 @@ function WelcomePage() {
     // Fetch fresh data from Firestore
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
-    
+
     if (!userSnap.exists()) {
       navigate("/choose-level");
       return;
@@ -53,23 +53,23 @@ function WelcomePage() {
     const data = userSnap.data();
     const level1Questions = data.Level1Questions || {};
     const level1ReviewCompleted = data.Level1ReviewCompleted || false;
-    
+
     // Check if all questions are answered
     const allQuestionsAnswered = questions.every((q) =>
       ["Correct", "Wrong"].includes(level1Questions[`Level1Question${q.id}`])
     );
-    
+
     // If not all questions answered, go to choose-level
     if (!allQuestionsAnswered) {
       navigate("/choose-level");
       return;
     }
-    
+
     // Find wrong questions
     const wrongQuestions = questions.filter(
       (q) => level1Questions[`Level1Question${q.id}`] === "Wrong"
     );
-    
+
     // If no wrong questions (all correct) OR review completed, proceed to finish-choice
     if (wrongQuestions.length === 0 || level1ReviewCompleted) {
       navigate("/level1-finish-choice");
@@ -83,20 +83,10 @@ function WelcomePage() {
     <BackgroundLayout>
       <div className="flex flex-col items-center text-center m-3 p-3">
         <div className="mb-1">
-          <p
-            className="text-5xl text-white text-shadow-md font-extrabold mb-3"
-            style={{
-              WebkitTextStroke: "1px black",
-            }}
-          >
+          <p className="text-5xl text-white text-shadow-md font-extrabold mb-3">
             {getDisplayName()}
           </p>
-          <p
-            className="text-2xl text-white text-shadow-md font-extrabold"
-            style={{
-              WebkitTextStroke: "0.7px black",
-            }}
-          >
+          <p className="text-2xl text-white text-shadow-md font-extrabold">
             Maligayang Pagbabalik!
           </p>
         </div>
