@@ -45,8 +45,9 @@ function NameDetail() {
 
         <button
           onClick={() => {
-            localStorage.setItem("firstName", firstName);
-            localStorage.setItem("lastName", lastName);
+            // Remove spaces before saving to localStorage
+            localStorage.setItem("firstName", firstName.replace(/\s/g, ""));
+            localStorage.setItem("lastName", lastName.replace(/\s/g, ""));
             navigate("/agedetail");
           }}
           className="w-50 mt-5 bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"

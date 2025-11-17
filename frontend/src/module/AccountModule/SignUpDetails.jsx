@@ -37,14 +37,17 @@ function SignUpDetails() {
     if (!isFormComplete) return;
     setLoading(true);
 
-    const username = firstName.trim();
+    // Remove spaces from names
+    const cleanedFirstName = firstName.replace(/\s/g, "");
+    const cleanedLastName = lastName.replace(/\s/g, "");
+    const username = cleanedFirstName;
     const gradeNum = gradeToNumber[grade] || "";
-    const password = `${lastName.trim()}${gradeNum}${section}`;
+    const password = `${cleanedLastName}${gradeNum}${section}`;
 
     try {
       await addDoc(collection(db, "users"), {
-        "Unang Pangalan": firstName.trim(),
-        Apelyido: lastName.trim(),
+        "Unang Pangalan": cleanedFirstName,
+        Apelyido: cleanedLastName,
         Pangkat: section,
         Baitang: grade,
         Username: username,
