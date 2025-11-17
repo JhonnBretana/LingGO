@@ -41,8 +41,14 @@ function PageHeaderLayout() {
 
     // Level 1 routes
     if (path.includes("/level1") || path.includes("/level-one")) {
-      setCurrentStar(Star);
-      localStorage.setItem("linggoCurrentStar", "star1");
+      // Check if it's the finish route or return route
+      if (path.includes("/level1-finish") || path.includes("/level1-return")) {
+        setCurrentStar(BlankStar);
+        localStorage.removeItem("linggoCurrentStar");
+      } else {
+        setCurrentStar(Star);
+        localStorage.setItem("linggoCurrentStar", "star1");
+      }
     }
     // Level 2 routes
     else if (path.includes("/level2") || path.includes("/level-two")) {

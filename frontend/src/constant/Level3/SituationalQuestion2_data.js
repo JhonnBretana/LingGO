@@ -54,9 +54,9 @@ const situational_questions2 = [
     situation: "Sitwasyon 2 - Sa Bahay",
     characterImage: "/assets/ImageChoices/boyatthemarket1.png",
     characterName: "(name)",
-    question: "Daghang Salamat!",
-    voice: "/assets/Voice/CebuanoLevel2/daghangsalamat.mp3",
-    correctAnswer: "Daghang Salamat",
+    question: "Pag Amping!",
+    voice: "/assets/Voice/CebuanoLevel2/pag-amping.mp3",
+    correctAnswer: "Pag Amping",
     ConvoImage: null,
   },
 ];
