@@ -23,7 +23,7 @@ function SituationalQuestionDragAndDrop({
 
   const handleChoiceClick = (choice) => {
     if (submitted) return;
-    
+
     if (bank.includes(choice)) {
       // Move from bank to answer area
       setBank((prev) => prev.filter((item) => item !== choice));
@@ -33,7 +33,7 @@ function SituationalQuestionDragAndDrop({
 
   const handleAnswerClick = (choice) => {
     if (submitted) return;
-    
+
     // Move from answer area back to bank
     setAnswerArea((prev) => prev.filter((item) => item !== choice));
     setBank((prev) => [...prev, choice]);
@@ -102,7 +102,7 @@ function SituationalQuestionDragAndDrop({
         </div>
       )}
       <div
-        className="px-5 py-3 bg-white rounded-lg w-100  border border-black flex flex-col text-center  justify-center"
+        className="px-5 py-3 bg-white rounded-lg w-70 sm:w-100  border border-black flex flex-col text-center  justify-center"
         style={{
           fontFamily: "'Fredoka', sans-serif",
           fontWeight: "bold",
@@ -139,7 +139,7 @@ function SituationalQuestionDragAndDrop({
 
       {/* Main Question */}
       {question && (
-        <div className="w-[400px] max-w-md bg-white rounded-xl shadow-3xl px-4 py-4 my-2 mb-3 border border-gray-300 flex flex-col items-center">
+        <div className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl bg-white rounded-xl shadow-3xl px-2 sm:px-4 py-4 my-2 mb-3 border border-gray-300 flex flex-col items-center">
           <div
             className="font-medium text-center text-xl text-black mb-6 px-2"
             style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: "bold" }}
@@ -149,7 +149,7 @@ function SituationalQuestionDragAndDrop({
 
           <div className="flex flex-col gap-6 w-full items-center">
             {/* Answer Area */}
-            <div className="flex flex-row flex-wrap gap-3 min-h-[56px] w-90 justify-center items-center p-4 border-b-4 border-black">
+            <div className="flex flex-row flex-wrap gap-3 min-h-[56px] w-full justify-center items-center p-2 sm:p-4 border-b-4 border-black">
               {answerArea.length === 0 ? (
                 <span className="text-gray-400 italic">
                   I-click ang mga salita
@@ -169,7 +169,7 @@ function SituationalQuestionDragAndDrop({
             </div>
 
             {/* Choices Bank */}
-            <div className="flex flex-row flex-wrap gap-3 min-h-[56px] w-90 justify-center items-center p-4">
+            <div className="flex flex-row flex-wrap gap-3 min-h-[56px] w-full justify-center items-center p-2 sm:p-4">
               {bank.map((choice, index) => (
                 <button
                   key={`${choice}-${index}`}

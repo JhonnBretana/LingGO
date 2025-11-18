@@ -79,7 +79,7 @@ function SituationalQuestionWithSlowSound({
           />
           <div className="absolute inset-0 flex items-center justify-center">
             <p
-              className="font-medium text-center text-xl text-black drop-shadow-[2px_2px_0px_white]  w-full max-w-md px-10"
+              className="font-medium text-center text-md text-black drop-shadow-[2px_2px_0px_white]  w-full max-w-md px-10"
               style={{
                 fontFamily: "'Fredoka', sans-serif",
                 fontWeight: "bold",
@@ -98,19 +98,19 @@ function SituationalQuestionWithSlowSound({
         </div>
 
         <div
-          className="px-5 py-6 bg-white rounded-lg w-100 h-30 border border-black flex flex-col text-center  justify-center"
+          className="px-5 py-3 bg-white rounded-lg w-70 h-30 sm:w-100 z border border-black flex flex-col text-center  justify-center"
           style={{
             fontFamily: "'Fredoka', sans-serif",
             fontWeight: "bold",
           }}
         >
-          <span className="text-2xl">Papalit po kog bugas.</span>
+          <span className="text-xl">Papalit po kog bugas.</span>
           <span className="text-blue-700">Pabili po ako ng bigas.</span>
         </div>
 
         <div className="flex flex-row items-center gap-2 w-full max-w-md">
           <div className="flex flex-col relative">
-            <img src={GirlAtMarket1} alt="Character" className="h-50 w" />
+            <img src={GirlAtMarket1} alt="Character" className="h-35 sm: " />
           </div>
         </div>
         <div

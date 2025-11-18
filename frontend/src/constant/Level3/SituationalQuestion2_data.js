@@ -26,7 +26,7 @@ const situational_questions2 = [
   },
   {
     id: 5,
-    type: "Select4ChoicesWithVoice",
+    type: "Situational4QuestionWithVoice",
     situation: "Sitwasyon 2 - Sa Palengke",
     characterName: "(name)",
     question: "Piliin ang iyong narinig.",

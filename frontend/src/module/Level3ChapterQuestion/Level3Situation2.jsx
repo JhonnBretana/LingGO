@@ -190,7 +190,7 @@ function Level3Situation2() {
             showWrongOverlay={showWrongOverlay}
           />
         );
-      case "Select4ChoicesWithVoice":
+      case "Situational4QuestionWithVoice":
         return (
           <Select4ChoicesWithVoice
             question={{
