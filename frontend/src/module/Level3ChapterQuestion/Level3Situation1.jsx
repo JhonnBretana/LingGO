@@ -132,8 +132,6 @@ function Level3Situation1() {
         return (
           <Questionwith4ChoicesSituational
             situation={question.situation}
-            instruction={instruction}
-            instructionSub={instructionSub}
             characterName={characterName}
             question={question.question}
             choices={question.choices}
