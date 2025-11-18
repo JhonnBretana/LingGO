@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import QuestionsBar from "../../../assets/clickbar.png";
-import GirlAtHouse from "/assets/ImageChoices/girlathouse.png";
+import adtogirl from "/assets/ImageChoices/adtogirl.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 
@@ -117,7 +117,7 @@ const Questionwith4ChoicesSituational = ({
               <div className="text-xs text-gray-500">{instructionSub}</div>
             )}
           </div>
-          <img src={GirlAtHouse} alt="" className="h-[290px] sm:h-full" />
+          <img src={adtogirl} alt="" className="h-[160px] sm:h-full" />
         </div>
       </div>
 
