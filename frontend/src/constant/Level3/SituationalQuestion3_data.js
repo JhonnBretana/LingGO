@@ -34,9 +34,9 @@ const situational_questions3 = [
     situation: "Sitwasyon 3 - Sa FB Messenger",
     characterImage: null,
     characterName: "(name)",
-    question: "Daghang Salamat!",
-    voice: "/assets/Voice/CebuanoLevel2/daghangsalamat.mp3",
-    correctAnswer: "Daghang Salamat",
+    question: "Pag-amping!",
+    voice: "/assets/Voice/CebuanoLevel2/pag-amping.mp3",
+    correctAnswer: "Pag-amping",
     ConvoImage: "/assets/ImageChoices/convofooter2.png",
   },
 ];
