@@ -194,7 +194,7 @@ const questionsl2 = [
     type: "DragAndDrop4ChoicesWithVoice",
     question: "Pasayloa",
     choices: ["Pakiusap", "Maraming Salamat", "Patawad", "Walang Anuman"],
-    correctAnswer: "Pakiusap",
+    correctAnswer: "Patawad",
     image: null,
     voice: "/assets/Voice/CebuanoLevel2/pasayloa.mp3",
   },

@@ -4,6 +4,7 @@ import Microphone from "../../../assets/Microphone.png";
 import CorrectAnswerModal from "../../components/CorrectOverlay";
 import WrongAnswerModal from "../../components/WrongOverlay";
 import { Volume2, RotateCcw } from "lucide-react";
+import Info from "../../../assets/Info_button.png";
 
 function SpeechMicWithVoice({
   question,
@@ -19,6 +20,8 @@ function SpeechMicWithVoice({
   const recognitionRef = useRef(null);
   const audioRef = useRef(null);
   const [showTryAgainModal, setShowTryAgainModal] = useState(false);
+  const [useTextInput, setUseTextInput] = useState(false);
+  const [textAnswer, setTextAnswer] = useState("");
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -30,6 +33,7 @@ function SpeechMicWithVoice({
 
   const handleReset = () => {
     setTranscript("");
+    setTextAnswer("");
     setShowSubmit(false);
     setIsRecording(false);
     if (recognitionRef.current) {
@@ -41,6 +45,16 @@ function SpeechMicWithVoice({
       }
       recognitionRef.current = null;
     }
+  };
+
+  const handleInfoClick = () => {
+    setUseTextInput(!useTextInput);
+    handleReset();
+  };
+
+  const handleTextChange = (e) => {
+    setTextAnswer(e.target.value);
+    setShowSubmit(e.target.value.trim().length > 0);
   };
 
   const handleMicClick = () => {
@@ -104,20 +118,24 @@ function SpeechMicWithVoice({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const userSpoken = (transcript || "").trim().toLowerCase();
+    const userInput = useTextInput
+      ? textAnswer.trim().toLowerCase()
+      : (transcript || "").trim().toLowerCase();
+
     const correct =
       typeof question?.correctAnswer === "string"
         ? question.correctAnswer
         : question?.correctAnswer?.value || "";
     const correctNormalized = (correct || "").trim().toLowerCase();
 
-    if (userSpoken && userSpoken === correctNormalized) {
+    if (userInput && userInput === correctNormalized) {
       setShowCorrect(true);
     } else {
       if (showWrongOverlay) {
         setShowWrong(true);
       } else {
         setTranscript("");
+        setTextAnswer("");
         setShowSubmit(false);
         setShowTryAgainModal(true);
       }
@@ -129,6 +147,7 @@ function SpeechMicWithVoice({
   const handleCloseCorrectModal = () => {
     setShowCorrect(false);
     setTranscript("");
+    setTextAnswer("");
     if (onCorrectAnswer) {
       onCorrectAnswer();
     }
@@ -137,6 +156,7 @@ function SpeechMicWithVoice({
   const handleCloseWrongModal = () => {
     setShowWrong(false);
     setTranscript("");
+    setTextAnswer("");
     if (onWrongAnswer) {
       onWrongAnswer();
     }
@@ -157,42 +177,76 @@ function SpeechMicWithVoice({
           </div>
         </div>
 
-       <div className="flex items-center gap-2 justify-center w-full">
-  <button onClick={handlePlay} disabled={!question?.voice} className="flex-shrink-0">
-    <Volume2 className="text-white" size={40} />
-  </button>
-  <p className="text-2xl sm:text-4xl font-semibold text-white text-center">
-    {question?.question}
-  </p>
-</div>
-
-        <div className="flex flex-col items-center">
-          <img
-            className={`${isMicDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${isRecording ? "animate-pulse" : ""}`}
-            src={Microphone}
-            alt="Microphone"
-            onClick={handleMicClick}
-            style={{ filter: isRecording ? "grayscale(0%)" : isMicDisabled ? "grayscale(80%)" : "grayscale(40%)" }}
-          />
-          <p className="text-base sm:text-lg font-medium text-white text-center mt-2">
-            {isRecording
-              ? "Nagre-record... Magsalita na!"
-              : isMicDisabled
-                ? "I-click ang 'Ulitin' para magsalita muli"
-                : "I-tap at simulang magsalita"}
+        <div className="flex items-center gap-2 justify-center w-full">
+          <button onClick={handleInfoClick} className="flex-shrink-0">
+            <img src={Info} alt="Info" className="w-10 h-10" />
+          </button>
+          <button
+            onClick={handlePlay}
+            disabled={!question?.voice}
+            className="flex-shrink-0"
+          >
+            <Volume2 className="text-white" size={40} />
+          </button>
+          <p className="text-2xl sm:text-4xl font-semibold text-white text-center">
+            {question?.question}
           </p>
         </div>
 
-        {transcript && !isRecording && (
-          <div className="text-white text-base sm:text-lg font-bold text-center">
-            <span>Sinabi mo: </span>
-            <span className="bg-yellow-200 text-black px-2 rounded">
-              {transcript}
-            </span>
-          </div>
+        {useTextInput ? (
+          <form
+            className="w-full max-w-xs sm:max-w-sm flex flex-col items-center px-4"
+            onSubmit={handleSubmit}
+          >
+            <input
+              type="text"
+              placeholder="I-type ang sagot"
+              value={textAnswer}
+              onChange={handleTextChange}
+              className="w-full bg-white text-black text-center font-bold mb-4 py-2 sm:py-3 px-4 rounded-full border-3 border-black text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+          </form>
+        ) : (
+          <>
+            <div className="flex flex-col items-center">
+              <img
+                className={`${
+                  isMicDisabled
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
+                } ${isRecording ? "animate-pulse" : ""}`}
+                src={Microphone}
+                alt="Microphone"
+                onClick={handleMicClick}
+                style={{
+                  filter: isRecording
+                    ? "grayscale(0%)"
+                    : isMicDisabled
+                    ? "grayscale(80%)"
+                    : "grayscale(40%)",
+                }}
+              />
+              <p className="text-base sm:text-lg font-medium text-white text-center mt-2">
+                {isRecording
+                  ? "Nagre-record... Magsalita na!"
+                  : isMicDisabled
+                  ? "I-click ang 'Ulitin' para magsalita muli"
+                  : "I-tap at simulang magsalita"}
+              </p>
+            </div>
+
+            {transcript && !isRecording && (
+              <div className="text-white text-base sm:text-lg font-bold text-center">
+                <span>Sinabi mo: </span>
+                <span className="bg-yellow-200 text-black px-2 rounded">
+                  {transcript}
+                </span>
+              </div>
+            )}
+          </>
         )}
 
-        {showSubmit && !isRecording && (
+        {showSubmit && (
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
             <button
               className="w-full px-6 py-2 sm:py-3 bg-[#f2d919] border-3 border-black rounded-xl font-bold text-base sm:text-lg shadow-lg active:scale-95 transition-transform"
