@@ -16,8 +16,6 @@ import { recordLevel3Answer } from "../../utils/recordAnswer.js";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 
-import LevelResultPreview from "../components/LevelResultPreview.jsx";
-
 function groupIntoRows(arr, itemsPerRow = 2) {
   const rows = [];
   for (let i = 0; i < arr.length; i += itemsPerRow) {
@@ -32,7 +30,6 @@ function Level3Situation2() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // review intent flag (passed via navigate state or localStorage)
   const fromReviewIntent =
     location.state?.review === true ||
     localStorage.getItem("enterReviewLevel3") === "true";
@@ -67,7 +64,6 @@ function Level3Situation2() {
         setAnswers(level3Answers);
         setUserName(userData.Name || userData.name || "");
 
-        // Always check for wrong answers
         const wrongQuestions = questions.filter((q) => {
           const answer = level3Answers[`Level3Question${q.id}`];
           return answer === "Wrong";
@@ -83,12 +79,10 @@ function Level3Situation2() {
           setReviewMode(true);
           setPage(1);
 
-          // Clear local storage review flag if present (we honored the intent)
           if (fromReviewIntent) {
             localStorage.removeItem("enterReviewLevel3");
           }
         } else {
-          // If no wrong questions, make sure review mode is off
           setReviewMode(false);
           setReviewQuestions([]);
           setReviewAnswered([]);
@@ -97,7 +91,6 @@ function Level3Situation2() {
     };
 
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function fetchAnswers() {
@@ -110,13 +103,6 @@ function Level3Situation2() {
     }
   }
 
-  function handleReviewWrongQuestions(wrongQuestions) {
-    setReviewQuestions(wrongQuestions);
-    setReviewMode(true);
-    setPage(1);
-    setSelectedQuestion(null);
-  }
-
   function renderQuestionComponent(question) {
     if (!question) return null;
     const userId = localStorage.getItem("linggoUserId");
@@ -127,28 +113,22 @@ function Level3Situation2() {
     const characterName = question.characterName?.replace("(name)", userName);
 
     const handleCorrectAnswer = async () => {
-      console.log("🎯 Correct answer clicked! Question:", question.id);
-
       try {
         if (reviewMode) {
           setReviewAnswered((prev) => [...prev, question.id]);
           if (userId) {
             const userRef = doc(db, "users", userId);
-            // FIXED: write to Situation2 review key (was Situation1)
             await updateDoc(userRef, {
               [`WrongQuestionsAnsweredLevel3Situation2.Level3Question${question.id}`]: true,
             });
             await fetchAnswers();
           }
         } else if (userId) {
-          console.log("📝 Calling recordLevel3Answer...", userId, question.id);
           await recordLevel3Answer(userId, question.id, true, 2);
-          console.log("✅ recordLevel3Answer completed");
           await fetchAnswers();
         }
         setSelectedQuestion(null);
       } catch (error) {
-        console.error("❌ Error in handleCorrectAnswer:", error);
         alert("Failed to save answer. Please try again.");
       }
     };
@@ -244,22 +224,11 @@ function Level3Situation2() {
     return answer === "Correct" || answer === "Wrong";
   }
 
-  const checkForMoreReviews = () => {
-    const situation3WrongQuestions = situation3Questions.filter((q) => {
-      const answer = answers[`Level3Question${q.id}`];
-      return answer === "Wrong";
-    });
-    return situation3WrongQuestions.length > 0;
-  };
-
-  // Automatically go to Situation 3 once all Situation 2 questions are done,
-  // but DO NOT auto-navigate if we arrived here intentionally for review.
   useEffect(() => {
     if (allAnswered && !reviewMode && !fromReviewIntent) {
       navigate("/level3-situation3");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allAnswered, reviewMode]);
+  }, [allAnswered, reviewMode, fromReviewIntent, navigate]);
 
   return (
     <BackgroundLayout>
@@ -352,7 +321,7 @@ function Level3Situation2() {
             </div>
 
             {/* Review Mode Button - Responsive sizing */}
-            {reviewMode && (
+            {reviewMode && reviewQuestions.length > 0 && (
               <button
                 className="
                   w-32 xs:w-36 sm:w-40 md:w-44 lg:w-48
@@ -393,8 +362,28 @@ function Level3Situation2() {
                   setReviewAnswered([]);
                   localStorage.removeItem("reviewAnswered");
 
-                  if (checkForMoreReviews()) {
-                    navigate("/level3-situation3");
+                  // Check for more reviews in situation 3
+                  const userId2 = localStorage.getItem("linggoUserId");
+                  if (userId2) {
+                    const userRef2 = doc(db, "users", userId2);
+                    const userSnap2 = await getDoc(userRef2);
+                    const userData2 = userSnap2.exists()
+                      ? userSnap2.data()
+                      : {};
+
+                    const level3Answers = userData2.Level3Questions || {};
+                    const situation3Wrong = situation3Questions.some(
+                      (q) =>
+                        level3Answers[`Level3Question${q.id}`] === "Wrong"
+                    );
+
+                    if (situation3Wrong) {
+                      navigate("/level3-situation3", {
+                        state: { review: true },
+                      });
+                    } else {
+                      navigate("/level1-finish");
+                    }
                   } else {
                     navigate("/level1-finish");
                   }

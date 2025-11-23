@@ -40,7 +40,6 @@ function SituationalDragAndDrop({
   };
 
   const handleSubmit = () => {
-    console.log("Submit clicked!"); // DEBUG
     const normalize = (s) =>
       s
         .replace(/['']/g, "'") // convert smart quotes
@@ -51,16 +50,10 @@ function SituationalDragAndDrop({
     const userAnswer = normalize(answerArea.join(" "));
     const correctAnswer = normalize(answer);
 
-    console.log("User answer:", userAnswer); // DEBUG
-    console.log("Correct answer:", correctAnswer); // DEBUG
-    console.log("Match:", userAnswer === correctAnswer); // DEBUG
-
     if (userAnswer === correctAnswer) {
-      console.log("CORRECT! Showing modal..."); // DEBUG
       setShowCorrect(true);
       setSubmitted(true);
     } else {
-      console.log("WRONG! showWrongOverlay:", showWrongOverlay); // DEBUG
       if (showWrongOverlay) {
         setShowWrong(true);
       } else {
@@ -78,7 +71,6 @@ function SituationalDragAndDrop({
   };
 
   const handleCloseCorrectModal = () => {
-    console.log("Closing correct modal"); // DEBUG
     setShowCorrect(false);
     setAnswerArea([]);
     setBank(choices);
@@ -89,7 +81,6 @@ function SituationalDragAndDrop({
   };
 
   const handleCloseWrongModal = () => {
-    console.log("Closing wrong modal"); // DEBUG
     setShowWrong(false);
     setAnswerArea([]);
     setBank(choices);
@@ -98,8 +89,6 @@ function SituationalDragAndDrop({
       onWrongAnswer();
     }
   };
-
-  console.log("Render - showCorrect:", showCorrect, "showWrong:", showWrong); // DEBUG
 
   return (
     <div className="flex flex-col items-center w-full px-2 pt-2 gap-2">

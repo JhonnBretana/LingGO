@@ -116,7 +116,7 @@ function Level3ResultPreview({ onReviewWrongQuestions }) {
                       </p>
                       <button
                         className="w-35 bg-white text-black text-lg font-bold mt-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
-                        onClick={() => navigate("/level3")}
+                        onClick={() => navigate("/level1-finish")}
                       >
                         Magpatuloy
                       </button>
