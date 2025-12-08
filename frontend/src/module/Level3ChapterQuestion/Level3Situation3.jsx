@@ -34,14 +34,16 @@ function Level3Situation3() {
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewQuestions, setReviewQuestions] = useState([]);
   const [userName, setUserName] = useState("");
+  const [reviewAnswered, setReviewAnswered] = useState([]);
+  const [isValidating, setIsValidating] = useState(false); // NEW: Loading state
   const navigate = useNavigate();
+  
   const displayQuestions = reviewMode ? reviewQuestions : questions;
   const totalPages = Math.ceil(displayQuestions.length / QUESTIONS_PER_PAGE);
   const startIdx = (page - 1) * QUESTIONS_PER_PAGE;
   const endIdx = startIdx + QUESTIONS_PER_PAGE;
   const paginatedQuestions = displayQuestions.slice(startIdx, endIdx);
   const questionRows = groupIntoRows(paginatedQuestions, 2);
-  const [reviewAnswered, setReviewAnswered] = useState([]);
 
   // Combine all Level 3 questions
   const allLevel3Questions = [
@@ -115,7 +117,8 @@ function Level3Situation3() {
 
     const handleCorrectAnswer = async () => {
       console.log("🎯 Correct answer clicked! Question:", question.id);
-
+      setIsValidating(true); // Start loading
+      
       try {
         if (reviewMode) {
           setReviewAnswered((prev) => [...prev, question.id]);
@@ -136,15 +139,22 @@ function Level3Situation3() {
       } catch (error) {
         console.error("❌ Error in handleCorrectAnswer:", error);
         alert("Failed to save answer. Please try again.");
+      } finally {
+        setIsValidating(false); // End loading
       }
     };
 
     const handleWrongAnswer = async () => {
-      if (!reviewMode && userId) {
-        await recordLevel3Answer(userId, question.id, false);
-        fetchAnswers();
+      setIsValidating(true); // Start loading
+      try {
+        if (!reviewMode && userId) {
+          await recordLevel3Answer(userId, question.id, false);
+          await fetchAnswers();
+        }
+        setSelectedQuestion(null);
+      } finally {
+        setIsValidating(false); // End loading
       }
-      setSelectedQuestion(null);
     };
 
     switch (question.type) {
@@ -236,7 +246,8 @@ function Level3Situation3() {
             {selectedQuestion && (
               <div className="flex justify-start w-full px-2 xs:px-3 sm:px-4">
                 <button
-                  onClick={() => setSelectedQuestion(null)}
+                  onClick={() => !isValidating && setSelectedQuestion(null)}
+                  disabled={isValidating}
                   className="
                     flex items-center justify-center 
                     p-1.5 xs:p-2 sm:p-2.5 
@@ -244,6 +255,7 @@ function Level3Situation3() {
                     bg-[#FFD43B] hover:bg-[#FFB84D] 
                     shadow-md transition-all duration-200 
                     border-2 border-black
+                    disabled:opacity-50 disabled:cursor-not-allowed
                   "
                 >
                   <svg
@@ -316,7 +328,7 @@ function Level3Situation3() {
                         let btnColor = "bg-white";
                         let textColor = "text-black";
                         let opacity = "";
-                        let disabled = isAnswered(q);
+                        let disabled = isAnswered(q) || isValidating; // UPDATED: Disable during validation
 
                         if (!reviewMode) {
                           if (answer === "Correct") {
@@ -355,7 +367,7 @@ function Level3Situation3() {
                               active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] 
                               active:translate-x-[1px] active:translate-y-[1px] sm:active:translate-x-[2px] sm:active:translate-y-[2px] 
                               transition-all duration-150
-                              disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0
+                              disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:opacity-50
                             `}
                             style={{ fontFamily: "'Fredoka', sans-serif" }}
                             onClick={() => !disabled && setSelectedQuestion(q)}
@@ -387,6 +399,7 @@ function Level3Situation3() {
                       disabled:opacity-50 disabled:cursor-not-allowed
                     "
                     disabled={
+                      isValidating ||
                       !reviewQuestions.every((q) =>
                         reviewAnswered.includes(q.id)
                       )
