@@ -31,6 +31,8 @@ function Level3Situation1() {
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewQuestions, setReviewQuestions] = useState([]);
   const [userName, setUserName] = useState("");
+  const [reviewAnswered, setReviewAnswered] = useState([]);
+  const [isValidating, setIsValidating] = useState(false); // NEW: Loading state
   const navigate = useNavigate();
 
   const displayQuestions = reviewMode ? reviewQuestions : questions;
@@ -39,7 +41,6 @@ function Level3Situation1() {
   const endIdx = startIdx + QUESTIONS_PER_PAGE;
   const paginatedQuestions = displayQuestions.slice(startIdx, endIdx);
   const questionRows = groupIntoRows(paginatedQuestions, 2);
-  const [reviewAnswered, setReviewAnswered] = useState([]);
 
   useEffect(() => {
     const userId = localStorage.getItem("linggoUserId");
@@ -98,7 +99,7 @@ function Level3Situation1() {
     const characterName = question.characterName?.replace("(name)", userName);
 
     const handleCorrectAnswer = async () => {
-
+      setIsValidating(true); // Start loading
       try {
         if (reviewMode) {
           setReviewAnswered((prev) => [...prev, question.id]);
@@ -116,15 +117,22 @@ function Level3Situation1() {
         setSelectedQuestion(null);
       } catch (error) {
         alert("Failed to save answer. Please try again.");
+      } finally {
+        setIsValidating(false); // End loading
       }
     };
 
     const handleWrongAnswer = async () => {
-      if (!reviewMode && userId) {
-        await recordLevel3Answer(userId, question.id, false);
-        fetchAnswers();
+      setIsValidating(true); // Start loading
+      try {
+        if (!reviewMode && userId) {
+          await recordLevel3Answer(userId, question.id, false);
+          await fetchAnswers();
+        }
+        setSelectedQuestion(null);
+      } finally {
+        setIsValidating(false); // End loading
       }
-      setSelectedQuestion(null);
     };
 
     switch (question.type) {
@@ -208,8 +216,9 @@ function Level3Situation1() {
             {selectedQuestion && (
               <div className="flex justify-start w-full px-2 sm:px-4 py-2">
                 <button
-                  onClick={() => setSelectedQuestion(null)}
-                  className="flex items-center justify-center p-1.5 sm:p-2 rounded-lg bg-[#FFD43B] hover:bg-[#FFB84D] shadow-md transition-all duration-200 border-2 border-black"
+                  onClick={() => !isValidating && setSelectedQuestion(null)}
+                  disabled={isValidating}
+                  className="flex items-center justify-center p-1.5 sm:p-2 rounded-lg bg-[#FFD43B] hover:bg-[#FFB84D] shadow-md transition-all duration-200 border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -278,7 +287,7 @@ function Level3Situation1() {
                         let btnColor = "bg-white";
                         let textColor = "text-black";
                         let opacity = "";
-                        let disabled = isAnswered(q);
+                        let disabled = isAnswered(q) || isValidating; // UPDATED: Disable during validation
 
                         if (!reviewMode) {
                           if (answer === "Correct") {
@@ -302,7 +311,7 @@ function Level3Situation1() {
                         return (
                           <button
                             key={q.id}
-                            className={`w-[120px] h-[80px] sm:w-[140px] sm:h-[100px] md:w-[160px] md:h-[110px] lg:w-40 lg:h-[100px] max-w-[calc(50%-0.5rem)] text-center ${btnColor} ${textColor} ${opacity} text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text font-bold py-2 sm:py-3 px-2 sm:px-4 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
+                            className={`w-[120px] h-[80px] sm:w-[140px] sm:h-[100px] md:w-[160px] md:h-[110px] lg:w-40 lg:h-[100px] max-w-[calc(50%-0.5rem)] text-center ${btnColor} ${textColor} ${opacity} text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text font-bold py-2 sm:py-3 px-2 sm:px-4 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50`}
                             style={{ fontFamily: "'Fredoka', sans-serif" }}
                             onClick={() => !disabled && setSelectedQuestion(q)}
                             disabled={disabled}
@@ -319,6 +328,7 @@ function Level3Situation1() {
                   <button
                     className="w-32 sm:w-36 md:w-40 lg:w-48 xl:w-56 bg-white text-black text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold my-3 sm:my-5 py-2 px-3 sm:px-4 rounded-xl sm:rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={
+                      isValidating ||
                       !reviewQuestions.every((q) =>
                         reviewAnswered.includes(q.id)
                       )

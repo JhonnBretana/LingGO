@@ -7,6 +7,30 @@ function NameDetail() {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  // Check if inputs are valid (not empty after trimming)
+  const isFormValid = firstName.trim() && lastName.trim();
+
+  const handleSubmit = () => {
+    // Trim whitespace and check if inputs are empty
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+
+    if (!trimmedFirstName || !trimmedLastName) {
+      setShowModal(true);
+      return;
+    }
+
+    // Save to localStorage and navigate
+    localStorage.setItem("firstName", trimmedFirstName.replace(/\s/g, ""));
+    localStorage.setItem("lastName", trimmedLastName.replace(/\s/g, ""));
+    navigate("/agedetail");
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <BackgroundLayout>
@@ -44,17 +68,33 @@ function NameDetail() {
         </div>
 
         <button
-          onClick={() => {
-            // Remove spaces before saving to localStorage
-            localStorage.setItem("firstName", firstName.replace(/\s/g, ""));
-            localStorage.setItem("lastName", lastName.replace(/\s/g, ""));
-            navigate("/agedetail");
-          }}
-          className="w-50 mt-5 bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200"
+          onClick={handleSubmit}
+          disabled={!isFormValid}
+          className="w-50 mt-5 bg-white text-black text-lg font-bold py-2 px-4 rounded-lg border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
         >
           Sumunod
         </button>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm mx-4">
+            <div className="text-center">
+              <h3 className="text-lg font-bold text-black mb-4">
+                Kulang na Impormasyon
+              </h3>
+              <p className="text-black mb-6">Pakipunan ang lahat ng patlang!</p>
+              <button
+                onClick={closeModal}
+                className="bg-[#f2d919] hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg border-2 border-black transition-colors duration-200"
+              >
+                Sige
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </BackgroundLayout>
   );
 }

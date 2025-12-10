@@ -175,12 +175,12 @@ function PageHeaderLayout() {
               <div className="font-semibold text-lg text-gray-600">
                 {gradeDisplay}
               </div>
-              <button
+              {/* <button
                 className="my-1 px-4 py-2 bg-orange-400 text-white rounded hover:bg-red-600"
                 onClick={handleClearRecords}
               >
                 I-clear ang Records
-              </button>
+              </button> */}
               <button
                 className="my-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                 onClick={handleLogout}

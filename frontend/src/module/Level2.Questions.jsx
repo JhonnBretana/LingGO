@@ -42,6 +42,7 @@ function Level2Questions() {
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewQuestions, setReviewQuestions] = useState([]);
   const [reviewAnswered, setReviewAnswered] = useState([]);
+  const [isValidating, setIsValidating] = useState(false); // NEW: Loading state
   const navigate = useNavigate();
 
   // Use either all questions or only wrong ones in review mode
@@ -124,29 +125,39 @@ function Level2Questions() {
     const showWrongOverlay = !reviewMode;
 
     const handleCorrectAnswer = async () => {
-      if (reviewMode) {
-        setReviewAnswered((prev) => [...prev, question.id]);
-        // Save progress immediately to Firestore
-        if (userId) {
-          const userRef = doc(db, "users", userId);
-          await updateDoc(userRef, {
-            [`WrongQuestionsAnsweredLevel2.Level2Question${question.id}`]: true,
-          });
-          fetchAnswers();
+      setIsValidating(true); // Start loading
+      try {
+        if (reviewMode) {
+          setReviewAnswered((prev) => [...prev, question.id]);
+          // Save progress immediately to Firestore
+          if (userId) {
+            const userRef = doc(db, "users", userId);
+            await updateDoc(userRef, {
+              [`WrongQuestionsAnsweredLevel2.Level2Question${question.id}`]: true,
+            });
+            await fetchAnswers();
+          }
+        } else if (userId) {
+          await recordLevel2Answer(userId, question.id, true);
+          await fetchAnswers();
         }
-      } else if (userId) {
-        recordLevel2Answer(userId, question.id, true);
-        fetchAnswers();
+        setSelectedQuestion(null);
+      } finally {
+        setIsValidating(false); // End loading
       }
-      setSelectedQuestion(null);
     };
 
-    const handleWrongAnswer = () => {
-      if (!reviewMode && userId) {
-        recordLevel2Answer(userId, question.id, false);
-        fetchAnswers();
+    const handleWrongAnswer = async () => {
+      setIsValidating(true); // Start loading
+      try {
+        if (!reviewMode && userId) {
+          await recordLevel2Answer(userId, question.id, false);
+          await fetchAnswers();
+        }
+        setSelectedQuestion(null);
+      } finally {
+        setIsValidating(false); // End loading
       }
-      setSelectedQuestion(null);
     };
 
     switch (question.type) {
@@ -328,8 +339,9 @@ function Level2Questions() {
             {selectedQuestion && (
               <div className="flex justify-start w-full px-4">
                 <button
-                  onClick={() => setSelectedQuestion(null)}
-                  className="flex items-center justify-center p-2 rounded-lg bg-[#FFD43B] hover:bg-[#FFB84D] shadow-md transition-all duration-200 border-2 border-black"
+                  onClick={() => !isValidating && setSelectedQuestion(null)}
+                  disabled={isValidating}
+                  className="flex items-center justify-center p-2 rounded-lg bg-[#FFD43B] hover:bg-[#FFB84D] shadow-md transition-all duration-200 border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -379,7 +391,7 @@ function Level2Questions() {
                         let btnColor = "bg-white";
                         let textColor = "text-black";
                         let opacity = "";
-                        let disabled = isAnswered(q);
+                        let disabled = isAnswered(q) || isValidating; // UPDATED: Disable during validation
 
                         if (!reviewMode) {
                           if (answer === "Correct") {
@@ -404,7 +416,7 @@ function Level2Questions() {
                         return (
                           <button
                             key={q.id}
-                            className={`w-[140px] sm:w-40 max-w-[calc(50%-0.25rem)] text-center ${btnColor} ${textColor} ${opacity} text-sm sm:text-lg font-bold py-3 px-2 sm:px-4 rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150`}
+                            className={`w-[140px] sm:w-40 max-w-[calc(50%-0.25rem)] text-center ${btnColor} ${textColor} ${opacity} text-sm sm:text-lg font-bold py-3 px-2 sm:px-4 rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50`}
                             onClick={() => !disabled && setSelectedQuestion(q)}
                             disabled={disabled}
                           >
@@ -420,6 +432,7 @@ function Level2Questions() {
                   <button
                     className="w-40 bg-white text-black text-lg font-bold my-5 py-2 px-4 rounded-2xl border-2 border-black hover:bg-[#f2d919] active:bg-[#f2d919] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={
+                      isValidating ||
                       !reviewQuestions.every((q) =>
                         reviewAnswered.includes(q.id)
                       )
@@ -458,7 +471,7 @@ function Level2Questions() {
                   <button
                     className="px-4 sm:px-6 py-2 bg-white text-black font-bold rounded-xl border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-x-0 disabled:hover:translate-y-0 transition-all duration-150 text-sm sm:text-base"
                     onClick={() => setPage(page - 1)}
-                    disabled={page === 1}
+                    disabled={page === 1 || isValidating}
                   >
                     Prev
                   </button>
@@ -468,7 +481,7 @@ function Level2Questions() {
                   <button
                     className="px-4 sm:px-6 py-2 bg-white text-black font-bold rounded-xl border-3 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-x-0 disabled:hover:translate-y-0 transition-all duration-150 text-sm sm:text-base"
                     onClick={() => setPage(page + 1)}
-                    disabled={page === totalPages}
+                    disabled={page === totalPages || isValidating}
                   >
                     Next
                   </button>
